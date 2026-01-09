@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check, X, RefreshCcw, Code2, FileText, TestTube } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { ProcessDemo } from "@/components/abbonamento/ProcessDemo";
 
 const rules = [
   {
@@ -125,6 +126,9 @@ export default function Abbonamento() {
           </div>
         </div>
       </section>
+
+      {/* Process Demo */}
+      <ProcessDemo />
 
       {/* Included / Excluded */}
       <section className="section-padding bg-surface/30">
