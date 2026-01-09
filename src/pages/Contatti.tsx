@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Mail, Calendar, MessageSquare, Loader2 } from "lucide-react";
+import { Send, Mail, MessageSquare, Loader2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { contactFormSchema, type ContactFormData } from "@/lib/validations/contact";
+import { CalendlyEmbed } from "@/components/CalendlyEmbed";
 
 export default function Contatti() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,18 +115,19 @@ export default function Contatti() {
                 <div className="surface-card p-6">
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Calendar className="w-5 h-5 text-primary" />
+                      <Mail className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-display font-semibold mb-1">Prenota una call</h3>
+                      <h3 className="font-display font-semibold mb-1">Scrivi via email</h3>
                       <p className="text-sm text-muted-foreground mb-3">
-                        15 minuti per presentarti e capire le tue esigenze.
+                        Per richieste dettagliate o progetti specifici.
                       </p>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href="https://calendly.com" target="_blank" rel="noopener noreferrer">
-                          Apri calendario
-                        </a>
-                      </Button>
+                      <a 
+                        href="mailto:info@dimensione4.it"
+                        className="text-sm text-primary hover:underline"
+                      >
+                        info@dimensione4.it
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -266,6 +268,20 @@ export default function Contatti() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Calendly Booking Section */}
+      <section className="section-padding pt-0">
+        <div className="container-tight">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <CalendlyEmbed />
+          </motion.div>
         </div>
       </section>
     </Layout>
