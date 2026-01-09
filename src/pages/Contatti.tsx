@@ -55,6 +55,18 @@ export default function Contatti() {
         throw error;
       }
 
+      // Send email notifications (non-blocking)
+      supabase.functions.invoke("send-contact-notification", {
+        body: {
+          name: result.data.name,
+          email: result.data.email,
+          message: result.data.message,
+          website: result.data.website,
+        },
+      }).catch((err) => {
+        console.error("Email notification error:", err);
+      });
+
       toast({
         title: "Messaggio inviato!",
         description: "Ti risponderò entro 24 ore lavorative.",
