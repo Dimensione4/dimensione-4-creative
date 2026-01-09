@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, Lightbulb, Target, Code2, Rocket, RefreshCw, Check, HelpCircle } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 import {
   Accordion,
   AccordionContent,
@@ -81,6 +82,11 @@ const faqs = [
 export default function MVP() {
   return (
     <Layout>
+      <SEO 
+        title="MVP Custom"
+        description="Dal concept al lancio in 4-12 settimane. Sviluppo MVP con Next.js, React e Supabase per startup e founder."
+        canonical="/mvp"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />

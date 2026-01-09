@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { contactFormSchema, type ContactFormData } from "@/lib/validations/contact";
 import { CalendlyEmbed } from "@/components/CalendlyEmbed";
+import { SEO } from "@/components/SEO";
 
 export default function Contatti() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,6 +89,11 @@ export default function Contatti() {
 
   return (
     <Layout>
+      <SEO 
+        title="Contatti"
+        description="Prenota una call di 15 minuti o invia un messaggio. Rispondo entro 24 ore lavorative."
+        canonical="/contatti"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-50" />
