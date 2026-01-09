@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -50,8 +51,9 @@ export function Header() {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* Theme Toggle + CTA Button */}
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="hero" size="default" asChild>
               <Link to="/contatti">Prenota una call</Link>
             </Button>
@@ -93,7 +95,11 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4 mt-2 border-t border-[hsl(var(--border))]">
+              <div className="pt-4 mt-2 border-t border-[hsl(var(--border))] flex flex-col gap-3">
+                <div className="flex items-center justify-between px-4">
+                  <span className="text-sm text-muted-foreground">Tema</span>
+                  <ThemeToggle />
+                </div>
                 <Button variant="hero" size="lg" className="w-full" asChild>
                   <Link to="/contatti" onClick={() => setIsMenuOpen(false)}>
                     Prenota una call

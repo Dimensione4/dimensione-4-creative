@@ -123,6 +123,11 @@
 
   html {
     scroll-behavior: smooth;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  html.no-transitions * {
+    transition: none !important;
   }
 
   body {
