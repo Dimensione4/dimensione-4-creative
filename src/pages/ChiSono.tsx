@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Code2, Palette, Lightbulb, Zap } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 const skills = [
   {
@@ -45,6 +46,11 @@ const values = [
 export default function ChiSono() {
   return (
     <Layout>
+      <SEO 
+        title="Chi sono"
+        description="Dario Marco Bellini, developer senior specializzato in frontend, WordPress e ottimizzazione performance."
+        canonical="/chi-sono"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />

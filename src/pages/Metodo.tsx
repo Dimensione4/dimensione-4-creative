@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Map, Hammer, TrendingUp, ArrowRight, MessageSquare, Clock, User } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 const steps = [
   {
@@ -76,6 +77,11 @@ const principles = [
 export default function Metodo() {
   return (
     <Layout>
+      <SEO 
+        title="Metodo"
+        description="Mappa, Costruisci, Itera. Il mio approccio: comunicazione async, accesso diretto, timeline chiare."
+        canonical="/metodo"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-50" />

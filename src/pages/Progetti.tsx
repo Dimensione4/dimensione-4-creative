@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, TrendingUp, Clock, Zap } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 interface CaseStudy {
   id: string;
@@ -67,6 +68,11 @@ const caseStudies: CaseStudy[] = [
 export default function Progetti() {
   return (
     <Layout>
+      <SEO 
+        title="Progetti"
+        description="Case studies e risultati concreti: performance, MVP e design system. Scopri i progetti realizzati."
+        canonical="/progetti"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />

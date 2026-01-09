@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 const NotFound = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      <SEO 
+        title="404 - Pagina non trovata"
+        description="La pagina che stai cercando non esiste o è stata spostata."
+        noindex
+      />
       <div className="absolute inset-0 pattern-dots" />
       
       <div className="relative text-center px-6">

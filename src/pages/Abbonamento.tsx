@@ -4,6 +4,7 @@ import { ArrowRight, Check, X, RefreshCcw, Code2, FileText, TestTube } from "luc
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ProcessDemo } from "@/components/abbonamento/ProcessDemo";
+import { SEO } from "@/components/SEO";
 
 const rules = [
   {
@@ -61,6 +62,11 @@ const examples = [
 export default function Abbonamento() {
   return (
     <Layout>
+      <SEO 
+        title="Abbonamento"
+        description="Developer in abbonamento: richieste illimitate, comunicazione async, consegna PR-ready. Senza ore da contare."
+        canonical="/abbonamento"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />

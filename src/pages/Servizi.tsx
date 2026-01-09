@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Gauge, Code2, Palette, Sparkles, Check, ArrowUpRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/SEO";
 
 const services = [
   {
@@ -87,6 +88,11 @@ const services = [
 export default function Servizi() {
   return (
     <Layout>
+      <SEO 
+        title="Servizi"
+        description="Performance WordPress, MVP custom, frontend optimization e motion design. Scopri come posso aiutarti."
+        canonical="/servizi"
+      />
       {/* Hero */}
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
