@@ -1,30 +1,76 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Mail, Calendar, MessageSquare } from "lucide-react";
+import { Send, Mail, Calendar, MessageSquare, Loader2 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { contactFormSchema, type ContactFormData } from "@/lib/validations/contact";
 
 export default function Contatti() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrors({});
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      website: formData.get("website") as string || "",
+      message: formData.get("message") as string,
+    };
+
+    // Validate with zod
+    const result = contactFormSchema.safeParse(data);
+    if (!result.success) {
+      const fieldErrors: Partial<Record<keyof ContactFormData, string>> = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof ContactFormData;
+        fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Messaggio inviato!",
-      description: "Ti risponderò entro 24 ore.",
-    });
-    
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+
+    try {
+      // Insert into database
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name: result.data.name,
+          email: result.data.email,
+          website: result.data.website || null,
+          message: result.data.message,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Messaggio inviato!",
+        description: "Ti risponderò entro 24 ore lavorative.",
+      });
+      
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Errore nell'invio",
+        description: "Si è verificato un problema. Riprova o scrivi direttamente a info@dimensione4.it",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -127,10 +173,12 @@ export default function Contatti() {
                     <Input
                       id="name"
                       name="name"
-                      required
                       placeholder="Il tuo nome"
-                      className="bg-surface-hover border-[hsl(var(--border))]"
+                      className={`bg-surface-hover border-[hsl(var(--border))] ${errors.name ? "border-destructive" : ""}`}
                     />
+                    {errors.name && (
+                      <p className="text-xs text-destructive">{errors.name}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -141,10 +189,12 @@ export default function Contatti() {
                       id="email"
                       name="email"
                       type="email"
-                      required
                       placeholder="la@tua.email"
-                      className="bg-surface-hover border-[hsl(var(--border))]"
+                      className={`bg-surface-hover border-[hsl(var(--border))] ${errors.email ? "border-destructive" : ""}`}
                     />
+                    {errors.email && (
+                      <p className="text-xs text-destructive">{errors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -155,8 +205,11 @@ export default function Contatti() {
                       id="website"
                       name="website"
                       placeholder="https://..."
-                      className="bg-surface-hover border-[hsl(var(--border))]"
+                      className={`bg-surface-hover border-[hsl(var(--border))] ${errors.website ? "border-destructive" : ""}`}
                     />
+                    {errors.website && (
+                      <p className="text-xs text-destructive">{errors.website}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -166,10 +219,12 @@ export default function Contatti() {
                     <Textarea
                       id="message"
                       name="message"
-                      required
                       placeholder="Descrivi brevemente il tuo progetto o la tua esigenza..."
-                      className="min-h-[150px] bg-surface-hover border-[hsl(var(--border))] resize-none"
+                      className={`min-h-[150px] bg-surface-hover border-[hsl(var(--border))] resize-none ${errors.message ? "border-destructive" : ""}`}
                     />
+                    {errors.message && (
+                      <p className="text-xs text-destructive">{errors.message}</p>
+                    )}
                   </div>
 
                   <Button 
@@ -180,7 +235,10 @@ export default function Contatti() {
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
-                      "Invio in corso..."
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Invio in corso...
+                      </>
                     ) : (
                       <>
                         Invia messaggio
