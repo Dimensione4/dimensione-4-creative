@@ -2,95 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Dimensione 4 Design System - Abyss Teal Theme */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dark Theme - Default (Abyss Teal) */
+    --background: 216 45% 3%;
+    --background-hex: #05070A;
+    
+    --surface: 210 30% 7%;
+    --surface-hover: 210 25% 10%;
+    
+    --foreground: 200 30% 94%;
+    --foreground-secondary: 205 18% 71%;
+    
+    --card: 210 30% 7%;
+    --card-foreground: 200 30% 94%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --popover: 210 30% 7%;
+    --popover-foreground: 200 30% 94%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Brand Colors */
+    --primary: 179 80% 36%;
+    --primary-foreground: 200 30% 94%;
+    --primary-glow: 180 80% 52%;
+    
+    --accent: 180 78% 52%;
+    --accent-foreground: 216 45% 3%;
+    
+    --warm: 35 85% 69%;
+    --warm-foreground: 216 45% 3%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --secondary: 210 25% 10%;
+    --secondary-foreground: 200 30% 94%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 25% 10%;
+    --muted-foreground: 205 18% 71%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 200 30% 94%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --border: 200 30% 94% / 0.08;
+    --border-subtle: 200 30% 94% / 0.04;
+    --input: 210 25% 10%;
+    --ring: 179 80% 36%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --radius: 0.75rem;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(179 80% 36%), hsl(180 78% 52%));
+    --gradient-surface: linear-gradient(180deg, hsl(210 30% 7%), hsl(216 45% 3%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(180 78% 52% / 0.15), transparent 70%);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px hsl(216 45% 3% / 0.3);
+    --shadow-md: 0 8px 24px hsl(216 45% 3% / 0.4);
+    --shadow-lg: 0 16px 48px hsl(216 45% 3% / 0.5);
+    --shadow-glow: 0 0 40px hsl(180 78% 52% / 0.2);
 
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar - keeping for compatibility */
+    --sidebar-background: 210 30% 7%;
+    --sidebar-foreground: 200 30% 94%;
+    --sidebar-primary: 179 80% 36%;
+    --sidebar-primary-foreground: 200 30% 94%;
+    --sidebar-accent: 210 25% 10%;
+    --sidebar-accent-foreground: 200 30% 94%;
+    --sidebar-border: 200 30% 94% / 0.08;
+    --sidebar-ring: 179 80% 36%;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+  .light {
+    /* Light Theme - Clean Lab */
+    --background: 210 33% 98%;
+    --background-hex: #F7FAFC;
+    
+    --surface: 0 0% 100%;
+    --surface-hover: 210 20% 96%;
+    
+    --foreground: 216 55% 9%;
+    --foreground-secondary: 210 20% 32%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 216 55% 9%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 216 55% 9%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --primary: 179 82% 33%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 180 80% 50%;
+    
+    --accent: 180 76% 50%;
+    --accent-foreground: 216 55% 9%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 216 55% 9%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 20% 32%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --border: 210 25% 90%;
+    --border-subtle: 210 25% 94%;
+    --input: 210 25% 90%;
+    --ring: 179 82% 33%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --shadow-sm: 0 2px 8px hsl(216 55% 9% / 0.06);
+    --shadow-md: 0 8px 24px hsl(216 55% 9% / 0.08);
+    --shadow-lg: 0 16px 48px hsl(216 55% 9% / 0.1);
+    --shadow-glow: 0 0 40px hsl(180 76% 50% / 0.15);
   }
 }
 
@@ -99,7 +121,127 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  html {
+    scroll-behavior: smooth;
   }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    @apply font-semibold tracking-tight;
+  }
+
+  code, pre, .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Geometric Pattern Background */
+  .pattern-dots {
+    background-image: radial-gradient(circle at 1px 1px, hsl(var(--foreground) / 0.04) 1px, transparent 0);
+    background-size: 32px 32px;
+  }
+
+  .pattern-grid {
+    background-image: 
+      linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Glow effects */
+  .glow-teal {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.3);
+  }
+
+  .glow-subtle {
+    box-shadow: 0 0 60px hsl(var(--primary) / 0.15);
+  }
+
+  /* Text styles */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  /* Surface cards */
+  .surface-card {
+    @apply bg-[hsl(var(--surface))] border border-[hsl(var(--border))] rounded-lg;
+    transition: all 200ms ease;
+  }
+
+  .surface-card:hover {
+    @apply bg-[hsl(var(--surface-hover))] border-[hsl(var(--foreground)/0.12)];
+  }
+
+  /* Button glow effect */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: var(--gradient-primary);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .btn-glow:hover::before {
+    opacity: 0.5;
+  }
+
+  /* Section spacing */
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .container-tight {
+    @apply max-w-[1120px] mx-auto px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Delay utilities */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
 }
