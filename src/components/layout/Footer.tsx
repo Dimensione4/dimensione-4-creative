@@ -14,7 +14,8 @@ export function Footer() {
               <span className="font-display font-semibold text-lg">Dimensione 4</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-              Studio di ingegneria creativa. Trasformo siti web piatti in esperienze con profondità, struttura e crescita nel tempo.
+              Studio di ingegneria creativa. Trasformo siti web piatti in esperienze con profondità, struttura e
+              crescita nel tempo.
             </p>
           </div>
 
@@ -29,7 +30,7 @@ export function Footer() {
                 { href: "/chi-sono", label: "Chi sono" },
               ].map((link) => (
                 <li key={link.href}>
-                  <Link 
+                  <Link
                     to={link.href}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
@@ -45,19 +46,16 @@ export function Footer() {
             <h4 className="font-display font-semibold text-sm mb-4">Contatti</h4>
             <ul className="space-y-2">
               <li>
-                <Link 
-                  to="/contatti"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link to="/contatti" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Richiedi disponibilità
                 </Link>
               </li>
               <li>
-                <a 
-                  href="mailto:info@dimensione4.it"
+                <a
+                  href="mailto:dariomarcobellini@dimensione4.it"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  info@dimensione4.it
+                  dariomarcobellini@dimensione4.it
                 </a>
               </li>
             </ul>
@@ -69,9 +67,7 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Dimensione 4 di Dario Marco Bellini. P.IVA 00000000000
           </p>
-          <p className="text-xs text-muted-foreground font-mono">
-            Precisione tecnica. Sensibilità visiva.
-          </p>
+          <p className="text-xs text-muted-foreground font-mono">Precisione tecnica. Sensibilità visiva.</p>
         </div>
       </div>
     </footer>
