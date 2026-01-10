@@ -1,8 +1,8 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, Suspense, useEffect, useState } from "react";
+import { useRef, Suspense, useEffect, useState, useMemo } from "react";
 import * as THREE from "three";
 
-// Exact 36 circles from the Dimensione 4 logo - DO NOT MODIFY
+// Exact 36 circles from the Dimensione 4 logo
 const SYMBOL_DATA = [
   { x: -0.8078, y: -0.18, r: 0.1423, color: "#178A7A" },
   { x: -0.5534, y: -0.1926, r: 0.0338, color: "#1E9D90" },
@@ -42,7 +42,7 @@ const SYMBOL_DATA = [
   { x: -0.571, y: 0.8323, r: 0.1423, color: "#178A7A" }
 ];
 
-const SCALE = 6;
+const SCALE = 4;
 
 // Hook for mobile detection
 function useIsMobile() {
@@ -73,41 +73,95 @@ function useScrollPosition() {
   return scroll;
 }
 
-// Single circle - flat, no effects
-function SymbolCircle({ x, y, r, color }: { x: number; y: number; r: number; color: string }) {
+// Animated circle with staggered entry by arm
+function AnimatedCircle({ 
+  x, y, r, color, armIndex, indexInArm 
+}: { 
+  x: number; y: number; r: number; color: string; armIndex: number; indexInArm: number 
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const startTime = useRef<number | null>(null);
+  
+  // Each arm has a base delay, circles within arm have small stagger
+  const armDelay = armIndex * 0.3;
+  const circleDelay = indexInArm * 0.05;
+  const totalDelay = armDelay + circleDelay;
+  
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    
+    if (startTime.current === null) {
+      startTime.current = state.clock.elapsedTime;
+    }
+    
+    const elapsed = state.clock.elapsedTime - startTime.current;
+    const entryTime = Math.max(0, elapsed - totalDelay);
+    const progress = Math.min(1, entryTime / 0.3);
+    
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    
+    meshRef.current.scale.setScalar(eased);
+  });
+  
   return (
-    <mesh position={[x * SCALE, y * SCALE, 0]}>
+    <mesh ref={meshRef} position={[x * SCALE, y * SCALE, 0]} scale={0}>
       <circleGeometry args={[r * SCALE, 64]} />
       <meshBasicMaterial color={color} />
     </mesh>
   );
 }
 
-// Symbol group with optional slow rotation
+// Symbol group - organizes circles into 4 spiral arms
 function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
+  
+  // Sort circles by angle and divide into 4 arms
+  const arms = useMemo(() => {
+    const circlesWithAngle = SYMBOL_DATA.map((c, i) => ({
+      ...c,
+      originalIndex: i,
+      angle: Math.atan2(c.y, c.x)
+    }));
+    
+    // Sort by angle
+    circlesWithAngle.sort((a, b) => a.angle - b.angle);
+    
+    // Divide into 4 arms (9 circles each)
+    const armSize = 9;
+    const result: typeof circlesWithAngle[] = [];
+    for (let i = 0; i < 4; i++) {
+      result.push(circlesWithAngle.slice(i * armSize, (i + 1) * armSize));
+    }
+    
+    return result;
+  }, []);
   
   useFrame((state) => {
     if (!groupRef.current) return;
     
     // Very slow rotation
-    groupRef.current.rotation.z = state.clock.elapsedTime * 0.015;
+    groupRef.current.rotation.z = state.clock.elapsedTime * 0.01;
     
     // Parallax on scroll
-    groupRef.current.position.y = scrollY.current * -0.5;
+    groupRef.current.position.y = scrollY.current * -0.3;
   });
   
   return (
     <group ref={groupRef}>
-      {SYMBOL_DATA.map((circle, i) => (
-        <SymbolCircle
-          key={i}
-          x={circle.x}
-          y={circle.y}
-          r={circle.r}
-          color={circle.color}
-        />
-      ))}
+      {arms.map((arm, armIndex) =>
+        arm.map((circle, indexInArm) => (
+          <AnimatedCircle
+            key={circle.originalIndex}
+            x={circle.x}
+            y={circle.y}
+            r={circle.r}
+            color={circle.color}
+            armIndex={armIndex}
+            indexInArm={indexInArm}
+          />
+        ))
+      )}
     </group>
   );
 }
@@ -120,13 +174,12 @@ export function Hero3DScene() {
   const isMobile = useIsMobile();
   const scrollY = useScrollPosition();
   
-  // Frustum size for orthographic camera
-  const frustumSize = 8;
+  const frustumSize = 6;
   
   return (
-    <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-[5%] md:pr-[10%]">
+    <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-[2%] md:pr-[8%]">
       <div 
-        className="w-[350px] h-[350px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] opacity-90"
+        className="w-[320px] h-[320px] md:w-[420px] md:h-[420px] lg:w-[520px] lg:h-[520px]"
         style={{ aspectRatio: '1 / 1' }}
       >
         <Canvas
