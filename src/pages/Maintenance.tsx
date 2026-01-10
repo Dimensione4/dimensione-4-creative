@@ -54,13 +54,25 @@ export default function Maintenance() {
             <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
               DIMENSIONE 4
             </h2>
-            <p className="text-sm sm:text-base text-primary font-medium mt-1">
-              Quarta Dimensione
-            </p>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 tracking-wide">
-              prospettiva · struttura · tempo
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              di Dario Marco Bellini
             </p>
           </div>
+        </motion.div>
+
+        {/* Quarta Dimensione tagline */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="text-center mb-10 sm:mb-12"
+        >
+          <p className="text-sm sm:text-base text-primary font-medium">
+            Quarta Dimensione
+          </p>
+          <p className="text-xs sm:text-sm text-primary/70 mt-0.5 tracking-wide">
+            prospettiva · struttura · tempo
+          </p>
         </motion.div>
 
         {/* Title */}
