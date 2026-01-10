@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 type Language = "it" | "en";
 
@@ -8,12 +8,15 @@ interface LanguageSwitchProps {
 }
 
 export function LanguageSwitch({ className = "" }: LanguageSwitchProps) {
-  const [language, setLanguage] = useState<Language>("it");
+  const { i18n } = useTranslation();
+  const language = i18n.language as Language;
 
   const toggleLanguage = () => {
-    setLanguage(language === "it" ? "en" : "it");
-    // Here you would typically update your i18n context or store
+    const newLang = language === "it" || language.startsWith("it") ? "en" : "it";
+    i18n.changeLanguage(newLang);
   };
+
+  const currentLang = language === "en" || language.startsWith("en") ? "en" : "it";
 
   return (
     <button
@@ -24,7 +27,7 @@ export function LanguageSwitch({ className = "" }: LanguageSwitchProps) {
       {/* Flag icons */}
       <div className="relative w-5 h-5 overflow-hidden rounded-full">
         <AnimatePresence mode="wait">
-          {language === "it" ? (
+          {currentLang === "it" ? (
             <motion.div
               key="it"
               initial={{ y: -20, opacity: 0 }}
@@ -66,14 +69,14 @@ export function LanguageSwitch({ className = "" }: LanguageSwitchProps) {
       <div className="relative overflow-hidden h-5 w-6">
         <AnimatePresence mode="wait">
           <motion.span
-            key={language}
+            key={currentLang}
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="absolute inset-0 flex items-center justify-center text-xs font-mono font-medium uppercase text-foreground"
           >
-            {language}
+            {currentLang}
           </motion.span>
         </AnimatePresence>
       </div>
@@ -83,7 +86,7 @@ export function LanguageSwitch({ className = "" }: LanguageSwitchProps) {
         className="w-1 h-1 rounded-full bg-primary"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.3 }}
-        key={language}
+        key={currentLang}
       />
     </button>
   );
