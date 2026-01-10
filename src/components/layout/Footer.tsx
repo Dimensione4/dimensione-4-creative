@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logoSymbol from "@/assets/logo-symbol.png";
 
 export function Footer() {
   return (
@@ -8,13 +9,15 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-                <span className="font-display font-bold text-lg text-primary-foreground">4</span>
-              </div>
+              <img 
+                src={logoSymbol} 
+                alt="Dimensione 4" 
+                className="w-9 h-9 object-contain"
+              />
               <span className="font-display font-semibold text-lg">Dimensione 4</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs leading-relaxed">
-              Studio di ingegneria creativa. Trasformo siti web piatti in esperienze con profondità, struttura e
+              Studio creativo. Trasformo siti web piatti in esperienze con profondità, struttura e
               crescita nel tempo.
             </p>
           </div>
