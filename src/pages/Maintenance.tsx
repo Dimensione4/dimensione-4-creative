@@ -51,7 +51,7 @@ export default function Maintenance() {
             className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
           />
           <div className="text-center sm:text-left">
-            <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
+            <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-primary">
               DIMENSIONE 4
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground">
