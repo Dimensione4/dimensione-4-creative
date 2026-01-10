@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, ThreeEvent } from "@react-three/fiber";
 import { useRef, Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 
@@ -73,32 +73,66 @@ function useScrollPosition() {
   return scroll;
 }
 
-// Circle with glow effect
+// Interactive circle with glow effect
 function GlowCircle({ x, y, r, color, index }: { x: number; y: number; r: number; color: string; index: number }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const glowMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const [hovered, setHovered] = useState(false);
+  const targetScale = useRef(1);
+  const targetGlow = useRef(0.15);
+  const currentScale = useRef(1);
+  const currentGlow = useRef(0.15);
   
   useFrame((state) => {
-    if (!meshRef.current || !glowRef.current) return;
+    if (!groupRef.current || !glowRef.current || !glowMaterialRef.current) return;
+    
+    // Update targets based on hover
+    targetScale.current = hovered ? 1.3 : 1;
+    targetGlow.current = hovered ? 0.5 : 0.15;
+    
+    // Smooth interpolation
+    currentScale.current += (targetScale.current - currentScale.current) * 0.15;
+    currentGlow.current += (targetGlow.current - currentGlow.current) * 0.15;
     
     // Subtle pulse animation offset by index
-    const pulse = Math.sin(state.clock.elapsedTime * 1.5 + index * 0.3) * 0.1 + 0.9;
-    glowRef.current.scale.setScalar(pulse);
+    const pulse = Math.sin(state.clock.elapsedTime * 1.5 + index * 0.3) * 0.08 + 0.92;
+    
+    groupRef.current.scale.setScalar(currentScale.current);
+    glowRef.current.scale.setScalar(pulse * (hovered ? 2.2 : 1.8));
+    glowMaterialRef.current.opacity = currentGlow.current;
   });
   
+  const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation();
+    setHovered(true);
+    document.body.style.cursor = 'pointer';
+  };
+  
+  const handlePointerOut = () => {
+    setHovered(false);
+    document.body.style.cursor = 'auto';
+  };
+  
   return (
-    <group position={[x * SCALE, y * SCALE, 0]}>
+    <group 
+      ref={groupRef} 
+      position={[x * SCALE, y * SCALE, 0]}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
+    >
       {/* Glow layer behind */}
       <mesh ref={glowRef} position={[0, 0, -0.01]}>
-        <circleGeometry args={[r * SCALE * 1.8, 64]} />
+        <circleGeometry args={[r * SCALE, 64]} />
         <meshBasicMaterial 
+          ref={glowMaterialRef}
           color={color} 
           transparent 
           opacity={0.15}
         />
       </mesh>
       {/* Main circle */}
-      <mesh ref={meshRef}>
+      <mesh>
         <circleGeometry args={[r * SCALE, 64]} />
         <meshBasicMaterial color={color} />
       </mesh>
@@ -106,15 +140,15 @@ function GlowCircle({ x, y, r, color, index }: { x: number; y: number; r: number
   );
 }
 
-// Symbol group with slow rotation and parallax
+// Symbol group with clockwise rotation and parallax
 function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
     if (!groupRef.current) return;
     
-    // Very slow rotation
-    groupRef.current.rotation.z = state.clock.elapsedTime * 0.01;
+    // Clockwise rotation (negative direction)
+    groupRef.current.rotation.z = -state.clock.elapsedTime * 0.01;
     
     // Parallax on scroll
     groupRef.current.position.y = scrollY.current * -0.3;
@@ -147,7 +181,7 @@ export function Hero3DScene() {
   const frustumSize = 8;
   
   return (
-    <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-[2%] md:pr-[6%]">
+    <div className="absolute inset-0 flex items-center justify-end pr-[2%] md:pr-[6%]">
       <div 
         className="w-[380px] h-[380px] md:w-[500px] md:h-[500px] lg:w-[620px] lg:h-[620px]"
         style={{ aspectRatio: '1 / 1' }}
