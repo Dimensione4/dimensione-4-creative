@@ -1,0 +1,130 @@
+{
+  "common": {
+    "bookCall": "Book a call",
+    "learnMore": "Learn more",
+    "contact": "Contact",
+    "theme": "Theme",
+    "language": "Language",
+    "backToTop": "Back to top",
+    "readyToStart": "Ready to add depth to your project?",
+    "letsStart": "Let's start",
+    "needHelp": "Need help?",
+    "whatsappCta": "Message me on WhatsApp for a quick response!",
+    "chatNow": "Chat now"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "mvp": "MVP",
+    "projects": "Projects",
+    "method": "Method",
+    "subscription": "Subscription",
+    "about": "About"
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "social": "Social",
+    "contacts": "Contact",
+    "bookCall": "Book call",
+    "tagline": "Technical precision. Visual sensibility.",
+    "description": "Creative studio by Dario Marco Bellini. I transform ideas into digital experiences with depth, structure, and vision.",
+    "copyright": "© {{year}} Dimensione 4 by Dario Marco Bellini. VAT 00000000000"
+  },
+  "hero": {
+    "title": "I create digital experiences",
+    "titleHighlight": "with depth",
+    "subtitle": "Creative studio specialized in websites, web apps, and MVPs. I transform ideas into digital products that work and grow over time.",
+    "cta": "Book a call",
+    "ctaSecondary": "Explore services"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Complete digital solutions to grow your business",
+    "webDesign": {
+      "title": "Web Design",
+      "description": "Modern, fast websites optimized to convert visitors into customers."
+    },
+    "webApp": {
+      "title": "Web App",
+      "description": "Custom web applications to automate and scale your business."
+    },
+    "mvp": {
+      "title": "MVP Development",
+      "description": "Functional prototypes to validate your startup idea in record time."
+    },
+    "subscription": {
+      "title": "Design Subscription",
+      "description": "Continuous design and development with a fixed, predictable monthly fee."
+    }
+  },
+  "concept": {
+    "title": "The Concept",
+    "subtitle": "Dimension 4",
+    "description": "Just as the fourth dimension adds depth to time, I add depth to your digital projects. Not just beautiful sites, but experiences that evolve and grow."
+  },
+  "method": {
+    "title": "The Method",
+    "subtitle": "A structured process for predictable results",
+    "step1": {
+      "title": "Discovery",
+      "description": "I analyze your business, your goals, and your target audience."
+    },
+    "step2": {
+      "title": "Design",
+      "description": "I create wireframes and high-fidelity designs to validate the direction."
+    },
+    "step3": {
+      "title": "Development",
+      "description": "I build the product with modern technologies and best practices."
+    },
+    "step4": {
+      "title": "Launch",
+      "description": "Deploy, optimization, and continuous post-launch support."
+    }
+  },
+  "proof": {
+    "title": "Results",
+    "subtitle": "Projects that made a difference"
+  },
+  "cta": {
+    "title": "Ready to start?",
+    "subtitle": "Book a free call to discuss your project",
+    "button": "Book now"
+  },
+  "about": {
+    "title": "About",
+    "subtitle": "Dario Marco Bellini",
+    "role": "Creative Full-Stack Developer",
+    "bio": "I'm a full-stack developer with a passion for design and user experience. I combine technical skills with aesthetic sensibility to create digital products that work and that people love to use."
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Let's talk about your project",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "website": "Website (optional)",
+      "message": "Message",
+      "submit": "Send message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Error sending. Please try again."
+    }
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "A selection of recent work",
+    "viewProject": "View project",
+    "viewAll": "View all"
+  },
+  "mvpPage": {
+    "title": "MVP Development",
+    "subtitle": "Transform your idea into a working product",
+    "description": "Rapid MVP development to validate your startup. From concept to launch in weeks, not months."
+  },
+  "subscriptionPage": {
+    "title": "Design Subscription",
+    "subtitle": "Unlimited design and development with a fixed monthly fee",
+    "description": "No quotes, no surprises. A dedicated team at your service with unlimited requests."
+  }
+}

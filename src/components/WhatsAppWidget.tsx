@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // WhatsApp icon
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -14,11 +15,13 @@ interface WhatsAppWidgetProps {
   message?: string;
 }
 
-export function WhatsAppWidget({ phoneNumber, message = "Ciao! Vorrei maggiori informazioni." }: WhatsAppWidgetProps) {
+export function WhatsAppWidget({ phoneNumber, message }: WhatsAppWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { t } = useTranslation();
   
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  const defaultMessage = t('common.whatsappCta');
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message || defaultMessage)}`;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
@@ -40,10 +43,10 @@ export function WhatsAppWidget({ phoneNumber, message = "Ciao! Vorrei maggiori i
               <X className="w-4 h-4" />
             </button>
             <p className="text-sm text-foreground font-medium mb-2">
-              Hai bisogno di aiuto?
+              {t('common.needHelp')}
             </p>
             <p className="text-xs text-muted-foreground mb-4">
-              Scrivimi su WhatsApp per una risposta rapida!
+              {t('common.whatsappCta')}
             </p>
             <motion.a
               href={whatsappUrl}
@@ -54,7 +57,7 @@ export function WhatsAppWidget({ phoneNumber, message = "Ciao! Vorrei maggiori i
               whileTap={{ scale: 0.98 }}
             >
               <WhatsAppIcon className="w-4 h-4" />
-              <span>Chatta ora</span>
+              <span>{t('common.chatNow')}</span>
             </motion.a>
           </motion.div>
         )}

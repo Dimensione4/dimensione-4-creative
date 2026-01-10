@@ -1,0 +1,130 @@
+{
+  "common": {
+    "bookCall": "Prenota una call",
+    "learnMore": "Scopri di più",
+    "contact": "Contatti",
+    "theme": "Tema",
+    "language": "Lingua",
+    "backToTop": "Torna su",
+    "readyToStart": "Pronto a dare profondità al tuo progetto?",
+    "letsStart": "Iniziamo",
+    "needHelp": "Hai bisogno di aiuto?",
+    "whatsappCta": "Scrivimi su WhatsApp per una risposta rapida!",
+    "chatNow": "Chatta ora"
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Servizi",
+    "mvp": "MVP",
+    "projects": "Progetti",
+    "method": "Metodo",
+    "subscription": "Abbonamento",
+    "about": "Chi sono"
+  },
+  "footer": {
+    "navigation": "Navigazione",
+    "social": "Social",
+    "contacts": "Contatti",
+    "bookCall": "Prenota call",
+    "tagline": "Precisione tecnica. Sensibilità visiva.",
+    "description": "Studio creativo di Dario Marco Bellini. Trasformo idee in esperienze digitali con profondità, struttura e visione.",
+    "copyright": "© {{year}} Dimensione 4 di Dario Marco Bellini. P.IVA 00000000000"
+  },
+  "hero": {
+    "title": "Creo esperienze digitali",
+    "titleHighlight": "con profondità",
+    "subtitle": "Studio creativo specializzato in siti web, web app e MVP. Trasformo idee in prodotti digitali che funzionano e crescono nel tempo.",
+    "cta": "Prenota una call",
+    "ctaSecondary": "Scopri i servizi"
+  },
+  "services": {
+    "title": "Servizi",
+    "subtitle": "Soluzioni digitali complete per far crescere il tuo business",
+    "webDesign": {
+      "title": "Web Design",
+      "description": "Siti web moderni, veloci e ottimizzati per convertire visitatori in clienti."
+    },
+    "webApp": {
+      "title": "Web App",
+      "description": "Applicazioni web personalizzate per automatizzare e scalare il tuo business."
+    },
+    "mvp": {
+      "title": "MVP Development",
+      "description": "Prototipi funzionanti per validare la tua idea di startup in tempi record."
+    },
+    "subscription": {
+      "title": "Abbonamento Design",
+      "description": "Design e sviluppo continuo con un canone mensile fisso e prevedibile."
+    }
+  },
+  "concept": {
+    "title": "Il Concetto",
+    "subtitle": "Dimensione 4",
+    "description": "Come la quarta dimensione aggiunge profondità al tempo, aggiungo profondità ai tuoi progetti digitali. Non solo siti belli, ma esperienze che evolvono e crescono."
+  },
+  "method": {
+    "title": "Il Metodo",
+    "subtitle": "Un processo strutturato per risultati prevedibili",
+    "step1": {
+      "title": "Discovery",
+      "description": "Analizzo il tuo business, i tuoi obiettivi e il tuo pubblico target."
+    },
+    "step2": {
+      "title": "Design",
+      "description": "Creo wireframe e design ad alta fedeltà per validare la direzione."
+    },
+    "step3": {
+      "title": "Sviluppo",
+      "description": "Costruisco il prodotto con tecnologie moderne e best practice."
+    },
+    "step4": {
+      "title": "Lancio",
+      "description": "Deploy, ottimizzazione e supporto post-lancio continuo."
+    }
+  },
+  "proof": {
+    "title": "Risultati",
+    "subtitle": "Progetti che hanno fatto la differenza"
+  },
+  "cta": {
+    "title": "Pronto a partire?",
+    "subtitle": "Prenota una call gratuita per discutere del tuo progetto",
+    "button": "Prenota ora"
+  },
+  "about": {
+    "title": "Chi Sono",
+    "subtitle": "Dario Marco Bellini",
+    "role": "Creative Full-Stack Developer",
+    "bio": "Sono un sviluppatore full-stack con una passione per il design e l'esperienza utente. Combino competenze tecniche con sensibilità estetica per creare prodotti digitali che funzionano e che le persone amano usare."
+  },
+  "contact": {
+    "title": "Contatti",
+    "subtitle": "Parliamo del tuo progetto",
+    "form": {
+      "name": "Nome",
+      "email": "Email",
+      "website": "Sito web (opzionale)",
+      "message": "Messaggio",
+      "submit": "Invia messaggio",
+      "sending": "Invio in corso...",
+      "success": "Messaggio inviato con successo!",
+      "error": "Errore nell'invio. Riprova."
+    }
+  },
+  "projects": {
+    "title": "Progetti",
+    "subtitle": "Una selezione dei lavori recenti",
+    "viewProject": "Vedi progetto",
+    "viewAll": "Vedi tutti"
+  },
+  "mvpPage": {
+    "title": "MVP Development",
+    "subtitle": "Trasforma la tua idea in un prodotto funzionante",
+    "description": "Sviluppo MVP rapido per validare la tua startup. Dal concept al lancio in settimane, non mesi."
+  },
+  "subscriptionPage": {
+    "title": "Abbonamento Design",
+    "subtitle": "Design e sviluppo illimitato con un canone mensile fisso",
+    "description": "Niente preventivi, niente sorprese. Un team dedicato al tuo servizio con richieste illimitate."
+  }
+}

@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Linkedin, Github, Instagram } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
-  { href: "/servizi", label: "Servizi" },
-  { href: "/mvp", label: "MVP" },
-  { href: "/progetti", label: "Progetti" },
-  { href: "/metodo", label: "Metodo" },
-  { href: "/abbonamento", label: "Abbonamento" },
-  { href: "/chi-sono", label: "Chi sono" },
+  { href: "/servizi", labelKey: "nav.services" },
+  { href: "/mvp", labelKey: "nav.mvp" },
+  { href: "/progetti", labelKey: "nav.projects" },
+  { href: "/metodo", labelKey: "nav.method" },
+  { href: "/abbonamento", labelKey: "nav.subscription" },
+  { href: "/chi-sono", labelKey: "nav.about" },
 ];
 
 // X (Twitter) icon component
@@ -56,7 +57,7 @@ function MagneticLink({ href, children, external = false }: { href: string; chil
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  
+  const { t } = useTranslation();
   return (
     <footer className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden">
       {/* Background glow */}
@@ -74,10 +75,10 @@ export function Footer() {
             className="max-w-3xl"
           >
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6">
-              Pronto a dare{" "}
-              <span className="text-gradient">profondità</span>
+              {t('common.readyToStart').split(' ').slice(0, 3).join(' ')}{" "}
+              <span className="text-gradient">{t('common.readyToStart').split(' ').slice(3, 4).join(' ')}</span>
               <br />
-              al tuo progetto?
+              {t('common.readyToStart').split(' ').slice(4).join(' ')}
             </h2>
             <motion.div
               whileHover={{ scale: 1.02 }}
@@ -87,7 +88,7 @@ export function Footer() {
                 to="/contatti"
                 className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-medium text-lg group hover:shadow-[0_0_40px_hsl(var(--primary)/0.4)] transition-shadow duration-500"
               >
-                <span>Iniziamo</span>
+                <span>{t('common.letsStart')}</span>
                 <motion.span
                   className="inline-block"
                   animate={{ x: [0, 4, 0] }}
@@ -115,22 +116,22 @@ export function Footer() {
               <span className="font-display font-semibold text-xl">Dimensione 4</span>
             </Link>
             <p className="text-muted-foreground text-base leading-relaxed max-w-sm mb-8">
-              Studio creativo di Dario Marco Bellini. Trasformo idee in esperienze digitali con profondità, struttura e visione.
+              {t('footer.description')}
             </p>
             <p className="text-xs text-muted-foreground font-mono tracking-wide">
-              Precisione tecnica. Sensibilità visiva.
+              {t('footer.tagline')}
             </p>
           </div>
 
           {/* Navigation Column */}
           <div className="md:col-span-3">
             <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
-              Navigazione
+              {t('footer.navigation')}
             </h4>
             <ul className="space-y-3">
               {navLinks.map((link) => (
                 <li key={link.href}>
-                  <MagneticLink href={link.href}>{link.label}</MagneticLink>
+                  <MagneticLink href={link.href}>{t(link.labelKey)}</MagneticLink>
                 </li>
               ))}
             </ul>
@@ -139,7 +140,7 @@ export function Footer() {
           {/* Social Column */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
-              Social
+              {t('footer.social')}
             </h4>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((link) => {
@@ -165,11 +166,11 @@ export function Footer() {
           {/* Contact Column */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
-              Contatti
+              {t('footer.contacts')}
             </h4>
             <ul className="space-y-3">
               <li>
-                <MagneticLink href="/contatti">Prenota call</MagneticLink>
+                <MagneticLink href="/contatti">{t('footer.bookCall')}</MagneticLink>
               </li>
               <li>
                 <a
@@ -186,7 +187,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="py-6 border-t border-[hsl(var(--border))] flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground">
-            © {currentYear} Dimensione 4 di Dario Marco Bellini. P.IVA 00000000000
+            {t('footer.copyright', { year: currentYear })}
           </p>
           
           {/* Back to top */}
@@ -195,7 +196,7 @@ export function Footer() {
             className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
             whileHover={{ y: -2 }}
           >
-            <span>Torna su</span>
+            <span>{t('common.backToTop')}</span>
             <motion.span
               className="inline-block"
               animate={{ y: [0, -3, 0] }}

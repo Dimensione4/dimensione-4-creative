@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, Suspense, lazy } from "react";
 import { ArrowRight, Play } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-4d.jpg";
 
@@ -11,6 +12,7 @@ const Hero3DScene = lazy(() =>
 
 export function HeroSection() {
   const ref = useRef(null);
+  const { t } = useTranslation();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"]
@@ -75,10 +77,8 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-display text-hero-mobile md:text-hero font-bold mb-6"
           >
-            Trasforma un sito web{" "}
-            <span className="text-gradient">piatto</span>{" "}
-            in uno{" "}
-            <span className="text-gradient">4D</span>
+            {t('hero.title')}{" "}
+            <span className="text-gradient">{t('hero.titleHighlight')}</span>
           </motion.h1>
 
           {/* Description */}
@@ -88,7 +88,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-body-lg text-muted-foreground mb-8 max-w-2xl"
           >
-            Aggiungo <strong className="text-foreground">prospettiva</strong>, <strong className="text-foreground">struttura</strong> e <strong className="text-foreground">tempo</strong> ai progetti digitali. Codice pulito, performance misurabili, evoluzione continua.
+            {t('hero.subtitle')}
           </motion.p>
 
           {/* CTAs */}
@@ -100,14 +100,14 @@ export function HeroSection() {
           >
             <Button variant="hero" size="xl" className="cta-glow" asChild>
               <Link to="/contatti">
-                Prenota una call di 15 minuti
+                {t('hero.cta')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
             <Button variant="outline" size="xl" asChild>
-              <Link to="/metodo">
+              <Link to="/servizi">
                 <Play className="w-4 h-4" />
-                Vedi il metodo
+                {t('hero.ctaSecondary')}
               </Link>
             </Button>
           </motion.div>

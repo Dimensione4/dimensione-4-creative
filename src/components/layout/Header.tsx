@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useMotionValue, useSpring, useScroll } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/servizi", label: "Servizi" },
-  { href: "/mvp", label: "MVP" },
-  { href: "/progetti", label: "Progetti" },
-  { href: "/metodo", label: "Metodo" },
-  { href: "/abbonamento", label: "Abbonamento" },
-  { href: "/chi-sono", label: "Chi sono" },
+  { href: "/", labelKey: "nav.home" },
+  { href: "/servizi", labelKey: "nav.services" },
+  { href: "/mvp", labelKey: "nav.mvp" },
+  { href: "/progetti", labelKey: "nav.projects" },
+  { href: "/metodo", labelKey: "nav.method" },
+  { href: "/abbonamento", labelKey: "nav.subscription" },
+  { href: "/chi-sono", labelKey: "nav.about" },
 ];
 
 // Magnetic link component
@@ -84,6 +85,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Page scroll progress for the indicator
   const { scrollYProgress } = useScroll();
@@ -199,7 +201,7 @@ export function Header() {
                   href={link.href}
                   isActive={location.pathname === link.href}
                 >
-                  {link.label}
+                  {t(link.labelKey)}
                 </MagneticLink>
               ))}
             </motion.div>
@@ -297,7 +299,7 @@ export function Header() {
                           : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
-                      <span className="inline-block">{link.label}</span>
+                      <span className="inline-block">{t(link.labelKey)}</span>
                       {location.pathname === link.href && (
                         <motion.span
                           layoutId="mobile-indicator"
