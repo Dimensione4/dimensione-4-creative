@@ -29,7 +29,7 @@ export function CTASection() {
             Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="hero" size="xl" asChild>
+            <Button variant="hero" size="xl" className="cta-glow" asChild>
               <Link to="/contatti">
                 Prenota una call
                 <ArrowRight className="w-4 h-4" />
