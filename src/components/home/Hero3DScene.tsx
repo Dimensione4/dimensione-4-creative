@@ -2,6 +2,48 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, Suspense, useMemo, useEffect, useState } from "react";
 import * as THREE from "three";
 
+// Logo symbol circle data - normalized positions
+const SYMBOL_DATA = [
+  { x: -0.757, y: -0.1546, r: 0.1192, color: "#188F80" },
+  { x: -0.9786, y: -0.2059, r: 0.0345, color: "#1C8473" },
+  { x: -0.9271, y: -0.3629, r: 0.0502, color: "#1A8576" },
+  { x: -0.5743, y: -0.3991, r: 0.0838, color: "#199B8D" },
+  { x: -0.788, y: -0.5665, r: 0.0838, color: "#188D7E" },
+  { x: -0.5889, y: -0.6031, r: 0.05, color: "#199B8C" },
+  { x: -0.7002, y: -0.7328, r: 0.0344, color: "#19998B" },
+  { x: -0.3612, y: -0.7136, r: 0.0838, color: "#1AAE9F" },
+  { x: -0.1921, y: -0.6814, r: 0.1193, color: "#18A595" },
+  { x: -0.0132, y: -0.7335, r: 0.0838, color: "#1ABBAE" },
+  { x: 0.1307, y: -0.8092, r: 0.0345, color: "#1CC8BD" },
+  { x: 0.2201, y: -0.9066, r: 0.0501, color: "#1ECBC0" },
+  { x: 0.3917, y: -0.9176, r: 0.1193, color: "#1CD7CD" },
+  { x: 0.5438, y: -0.7493, r: 0.1193, color: "#19E1DD" },
+  { x: 0.6892, y: -0.6288, r: 0.0838, color: "#1DE8E5" },
+  { x: 0.7885, y: -0.4693, r: 0.0502, color: "#1FE8E6" },
+  { x: 0.8837, y: -0.394, r: 0.0345, color: "#22F0EF" },
+  { x: 0.8359, y: -0.1758, r: 0.0838, color: "#21F4F3" },
+  { x: 0.9167, y: -0.0368, r: 0.1192, color: "#1FF4F2" },
+  { x: 0.978, y: -0.0433, r: 0.0345, color: "#23FAF9" },
+  { x: 0.9801, y: 0.1814, r: 0.0502, color: "#25FDFD" },
+  { x: 0.787, y: 0.3209, r: 0.0838, color: "#1FF4F3" },
+  { x: 0.9031, y: 0.4402, r: 0.0838, color: "#20F4F4" },
+  { x: 0.976, y: 0.5195, r: 0.0345, color: "#1FF3F3" },
+  { x: 0.8327, y: 0.6638, r: 0.1192, color: "#1CE7E4" },
+  { x: 0.6407, y: 0.6465, r: 0.0838, color: "#1ADEDA" },
+  { x: 0.4983, y: 0.7514, r: 0.0345, color: "#1ACAC0" },
+  { x: 0.2344, y: 0.8204, r: 0.1192, color: "#1CCBC1" },
+  { x: 0.0969, y: 0.9246, r: 0.0502, color: "#18C2B5" },
+  { x: -0.0865, y: 0.8841, r: 0.0345, color: "#18B4A6" },
+  { x: -0.2541, y: 0.826, r: 0.0838, color: "#19AFA1" },
+  { x: -0.4643, y: 0.7676, r: 0.05, color: "#198C7C" },
+  { x: -0.756, y: 0.3831, r: 0.05, color: "#188C7D" },
+  { x: -0.8322, y: 0.1921, r: 0.0838, color: "#188D7E" },
+  { x: -0.8321, y: 0.5147, r: 0.1192, color: "#199B8C" },
+  { x: -0.8334, y: 0.1926, r: 0.1456, color: "#178A7A" }
+];
+
+const SCALE = 6;
+
 // Hook for mobile detection
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -16,23 +58,7 @@ function useIsMobile() {
   return isMobile;
 }
 
-// Mouse tracking hook
-function useMousePosition() {
-  const mouse = useRef({ x: 0, y: 0 });
-  
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-  
-  return mouse;
-}
-
-// Scroll position hook
+// Scroll position hook for parallax
 function useScrollPosition() {
   const scroll = useRef(0);
   
@@ -47,280 +73,107 @@ function useScrollPosition() {
   return scroll;
 }
 
-interface SphereData {
-  position: [number, number, number];
-  scale: number;
-  color: string;
-  phaseOffset: number;
-  entryDelay: number;
+// Single circle component
+function SymbolCircle({ x, y, r, color, index }: { x: number; y: number; r: number; color: string; index: number }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const startTime = useRef<number | null>(null);
+  const entryDelay = index * 0.02;
+  
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    
+    // Initialize start time
+    if (startTime.current === null) {
+      startTime.current = state.clock.elapsedTime;
+    }
+    
+    // Staggered entry animation
+    const timeSinceStart = state.clock.elapsedTime - startTime.current;
+    const entryTime = Math.max(0, timeSinceStart - entryDelay);
+    const entryProgress = Math.min(1, entryTime / 0.5);
+    
+    // Ease out cubic
+    const eased = 1 - Math.pow(1 - entryProgress, 3);
+    
+    meshRef.current.scale.setScalar(eased);
+  });
+  
+  return (
+    <mesh
+      ref={meshRef}
+      position={[x * SCALE, y * SCALE, 0]}
+      scale={0}
+    >
+      <circleGeometry args={[r * SCALE, 64]} />
+      <meshBasicMaterial color={color} />
+    </mesh>
+  );
 }
 
-function SpiralSpheres({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
+// Main symbol group with rotation
+function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
-  const mouse = useMousePosition();
-  const targetRotation = useRef({ x: 0, y: 0 });
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
-  // Generate spheres in a 3D spiral pattern like the logo
-  const spheres = useMemo(() => {
-    const result: SphereData[] = [];
-    const sphereCount = isMobile ? 24 : 40;
-    const spiralTurns = 2.5; // Number of spiral rotations
-    
-    for (let i = 0; i < sphereCount; i++) {
-      const t = i / sphereCount;
-      const angle = t * Math.PI * 2 * spiralTurns;
-      
-      // Spiral radius grows from center outward
-      const baseRadius = 0.5 + t * 2.5;
-      
-      // Add slight Z variation for 3D depth
-      const zOffset = Math.sin(t * Math.PI * 4) * 0.5;
-      
-      // Vary sizes - larger at the outside, smaller at the center (like the logo)
-      const scale = 0.08 + t * 0.28;
-      
-      // Gradient from teal (#12A6A3) to cyan (#23E6E6)
-      const colorLerp = t;
-      const color = colorLerp < 0.5 ? "#12A6A3" : "#23E6E6";
-      
-      result.push({
-        position: [
-          Math.cos(angle) * baseRadius,
-          Math.sin(angle) * baseRadius,
-          zOffset
-        ],
-        scale,
-        color,
-        phaseOffset: i * 0.15,
-        entryDelay: i * 0.03
-      });
-    }
-    
-    return result;
-  }, [isMobile]);
-
   useFrame((state) => {
-    if (groupRef.current) {
-      // Smooth mouse following
-      targetRotation.current.x = mouse.current.y * 0.3;
-      targetRotation.current.y = mouse.current.x * 0.5;
-      
-      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.05;
-      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.05;
-      
-      // Slow continuous rotation
-      groupRef.current.rotation.z = state.clock.elapsedTime * 0.08;
-      
-      // Parallax effect on scroll - move and rotate based on scroll
-      const scrollOffset = scrollY.current;
-      groupRef.current.position.y = scrollOffset * -2;
-      groupRef.current.position.z = scrollOffset * -1;
-      groupRef.current.rotation.x += scrollOffset * 0.3;
-    }
+    if (!groupRef.current) return;
+    
+    // Very slow continuous rotation
+    groupRef.current.rotation.z = state.clock.elapsedTime * 0.03;
+    
+    // Parallax on scroll
+    const scrollOffset = scrollY.current;
+    groupRef.current.position.y = scrollOffset * -1.5;
   });
-
+  
   return (
     <group ref={groupRef}>
-      {spheres.map((sphere, i) => (
-        <AnimatedSphere 
-          key={i} 
-          {...sphere} 
+      {SYMBOL_DATA.map((circle, i) => (
+        <SymbolCircle
+          key={i}
           index={i}
-          isHovered={hoveredIndex === i}
-          onHover={setHoveredIndex}
+          x={circle.x}
+          y={circle.y}
+          r={circle.r}
+          color={circle.color}
         />
       ))}
     </group>
   );
 }
 
-interface AnimatedSphereProps extends SphereData {
-  index: number;
-  isHovered: boolean;
-  onHover: (index: number | null) => void;
-}
-
-function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index, isHovered, onHover }: AnimatedSphereProps) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const glowRef = useRef<THREE.Mesh>(null);
-  const entryProgress = useRef(0);
-  const startTime = useRef<number | null>(null);
-  const targetEmissive = useRef(0.3);
-  const currentEmissive = useRef(0.3);
-  const targetScale = useRef(0);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      // Initialize start time
-      if (startTime.current === null) {
-        startTime.current = state.clock.elapsedTime;
-      }
-      
-      // Entry animation with stagger
-      const timeSinceStart = state.clock.elapsedTime - startTime.current;
-      const entryTime = Math.max(0, timeSinceStart - entryDelay);
-      entryProgress.current = Math.min(1, entryTime / 0.6);
-      
-      // Easing function (ease out back for bounce effect)
-      const easeOutBack = (t: number) => {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-      };
-      const easedEntry = easeOutBack(entryProgress.current);
-      
-      // Gentle floating animation
-      const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.08;
-      meshRef.current.position.z = position[2] + offset;
-      
-      // Smooth emissive intensity transition for glow (subtle)
-      targetEmissive.current = isHovered ? 0.6 : 0.3;
-      currentEmissive.current += (targetEmissive.current - currentEmissive.current) * 0.1;
-      
-      // Smooth scale transition for hover (subtle - only 15% increase)
-      const hoverScale = isHovered ? scale * 1.15 : scale;
-      targetScale.current = hoverScale * easedEntry;
-      const currentScale = meshRef.current.scale.x;
-      const newScale = currentScale + (targetScale.current - currentScale) * 0.15;
-      
-      // Subtle scale pulsing
-      const pulseScale = newScale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.05);
-      meshRef.current.scale.setScalar(pulseScale);
-      
-      // Update material emissive
-      const material = meshRef.current.material as THREE.MeshStandardMaterial;
-      if (material) {
-        material.emissiveIntensity = currentEmissive.current;
-      }
-      
-      // Update glow sphere (subtle)
-      if (glowRef.current) {
-        glowRef.current.position.z = position[2] + offset;
-        glowRef.current.scale.setScalar(pulseScale * 1.5);
-        const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
-        glowMaterial.opacity = isHovered ? 0.2 : 0.05;
-      }
-    }
-  });
-
-  return (
-    <group position={[position[0], position[1], 0]}>
-      {/* Glow sphere */}
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[1, 12, 12]} />
-        <meshBasicMaterial
-          color={color}
-          transparent
-          opacity={0.05}
-          depthWrite={false}
-        />
-      </mesh>
-      
-      {/* Main sphere */}
-      <mesh 
-        ref={meshRef}
-        onPointerEnter={() => onHover(index)}
-        onPointerLeave={() => onHover(null)}
-      >
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={0.3}
-          roughness={0.3}
-          metalness={0.7}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-function FloatingParticles({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
-  const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = isMobile ? 30 : 60;
-  const startTime = useRef<number | null>(null);
-  
-  const positions = useMemo(() => {
-    const pos = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 3.5 + Math.random() * 2;
-      pos[i * 3] = Math.cos(angle) * radius;
-      pos[i * 3 + 1] = Math.sin(angle) * radius;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 2;
-    }
-    return pos;
-  }, [particleCount]);
-
-  useFrame((state) => {
-    if (pointsRef.current) {
-      // Initialize start time
-      if (startTime.current === null) {
-        startTime.current = state.clock.elapsedTime;
-      }
-      
-      // Fade in particles
-      const timeSinceStart = state.clock.elapsedTime - startTime.current;
-      const fadeIn = Math.min(1, timeSinceStart / 1.5);
-      
-      const material = pointsRef.current.material as THREE.PointsMaterial;
-      material.opacity = fadeIn * 0.6;
-      
-      pointsRef.current.rotation.z = state.clock.elapsedTime * 0.02;
-      
-      // Parallax on scroll
-      pointsRef.current.position.y = scrollY.current * -1.5;
-    }
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={isMobile ? 0.04 : 0.03}
-        color="#23E6E6"
-        transparent
-        opacity={0}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
-function Scene({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
-  return (
-    <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={0.8} color="#23E6E6" />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#12A6A3" />
-      
-      <SpiralSpheres isMobile={isMobile} scrollY={scrollY} />
-      <FloatingParticles isMobile={isMobile} scrollY={scrollY} />
-    </>
-  );
+function Scene({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
+  return <SymbolGroup scrollY={scrollY} />;
 }
 
 export function Hero3DScene() {
   const isMobile = useIsMobile();
   const scrollY = useScrollPosition();
   
+  // Orthographic camera frustum size
+  const frustumSize = 8;
+  const aspect = 1; // Square canvas
+  
   return (
     <div className="absolute inset-0 flex items-center justify-end pointer-events-auto pr-[5%] md:pr-[10%]">
-      <div className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] opacity-70">
+      <div className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] opacity-80">
         <Canvas
-          camera={{ position: [0, 0, 8], fov: 45 }}
+          orthographic
+          camera={{
+            zoom: 1,
+            position: [0, 0, 10],
+            left: -frustumSize * aspect,
+            right: frustumSize * aspect,
+            top: frustumSize,
+            bottom: -frustumSize,
+            near: 0.1,
+            far: 100
+          }}
           dpr={isMobile ? 1 : [1, 2]}
-          gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           style={{ background: 'transparent' }}
         >
           <Suspense fallback={null}>
-            <Scene isMobile={isMobile} scrollY={scrollY} />
+            <Scene scrollY={scrollY} />
           </Suspense>
         </Canvas>
       </div>
