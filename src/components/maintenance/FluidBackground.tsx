@@ -608,9 +608,8 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       blit(null);
     };
 
-    // Animation loop
+    // Animation loop - NO auto splats, only user-triggered
     let lastTime = Date.now();
-    let autoSplatTimer = 0;
     let colorCycleTimer = 0;
 
     const animate = () => {
@@ -626,21 +625,8 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
         pointerRef.current.color = getInterpolatedColor();
       }
 
-      // Auto splat for ambient effect - calm, random
-      autoSplatTimer += dt;
-      if (autoSplatTimer > AUTO_SPLAT_INTERVAL) {
-        autoSplatTimer = 0;
-        const x = Math.random();
-        const y = Math.random();
-        // Slower, more gentle automatic splats
-        const dx = (Math.random() - 0.5) * SPLAT_FORCE * 0.08;
-        const dy = (Math.random() - 0.5) * SPLAT_FORCE * 0.08;
-        const color = getInterpolatedColor();
-        splat(x, y, dx, dy, color, 0.8);
-      }
-
-      // Handle pointer interaction (mouse drag or touch)
-      if (pointerRef.current.moved) {
+      // Handle pointer interaction ONLY when user is actively interacting
+      if (pointerRef.current.moved && pointerRef.current.down) {
         pointerRef.current.moved = false;
         
         // Use stronger effect when actively pressing/touching
@@ -662,16 +648,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // Initial splats - more spread out for calm initial state
-    for (let i = 0; i < 6; i++) {
-      const color = getInterpolatedColor();
-      const x = 0.1 + Math.random() * 0.8;
-      const y = 0.1 + Math.random() * 0.8;
-      const dx = (Math.random() - 0.5) * 800;
-      const dy = (Math.random() - 0.5) * 800;
-      splat(x, y, dx, dy, color, 0.7);
-    }
-
+    // NO initial splats - canvas starts dark/empty, user triggers the effect
     animate();
 
     // Event handlers
