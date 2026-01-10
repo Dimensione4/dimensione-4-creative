@@ -138,7 +138,10 @@ export default function Maintenance() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-auto pt-8 sm:pt-12 text-center"
         >
-          <p className="text-xs text-emerald-400 mb-2">Torno online a breve</p>
+          <p className="text-xs mb-2">
+            <span className="text-amber-400">Torno online a breve</span>
+            <span className="text-muted-foreground">, se hai bisogno di un fullstack developer per il tuo progetto contattami</span>
+          </p>
           <p className="text-xs sm:text-sm text-muted-foreground">
             Email:{" "}
             <a
