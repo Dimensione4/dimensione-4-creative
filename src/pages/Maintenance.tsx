@@ -83,17 +83,15 @@ export default function Maintenance() {
           className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-xs sm:max-w-md mb-8 sm:mb-12 px-2"
         >
           {settings.subtitle
+            .replace(/Torno online a breve\.?/gi, '')
+            .trim()
             .replace(/prospettiva/gi, '{{CYAN}}prospettiva{{/CYAN}}')
             .replace(/struttura/gi, '{{CYAN}}struttura{{/CYAN}}')
             .replace(/tempo/gi, '{{CYAN}}tempo{{/CYAN}}')
-            .replace(/online a breve/gi, '{{GREEN}}online a breve{{/GREEN}}')
-            .split(/(\{\{CYAN\}\}.*?\{\{\/CYAN\}\}|\{\{GREEN\}\}.*?\{\{\/GREEN\}\})/g)
+            .split(/(\{\{CYAN\}\}.*?\{\{\/CYAN\}\})/g)
             .map((part, i) => {
               if (part.startsWith('{{CYAN}}')) {
                 return <span key={i} className="text-primary">{part.replace(/\{\{CYAN\}\}|\{\{\/CYAN\}\}/g, '')}</span>;
-              }
-              if (part.startsWith('{{GREEN}}')) {
-                return <span key={i} className="text-emerald-400">{part.replace(/\{\{GREEN\}\}|\{\{\/GREEN\}\}/g, '')}</span>;
               }
               return part;
             })}
@@ -140,6 +138,7 @@ export default function Maintenance() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-auto pt-8 sm:pt-12 text-center"
         >
+          <p className="text-xs text-emerald-400 mb-2">Torno online a breve</p>
           <p className="text-xs sm:text-sm text-muted-foreground">
             Email:{" "}
             <a
