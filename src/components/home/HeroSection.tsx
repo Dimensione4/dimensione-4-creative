@@ -17,9 +17,9 @@ export function HeroSection() {
         <div className="absolute inset-0 pattern-dots" />
       </div>
 
-      {/* Geometric accent */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
+      {/* Geometric accent with breathing animation */}
+      <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl geo-breathing-slow" />
+      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl geo-breathing" />
 
       {/* Content */}
       <div className="container-tight relative z-10 py-20 md:py-32">
@@ -67,7 +67,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button variant="hero" size="xl" asChild>
+            <Button variant="hero" size="xl" className="cta-glow" asChild>
               <Link to="/contatti">
                 Prenota una call di 15 minuti
                 <ArrowRight className="w-4 h-4" />
