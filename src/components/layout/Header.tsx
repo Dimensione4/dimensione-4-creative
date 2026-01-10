@@ -41,6 +41,7 @@ function MagneticLink({
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
+    // Magnetic pull strength
     const pullStrength = 0.3;
     x.set((e.clientX - centerX) * pullStrength);
     y.set((e.clientY - centerY) * pullStrength);
@@ -57,7 +58,7 @@ function MagneticLink({
       to={href}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative px-3 py-1.5 text-sm font-medium transition-colors duration-300 whitespace-nowrap"
+      className="relative px-4 py-2 text-sm font-medium transition-colors duration-300"
     >
       {isActive && (
         <motion.div
@@ -86,10 +87,12 @@ export function Header() {
   const location = useLocation();
   const { t } = useTranslation();
   
+  // Page scroll progress for the indicator
   const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => {
+      // Progress from 0 to 1 over 100px of scroll
       const progress = Math.min(window.scrollY / 100, 1);
       setScrollProgress(progress);
     };
@@ -97,10 +100,12 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -177,9 +182,19 @@ export function Header() {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Compact island style always */}
-          <nav className="hidden xl:flex items-center absolute left-1/2 -translate-x-1/2">
-            <div className="flex items-center gap-0 px-1.5 py-1 rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]">
+          {/* Desktop Navigation - Center with shrinking pill */}
+          <nav className="hidden lg:flex items-center justify-center flex-1 mx-4">
+            <motion.div 
+              className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
+              animate={{
+                gap: hasScrolled ? 0 : 4,
+                paddingLeft: hasScrolled ? 6 : 8,
+                paddingRight: hasScrolled ? 6 : 8,
+                paddingTop: hasScrolled ? 4 : 6,
+                paddingBottom: hasScrolled ? 4 : 6,
+              }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               {navLinks.map((link) => (
                 <MagneticLink
                   key={link.href}
@@ -189,11 +204,11 @@ export function Header() {
                   {t(link.labelKey)}
                 </MagneticLink>
               ))}
-            </div>
+            </motion.div>
           </nav>
 
           {/* Right side - Language, Theme Toggle + CTA */}
-          <div className="hidden xl:flex items-center gap-3 relative z-10">
+          <div className="hidden lg:flex items-center gap-3 relative z-10">
             <LanguageSwitch />
             <ThemeToggle />
             <motion.div
@@ -202,7 +217,7 @@ export function Header() {
             >
               <Button variant="hero" size={hasScrolled ? "sm" : "default"} className="group" asChild>
                 <Link to="/contatti">
-                  <span>{t('common.bookCall')}</span>
+                  <span>Prenota una call</span>
                   <motion.span
                     className="inline-block ml-2"
                     whileHover={{ x: 4 }}
@@ -215,10 +230,10 @@ export function Header() {
             </motion.div>
           </div>
 
-          {/* Mobile/Tablet Menu Button */}
+          {/* Mobile Menu Button - Animated Hamburger */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
+            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
             aria-label="Toggle menu"
           >
             <div className="w-5 h-4 flex flex-col justify-between">
@@ -259,7 +274,7 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="xl:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
+            className="lg:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
           >
             <motion.nav
               initial={{ opacity: 0, y: 20 }}
@@ -303,16 +318,16 @@ export function Header() {
                 className="pt-8 border-t border-[hsl(var(--border))] space-y-6"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">{t('common.language')}</span>
+                  <span className="text-sm text-muted-foreground">Lingua</span>
                   <LanguageSwitch />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">{t('common.theme')}</span>
+                  <span className="text-sm text-muted-foreground">Tema</span>
                   <ThemeToggle />
                 </div>
                 <Button variant="hero" size="lg" className="w-full text-lg" asChild>
                   <Link to="/contatti">
-                    {t('common.bookCall')}
+                    Prenota una call
                     <span className="ml-2">→</span>
                   </Link>
                 </Button>
