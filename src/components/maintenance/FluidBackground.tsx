@@ -1,19 +1,45 @@
 import { useEffect, useRef, useCallback } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface FluidBackgroundProps {
   className?: string;
 }
 
-// Fluid simulation configuration
-const CONFIG = {
-  SIM_RESOLUTION: 128,
-  DYE_RESOLUTION: 1024,
+// Detect device capabilities for adaptive resolution
+const getDeviceConfig = (isMobile: boolean, isTouch: boolean) => {
+  if (isMobile) {
+    return {
+      SIM_RESOLUTION: 64,
+      DYE_RESOLUTION: 512,
+      SPLAT_RADIUS: 0.4,
+      SPLAT_FORCE: 4000,
+      AUTO_SPLAT_INTERVAL: 0.8,
+    };
+  }
+  if (isTouch) {
+    return {
+      SIM_RESOLUTION: 96,
+      DYE_RESOLUTION: 768,
+      SPLAT_RADIUS: 0.35,
+      SPLAT_FORCE: 5000,
+      AUTO_SPLAT_INTERVAL: 0.6,
+    };
+  }
+  return {
+    SIM_RESOLUTION: 128,
+    DYE_RESOLUTION: 1024,
+    SPLAT_RADIUS: 0.25,
+    SPLAT_FORCE: 6000,
+    AUTO_SPLAT_INTERVAL: 0.5,
+  };
+};
+
+// Base configuration
+const BASE_CONFIG = {
   DENSITY_DISSIPATION: 0.97,
   VELOCITY_DISSIPATION: 0.98,
   PRESSURE_ITERATIONS: 20,
   CURL: 30,
-  SPLAT_RADIUS: 0.25,
-  SPLAT_FORCE: 6000,
   SHADING: true,
   COLORFUL: true,
   BLOOM: true,
@@ -22,26 +48,76 @@ const CONFIG = {
   SUNRAYS_WEIGHT: 1.0,
 };
 
-// Color palette inspired by dimensione4.it (teal/cyan variations)
+// Expanded cyan/teal color palette - chaotic but calm
 const COLORS = [
-  { r: 0.07, g: 0.65, b: 0.64 }, // Teal primary
-  { r: 0.14, g: 0.90, b: 0.90 }, // Cyan accent
-  { r: 0.05, g: 0.45, b: 0.55 }, // Deep teal
-  { r: 0.20, g: 0.75, b: 0.80 }, // Light cyan
-  { r: 0.03, g: 0.35, b: 0.40 }, // Dark teal
+  // Primary teals
+  { r: 0.07, g: 0.65, b: 0.64 },  // Teal primary #12A6A3
+  { r: 0.14, g: 0.90, b: 0.90 },  // Cyan accent #23E6E6
+  // Deep variations
+  { r: 0.02, g: 0.30, b: 0.35 },  // Deep ocean
+  { r: 0.05, g: 0.45, b: 0.55 },  // Deep teal
+  { r: 0.03, g: 0.35, b: 0.40 },  // Dark teal
+  // Light variations
+  { r: 0.20, g: 0.75, b: 0.80 },  // Light cyan
+  { r: 0.30, g: 0.85, b: 0.88 },  // Soft cyan
+  { r: 0.15, g: 0.70, b: 0.75 },  // Muted cyan
+  // Subtle blue-green accents for chaos
+  { r: 0.08, g: 0.55, b: 0.70 },  // Blue-teal
+  { r: 0.10, g: 0.60, b: 0.55 },  // Green-teal
+  { r: 0.05, g: 0.50, b: 0.65 },  // Cool teal
+  // Very subtle warm accents (barely noticeable)
+  { r: 0.12, g: 0.58, b: 0.52 },  // Warm teal hint
 ];
 
 function getRandomColor() {
-  return COLORS[Math.floor(Math.random() * COLORS.length)];
+  // Weight towards primary colors but allow occasional variations
+  const weights = [3, 3, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1];
+  const totalWeight = weights.reduce((a, b) => a + b, 0);
+  let random = Math.random() * totalWeight;
+  
+  for (let i = 0; i < weights.length; i++) {
+    random -= weights[i];
+    if (random <= 0) return COLORS[i];
+  }
+  return COLORS[0];
+}
+
+// Interpolate between two colors for smoother transitions
+function lerpColor(
+  c1: { r: number; g: number; b: number },
+  c2: { r: number; g: number; b: number },
+  t: number
+) {
+  return {
+    r: c1.r + (c2.r - c1.r) * t,
+    g: c1.g + (c2.g - c1.g) * t,
+    b: c1.b + (c2.b - c1.b) * t,
+  };
+}
+
+function getInterpolatedColor() {
+  const c1 = COLORS[Math.floor(Math.random() * COLORS.length)];
+  const c2 = COLORS[Math.floor(Math.random() * COLORS.length)];
+  return lerpColor(c1, c2, Math.random());
 }
 
 export function FluidBackground({ className = "" }: FluidBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
-  const pointerRef = useRef({ x: 0, y: 0, dx: 0, dy: 0, down: false, moved: false });
+  const pointerRef = useRef({ 
+    x: 0, 
+    y: 0, 
+    dx: 0, 
+    dy: 0, 
+    down: false, 
+    moved: false,
+    color: getRandomColor()
+  });
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programsRef = useRef<any>({});
   const fboRef = useRef<any>({});
+  const configRef = useRef<any>(null);
+  const isMobile = useIsMobile();
 
   // Vertex shader
   const baseVertexShader = `
@@ -303,6 +379,12 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Detect touch capability
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const deviceConfig = getDeviceConfig(isMobile, isTouch);
+    const CONFIG = { ...BASE_CONFIG, ...deviceConfig };
+    configRef.current = CONFIG;
+
     const gl = canvas.getContext("webgl", {
       alpha: true,
       depth: false,
@@ -323,8 +405,9 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     gl.getExtension("OES_texture_float_linear");
 
     const resizeCanvas = () => {
-      canvas.width = canvas.clientWidth;
-      canvas.height = canvas.clientHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = canvas.clientWidth * dpr;
+      canvas.height = canvas.clientHeight * dpr;
     };
 
     resizeCanvas();
@@ -362,7 +445,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
 
-    // Init FBOs
+    // Init FBOs with device-appropriate resolution
     const simRes = CONFIG.SIM_RESOLUTION;
     const dyeRes = CONFIG.DYE_RESOLUTION;
 
@@ -377,6 +460,11 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       pressure: createDoubleFBO(gl, simRes, simRes, rgba, rgba, texType, gl.NEAREST),
     };
 
+    // Store config for use in animation
+    const SPLAT_FORCE = CONFIG.SPLAT_FORCE;
+    const SPLAT_RADIUS = CONFIG.SPLAT_RADIUS;
+    const AUTO_SPLAT_INTERVAL = CONFIG.AUTO_SPLAT_INTERVAL;
+
     // Utility functions
     const blit = (target: any) => {
       if (target == null) {
@@ -389,7 +477,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
     };
 
-    const splat = (x: number, y: number, dx: number, dy: number, color: { r: number; g: number; b: number }) => {
+    const splat = (x: number, y: number, dx: number, dy: number, color: { r: number; g: number; b: number }, radiusMultiplier = 1) => {
       const { splat: splatProgram } = programsRef.current;
       if (!splatProgram) return;
 
@@ -403,7 +491,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       gl.uniform1f(gl.getUniformLocation(splatProgram, "aspectRatio"), canvas.width / canvas.height);
       gl.uniform2f(gl.getUniformLocation(splatProgram, "point"), x, y);
       gl.uniform3f(gl.getUniformLocation(splatProgram, "color"), dx, dy, 0.0);
-      gl.uniform1f(gl.getUniformLocation(splatProgram, "radius"), CONFIG.SPLAT_RADIUS / 100.0);
+      gl.uniform1f(gl.getUniformLocation(splatProgram, "radius"), (SPLAT_RADIUS * radiusMultiplier) / 100.0);
       blit(fboRef.current.velocity.write);
       fboRef.current.velocity.swap();
 
@@ -523,6 +611,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     // Animation loop
     let lastTime = Date.now();
     let autoSplatTimer = 0;
+    let colorCycleTimer = 0;
 
     const animate = () => {
       const now = Date.now();
@@ -530,28 +619,41 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       dt = Math.min(dt, 0.016666);
       lastTime = now;
 
-      // Auto splat for ambient effect
+      // Slowly cycle pointer color for smoother effect when dragging
+      colorCycleTimer += dt;
+      if (colorCycleTimer > 0.3) {
+        colorCycleTimer = 0;
+        pointerRef.current.color = getInterpolatedColor();
+      }
+
+      // Auto splat for ambient effect - calm, random
       autoSplatTimer += dt;
-      if (autoSplatTimer > 0.5) {
+      if (autoSplatTimer > AUTO_SPLAT_INTERVAL) {
         autoSplatTimer = 0;
         const x = Math.random();
         const y = Math.random();
-        const dx = (Math.random() - 0.5) * CONFIG.SPLAT_FORCE * 0.1;
-        const dy = (Math.random() - 0.5) * CONFIG.SPLAT_FORCE * 0.1;
-        const color = getRandomColor();
-        splat(x, y, dx, dy, color);
+        // Slower, more gentle automatic splats
+        const dx = (Math.random() - 0.5) * SPLAT_FORCE * 0.08;
+        const dy = (Math.random() - 0.5) * SPLAT_FORCE * 0.08;
+        const color = getInterpolatedColor();
+        splat(x, y, dx, dy, color, 0.8);
       }
 
-      // Handle pointer movement
+      // Handle pointer interaction (mouse drag or touch)
       if (pointerRef.current.moved) {
         pointerRef.current.moved = false;
-        const color = getRandomColor();
+        
+        // Use stronger effect when actively pressing/touching
+        const forceMultiplier = pointerRef.current.down ? 1.2 : 0.8;
+        const radiusMultiplier = pointerRef.current.down ? 1.5 : 1.0;
+        
         splat(
           pointerRef.current.x,
           pointerRef.current.y,
-          pointerRef.current.dx * CONFIG.SPLAT_FORCE,
-          pointerRef.current.dy * CONFIG.SPLAT_FORCE,
-          color
+          pointerRef.current.dx * SPLAT_FORCE * forceMultiplier,
+          pointerRef.current.dy * SPLAT_FORCE * forceMultiplier,
+          pointerRef.current.color,
+          radiusMultiplier
         );
       }
 
@@ -560,20 +662,20 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // Initial splats
-    for (let i = 0; i < 5; i++) {
-      const color = getRandomColor();
-      const x = Math.random();
-      const y = Math.random();
-      const dx = (Math.random() - 0.5) * 1000;
-      const dy = (Math.random() - 0.5) * 1000;
-      splat(x, y, dx, dy, color);
+    // Initial splats - more spread out for calm initial state
+    for (let i = 0; i < 6; i++) {
+      const color = getInterpolatedColor();
+      const x = 0.1 + Math.random() * 0.8;
+      const y = 0.1 + Math.random() * 0.8;
+      const dx = (Math.random() - 0.5) * 800;
+      const dy = (Math.random() - 0.5) * 800;
+      splat(x, y, dx, dy, color, 0.7);
     }
 
     animate();
 
     // Event handlers
-    const updatePointer = (x: number, y: number) => {
+    const updatePointer = (x: number, y: number, isDown = false) => {
       const rect = canvas.getBoundingClientRect();
       const newX = (x - rect.left) / rect.width;
       const newY = 1.0 - (y - rect.top) / rect.height;
@@ -586,30 +688,67 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
 
       pointerRef.current.x = newX;
       pointerRef.current.y = newY;
+      pointerRef.current.down = isDown;
+    };
+
+    // Mouse events - respond to movement AND click+drag
+    const onMouseDown = (e: MouseEvent) => {
+      pointerRef.current.down = true;
+      pointerRef.current.color = getRandomColor();
+      updatePointer(e.clientX, e.clientY, true);
+    };
+
+    const onMouseUp = () => {
+      pointerRef.current.down = false;
     };
 
     const onMouseMove = (e: MouseEvent) => {
-      updatePointer(e.clientX, e.clientY);
+      // React to all movement, but stronger when button is pressed
+      updatePointer(e.clientX, e.clientY, pointerRef.current.down);
+    };
+
+    // Touch events
+    const onTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      pointerRef.current.down = true;
+      pointerRef.current.color = getRandomColor();
+      const touch = e.touches[0];
+      updatePointer(touch.clientX, touch.clientY, true);
+    };
+
+    const onTouchEnd = () => {
+      pointerRef.current.down = false;
     };
 
     const onTouchMove = (e: TouchEvent) => {
       e.preventDefault();
       const touch = e.touches[0];
-      updatePointer(touch.clientX, touch.clientY);
+      updatePointer(touch.clientX, touch.clientY, true);
     };
 
+    // Register all event listeners
+    canvas.addEventListener("mousedown", onMouseDown);
+    canvas.addEventListener("mouseup", onMouseUp);
+    canvas.addEventListener("mouseleave", onMouseUp);
     canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("touchstart", onTouchStart, { passive: false });
+    canvas.addEventListener("touchend", onTouchEnd);
     canvas.addEventListener("touchmove", onTouchMove, { passive: false });
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
+      canvas.removeEventListener("mousedown", onMouseDown);
+      canvas.removeEventListener("mouseup", onMouseUp);
+      canvas.removeEventListener("mouseleave", onMouseUp);
       canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("touchstart", onTouchStart);
+      canvas.removeEventListener("touchend", onTouchEnd);
       canvas.removeEventListener("touchmove", onTouchMove);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [createProgram, createFBO, createDoubleFBO]);
+  }, [createProgram, createFBO, createDoubleFBO, isMobile]);
 
   return (
     <canvas

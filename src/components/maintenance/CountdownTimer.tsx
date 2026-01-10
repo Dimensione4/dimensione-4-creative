@@ -54,21 +54,21 @@ export function CountdownTimer({ targetDate, className = "" }: CountdownTimerPro
   ];
 
   return (
-    <div className={`flex items-center justify-center gap-3 md:gap-4 ${className}`}>
+    <div className={`flex items-center justify-center gap-2 sm:gap-3 md:gap-4 ${className}`}>
       {timeBlocks.map((block, index) => (
-        <div key={block.label} className="flex items-center gap-3 md:gap-4">
+        <div key={block.label} className="flex items-center gap-2 sm:gap-3 md:gap-4">
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center rounded-xl bg-[hsl(var(--surface))] border border-[hsl(var(--border))] backdrop-blur-sm">
-              <span className="font-display text-2xl md:text-3xl font-bold text-[hsl(var(--foreground))]">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center rounded-lg sm:rounded-xl bg-surface/80 border border-border backdrop-blur-sm">
+              <span className="font-display text-lg sm:text-2xl md:text-3xl font-bold text-foreground">
                 {String(block.value).padStart(2, "0")}
               </span>
             </div>
-            <span className="mt-2 text-xs md:text-sm text-[hsl(var(--muted-foreground))] uppercase tracking-wider">
+            <span className="mt-1 sm:mt-2 text-[10px] sm:text-xs md:text-sm text-muted-foreground uppercase tracking-wider">
               {block.label}
             </span>
           </div>
           {index < timeBlocks.length - 1 && (
-            <span className="text-2xl md:text-3xl font-bold text-[hsl(var(--primary))] mb-6">:</span>
+            <span className="text-lg sm:text-2xl md:text-3xl font-bold text-primary mb-4 sm:mb-6">:</span>
           )}
         </div>
       ))}

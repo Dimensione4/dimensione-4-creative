@@ -28,18 +28,18 @@ export default function Maintenance() {
       <FluidBackground className="z-0" />
       
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-12">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12 safe-area-inset">
         {/* Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
           <img
             src={logoSymbol}
             alt="Dimensione 4"
-            className="w-20 h-20 md:w-24 md:h-24"
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24"
           />
         </motion.div>
 
@@ -48,7 +48,7 @@ export default function Maintenance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-center text-[hsl(var(--foreground))] mb-4"
+          className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center text-foreground mb-3 sm:mb-4 px-2"
         >
           {settings.title}
         </motion.h1>
@@ -58,7 +58,7 @@ export default function Maintenance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg md:text-xl text-[hsl(var(--muted-foreground))] text-center max-w-md mb-12"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-xs sm:max-w-md mb-8 sm:mb-12 px-2"
         >
           {settings.subtitle}
         </motion.p>
@@ -69,23 +69,34 @@ export default function Maintenance() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
+            className="w-full max-w-sm sm:max-w-md md:max-w-lg px-2"
           >
             <CountdownTimer targetDate={settings.countdown_date} />
           </motion.div>
         )}
+
+        {/* Interaction hint - visible on desktop */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="hidden md:block text-xs text-muted-foreground/60 mt-8 text-center"
+        >
+          Trascina il mouse per interagire con lo sfondo
+        </motion.p>
 
         {/* Contact info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-16 text-center"
+          className="mt-auto pt-8 sm:pt-16 text-center"
         >
-          <p className="text-sm text-[hsl(var(--muted-foreground))]">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Per urgenze:{" "}
             <a
               href="mailto:dariomarcobellini@dimensione4.it"
-              className="text-[hsl(var(--primary))] hover:underline"
+              className="text-primary hover:underline break-all"
             >
               dariomarcobellini@dimensione4.it
             </a>
