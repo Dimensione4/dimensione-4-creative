@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, TrendingUp, Clock, Zap } from "lucide-react";
+import { ArrowUpRight, TrendingUp, Clock, Zap, ExternalLink, Sparkles } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -15,6 +15,15 @@ interface CaseStudy {
   results: { icon: typeof TrendingUp; label: string; value: string }[];
   thumbnail: string;
   featured: boolean;
+}
+
+interface CreativeExperience {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  tags: string[];
+  gradient: string;
 }
 
 const caseStudies: CaseStudy[] = [
@@ -62,6 +71,41 @@ const caseStudies: CaseStudy[] = [
     ],
     thumbnail: "/placeholder.svg",
     featured: false,
+  },
+];
+
+const creativeExperiences: CreativeExperience[] = [
+  {
+    id: "ce-1",
+    title: "3D Web Design Experience",
+    description: "Esplorazione di design 3D immersivo con navigazione spaziale e interazioni profonde.",
+    url: "https://cute-a5aysg13ic.peachworlds.com/",
+    tags: ["3D", "WebGL", "Immersive"],
+    gradient: "from-violet-500/20 via-fuchsia-500/20 to-pink-500/20",
+  },
+  {
+    id: "ce-2",
+    title: "Motion & Interaction Lab",
+    description: "Esperimenti con animazioni avanzate, micro-interazioni e transizioni fluide.",
+    url: "https://lusion.co/",
+    tags: ["Motion", "Creative", "WebGL"],
+    gradient: "from-cyan-500/20 via-teal-500/20 to-emerald-500/20",
+  },
+  {
+    id: "ce-3",
+    title: "Digital Art Portfolio",
+    description: "Portfolio artistico con esperienze visive uniche e storytelling digitale.",
+    url: "https://www.aristidebenoist.com/",
+    tags: ["Art", "Portfolio", "Experimental"],
+    gradient: "from-orange-500/20 via-amber-500/20 to-yellow-500/20",
+  },
+  {
+    id: "ce-4",
+    title: "Interactive Brand Experience",
+    description: "Brand experience interattiva con animazioni cinematografiche e design immersivo.",
+    url: "https://bruno-simon.com/",
+    tags: ["Brand", "3D", "Interactive"],
+    gradient: "from-blue-500/20 via-indigo-500/20 to-purple-500/20",
   },
 ];
 
@@ -170,6 +214,86 @@ export default function Progetti() {
                   </div>
                 </div>
               </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Creative Experiences Section */}
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute inset-0 pattern-grid opacity-30" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-3xl geo-breathing" />
+        
+        <div className="container-tight relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-2 font-mono text-label text-accent mb-4">
+              <Sparkles className="w-4 h-4" />
+              Creative Experiences
+            </span>
+            <h2 className="font-display text-h2 font-bold mb-4">
+              Web come esperienza
+            </h2>
+            <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
+              Una raccolta di esperienze web creative che ridefiniscono i confini del design digitale.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {creativeExperiences.map((experience, index) => (
+              <motion.a
+                key={experience.id}
+                href={experience.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+                className="group relative block surface-card overflow-hidden"
+              >
+                {/* Gradient Background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${experience.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                
+                {/* Animated Border */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+                </div>
+
+                <div className="relative p-6 md:p-8">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex flex-wrap gap-2">
+                      {experience.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 rounded-md bg-surface text-xs font-mono text-primary/80"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-accent transition-colors group-hover:translate-x-1 group-hover:-translate-y-1 duration-300" />
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="font-display text-xl md:text-2xl font-bold mb-2 group-hover:text-gradient transition-all duration-300">
+                    {experience.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm md:text-base">
+                    {experience.description}
+                  </p>
+
+                  {/* Decorative Elements */}
+                  <div className="absolute bottom-4 right-4 w-20 h-20 rounded-full bg-gradient-to-br from-primary/5 to-accent/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+              </motion.a>
             ))}
           </div>
         </div>
