@@ -5,6 +5,12 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 
+// Industrial mockup images
+import meccanicaMockup from "@/assets/industrial-meccanica-mockup.jpg";
+import steelMockup from "@/assets/industrial-steel-mockup.jpg";
+import automazioneMockup from "@/assets/industrial-automazione-mockup.jpg";
+import fonderiaMockup from "@/assets/industrial-fonderia-mockup.jpg";
+
 interface CaseStudy {
   id: string;
   slug: string;
@@ -33,6 +39,7 @@ interface IndustrialProject {
   url: string;
   sector: string;
   features: string[];
+  mockup: string;
 }
 
 const caseStudies: CaseStudy[] = [
@@ -126,6 +133,7 @@ const industrialProjects: IndustrialProject[] = [
     url: "#",
     sector: "Automotive",
     features: ["Catalogo Prodotti", "Richiesta Preventivo", "Area Riservata"],
+    mockup: meccanicaMockup,
   },
   {
     id: "ind-2",
@@ -134,6 +142,7 @@ const industrialProjects: IndustrialProject[] = [
     url: "#",
     sector: "Siderurgia",
     features: ["Ordini Online", "Tracking", "Dashboard Cliente"],
+    mockup: steelMockup,
   },
   {
     id: "ind-3",
@@ -142,6 +151,7 @@ const industrialProjects: IndustrialProject[] = [
     url: "#",
     sector: "Automazione",
     features: ["Configuratore 3D", "Schede Tecniche", "Assistenza Remota"],
+    mockup: automazioneMockup,
   },
   {
     id: "ind-4",
@@ -150,6 +160,7 @@ const industrialProjects: IndustrialProject[] = [
     url: "#",
     sector: "Fonderia",
     features: ["Storytelling", "Certificazioni", "Virtual Tour"],
+    mockup: fonderiaMockup,
   },
 ];
 
@@ -378,26 +389,29 @@ export default function Progetti() {
                 transition={{ duration: 0.5, delay: 0.1 * index }}
                 className="group relative surface-card overflow-hidden"
               >
-                {/* Industrial Pattern */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/50 to-transparent" />
-                </div>
-
-                <div className="relative p-6 md:p-8">
-                  {/* Sector Badge */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-mono font-medium border border-primary/20">
+                {/* Mockup Image */}
+                <div className="relative aspect-video overflow-hidden">
+                  <img 
+                    src={project.mockup} 
+                    alt={`${project.title} mockup`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+                  
+                  {/* Sector Badge Overlay */}
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 rounded-lg bg-primary/90 text-primary-foreground text-xs font-mono font-medium backdrop-blur-sm">
                       {project.sector}
                     </span>
-                    <Factory className="w-5 h-5 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                   </div>
+                </div>
 
-                  {/* Content */}
+                {/* Content */}
+                <div className="relative p-6">
                   <h3 className="font-display text-xl md:text-2xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
                     {project.title}
                   </h3>
-                  <p className="text-muted-foreground text-sm md:text-base mb-6">
+                  <p className="text-muted-foreground text-sm md:text-base mb-4">
                     {project.description}
                   </p>
 
