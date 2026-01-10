@@ -37,7 +37,7 @@ export default function Maintenance() {
       <FluidBackground className="z-0" />
       
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12 safe-area-inset">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12 safe-area-inset select-none">
         {/* Logo + Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -113,16 +113,31 @@ export default function Maintenance() {
         )}
 
         {/* WhatsApp CTA */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          onClick={handleWhatsAppClick}
-          className="mt-8 sm:mt-10 flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse"
-        >
-          <MessageCircle className="w-5 h-5" />
-          <span>Contattami su WhatsApp</span>
-        </motion.button>
+        <div className="relative mt-8 sm:mt-10">
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            onClick={handleWhatsAppClick}
+            className="relative z-10 flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(37,211,102,0.4)] transition-all duration-300 hover:scale-105"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span>Contattami su WhatsApp</span>
+          </motion.button>
+          {/* Pulse ring */}
+          <motion.div
+            className="absolute inset-0 rounded-full bg-[#25D366]/30 pointer-events-none"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.5, 0, 0.5],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeOut",
+            }}
+          />
+        </div>
 
         {/* Interaction hint - visible on desktop */}
         <motion.p
@@ -156,7 +171,7 @@ export default function Maintenance() {
           </p>
           <div className="flex items-center justify-center gap-4">
             <a
-              href="https://www.linkedin.com/in/dariomarcobellini"
+              href="https://www.linkedin.com/in/dariobellini"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
