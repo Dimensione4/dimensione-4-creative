@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence, useMotionValue, useSpring, useScroll } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
@@ -204,8 +205,9 @@ export function Header() {
             </motion.div>
           </nav>
 
-          {/* Right side - Theme Toggle + CTA */}
-          <div className="hidden lg:flex items-center gap-4 relative z-10">
+          {/* Right side - Language, Theme Toggle + CTA */}
+          <div className="hidden lg:flex items-center gap-3 relative z-10">
+            <LanguageSwitch />
             <ThemeToggle />
             <motion.div
               animate={{ scale: hasScrolled ? 0.95 : 1 }}
@@ -229,7 +231,7 @@ export function Header() {
           {/* Mobile Menu Button - Animated Hamburger */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-10"
+            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
             aria-label="Toggle menu"
           >
             <div className="w-5 h-4 flex flex-col justify-between">
@@ -313,6 +315,10 @@ export function Header() {
                 transition={{ delay: 0.4 }}
                 className="pt-8 border-t border-[hsl(var(--border))] space-y-6"
               >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Lingua</span>
+                  <LanguageSwitch />
+                </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Tema</span>
                   <ThemeToggle />
