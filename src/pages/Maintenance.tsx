@@ -57,6 +57,9 @@ export default function Maintenance() {
             <p className="text-xs sm:text-sm text-muted-foreground">
               di Dario Marco Bellini
             </p>
+            <p className="text-xs text-primary/80 font-medium tracking-wide">
+              Fullstack Developer
+            </p>
           </div>
         </motion.div>
 

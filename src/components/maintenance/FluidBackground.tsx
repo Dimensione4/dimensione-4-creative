@@ -625,13 +625,13 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
         pointerRef.current.color = getInterpolatedColor();
       }
 
-      // Handle pointer interaction ONLY when user is actively interacting
-      if (pointerRef.current.moved && pointerRef.current.down) {
+      // Handle pointer interaction - react to movement, stronger when clicking/touching
+      if (pointerRef.current.moved) {
         pointerRef.current.moved = false;
         
-        // Use stronger effect when actively pressing/touching
-        const forceMultiplier = pointerRef.current.down ? 1.2 : 0.8;
-        const radiusMultiplier = pointerRef.current.down ? 1.5 : 1.0;
+        // Use stronger effect when actively pressing/touching, lighter for hover
+        const forceMultiplier = pointerRef.current.down ? 1.2 : 0.4;
+        const radiusMultiplier = pointerRef.current.down ? 1.5 : 0.8;
         
         splat(
           pointerRef.current.x,
@@ -680,7 +680,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     };
 
     const onMouseMove = (e: MouseEvent) => {
-      // React to all movement, but stronger when button is pressed
+      // React to all movement - lighter effect on hover, stronger on drag
       updatePointer(e.clientX, e.clientY, pointerRef.current.down);
     };
 
