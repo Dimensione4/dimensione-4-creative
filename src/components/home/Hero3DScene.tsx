@@ -1,8 +1,8 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef, Suspense, useMemo, useEffect, useState } from "react";
+import { useRef, Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 
-// Logo symbol circle data - normalized positions
+// Logo symbol circle data - exact positions from the logo
 const SYMBOL_DATA = [
   { x: -0.757, y: -0.1546, r: 0.1192, color: "#188F80" },
   { x: -0.9786, y: -0.2059, r: 0.0345, color: "#1C8473" },
@@ -42,7 +42,8 @@ const SYMBOL_DATA = [
   { x: -0.8334, y: 0.1926, r: 0.1456, color: "#178A7A" }
 ];
 
-const SCALE = 6;
+// Scale factor to fill the canvas appropriately
+const SCALE = 3.2;
 
 // Hook for mobile detection
 function useIsMobile() {
@@ -77,7 +78,7 @@ function useScrollPosition() {
 function SymbolCircle({ x, y, r, color, index }: { x: number; y: number; r: number; color: string; index: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const startTime = useRef<number | null>(null);
-  const entryDelay = index * 0.02;
+  const entryDelay = index * 0.025;
   
   useFrame((state) => {
     if (!meshRef.current) return;
@@ -90,12 +91,16 @@ function SymbolCircle({ x, y, r, color, index }: { x: number; y: number; r: numb
     // Staggered entry animation
     const timeSinceStart = state.clock.elapsedTime - startTime.current;
     const entryTime = Math.max(0, timeSinceStart - entryDelay);
-    const entryProgress = Math.min(1, entryTime / 0.5);
+    const entryProgress = Math.min(1, entryTime / 0.4);
     
-    // Ease out cubic
-    const eased = 1 - Math.pow(1 - entryProgress, 3);
+    // Ease out back for slight bounce
+    const c1 = 1.70158;
+    const c3 = c1 + 1;
+    const eased = entryProgress === 1 
+      ? 1 
+      : 1 + c3 * Math.pow(entryProgress - 1, 3) + c1 * Math.pow(entryProgress - 1, 2);
     
-    meshRef.current.scale.setScalar(eased);
+    meshRef.current.scale.setScalar(Math.max(0, eased));
   });
   
   return (
@@ -110,19 +115,19 @@ function SymbolCircle({ x, y, r, color, index }: { x: number; y: number; r: numb
   );
 }
 
-// Main symbol group with rotation
+// Main symbol group with subtle rotation
 function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
     if (!groupRef.current) return;
     
-    // Very slow continuous rotation
-    groupRef.current.rotation.z = state.clock.elapsedTime * 0.03;
+    // Very slow continuous rotation (optional enhancement)
+    groupRef.current.rotation.z = state.clock.elapsedTime * 0.02;
     
     // Parallax on scroll
     const scrollOffset = scrollY.current;
-    groupRef.current.position.y = scrollOffset * -1.5;
+    groupRef.current.position.y = scrollOffset * -0.8;
   });
   
   return (
