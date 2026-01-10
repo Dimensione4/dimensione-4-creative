@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -28,9 +29,11 @@ export function Header() {
             to="/" 
             className="flex items-center gap-3 group"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-              <span className="font-display font-bold text-lg text-primary-foreground">4</span>
-            </div>
+            <img 
+              src={logoSymbol} 
+              alt="Dimensione 4" 
+              className="w-9 h-9 object-contain"
+            />
             <span className="font-display font-semibold text-lg tracking-tight">
               Dimensione 4
             </span>

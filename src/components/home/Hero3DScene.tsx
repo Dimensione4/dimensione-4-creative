@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, Suspense, useMemo, useEffect, useState } from "react";
+import { useRef, Suspense, useMemo, useEffect, useState, useCallback } from "react";
 import * as THREE from "three";
 
 // Hook for mobile detection
@@ -16,20 +16,22 @@ function useIsMobile() {
   return isMobile;
 }
 
-// Mouse tracking hook
+// Mouse tracking hook with raycaster support
 function useMousePosition() {
   const mouse = useRef({ x: 0, y: 0 });
+  const mouseVec = useRef(new THREE.Vector2());
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      mouseVec.current.set(mouse.current.x, mouse.current.y);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
   
-  return mouse;
+  return { mouse, mouseVec };
 }
 
 interface SphereData {
@@ -41,8 +43,9 @@ interface SphereData {
 
 function LogoSpheres({ isMobile }: { isMobile: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
-  const mouse = useMousePosition();
+  const { mouse } = useMousePosition();
   const targetRotation = useRef({ x: 0, y: 0 });
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
   // Generate spheres in circular pattern like the logo
   const spheres = useMemo(() => {
@@ -94,14 +97,30 @@ function LogoSpheres({ isMobile }: { isMobile: boolean }) {
   return (
     <group ref={groupRef}>
       {spheres.map((sphere, i) => (
-        <AnimatedSphere key={i} {...sphere} time={0} />
+        <AnimatedSphere 
+          key={i} 
+          {...sphere} 
+          index={i}
+          isHovered={hoveredIndex === i}
+          onHover={setHoveredIndex}
+        />
       ))}
     </group>
   );
 }
 
-function AnimatedSphere({ position, scale, color, phaseOffset }: SphereData & { time: number }) {
+interface AnimatedSphereProps extends SphereData {
+  index: number;
+  isHovered: boolean;
+  onHover: (index: number | null) => void;
+}
+
+function AnimatedSphere({ position, scale, color, phaseOffset, index, isHovered, onHover }: AnimatedSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+  const targetEmissive = useRef(0.3);
+  const currentEmissive = useRef(0.3);
+  const targetScale = useRef(scale);
   
   useFrame((state) => {
     if (meshRef.current) {
@@ -109,23 +128,64 @@ function AnimatedSphere({ position, scale, color, phaseOffset }: SphereData & { 
       const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.1;
       meshRef.current.position.z = offset;
       
+      // Smooth emissive intensity transition for glow
+      targetEmissive.current = isHovered ? 1.2 : 0.3;
+      currentEmissive.current += (targetEmissive.current - currentEmissive.current) * 0.1;
+      
+      // Smooth scale transition for hover
+      targetScale.current = isHovered ? scale * 1.4 : scale;
+      const currentScale = meshRef.current.scale.x;
+      const newScale = currentScale + (targetScale.current - currentScale) * 0.1;
+      
       // Subtle scale pulsing
-      const pulseScale = scale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.1);
+      const pulseScale = newScale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.1);
       meshRef.current.scale.setScalar(pulseScale);
+      
+      // Update material emissive
+      const material = meshRef.current.material as THREE.MeshStandardMaterial;
+      if (material) {
+        material.emissiveIntensity = currentEmissive.current;
+      }
+      
+      // Update glow sphere
+      if (glowRef.current) {
+        glowRef.current.position.z = offset;
+        glowRef.current.scale.setScalar(pulseScale * 2);
+        const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
+        glowMaterial.opacity = isHovered ? 0.4 : 0.1;
+      }
     }
   });
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[1, 16, 16]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={0.3}
-        roughness={0.3}
-        metalness={0.7}
-      />
-    </mesh>
+    <group position={position}>
+      {/* Glow sphere */}
+      <mesh ref={glowRef}>
+        <sphereGeometry args={[1, 12, 12]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.1}
+          depthWrite={false}
+        />
+      </mesh>
+      
+      {/* Main sphere */}
+      <mesh 
+        ref={meshRef}
+        onPointerEnter={() => onHover(index)}
+        onPointerLeave={() => onHover(null)}
+      >
+        <sphereGeometry args={[1, 16, 16]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.3}
+          roughness={0.3}
+          metalness={0.7}
+        />
+      </mesh>
+    </group>
   );
 }
 
@@ -187,17 +247,19 @@ export function Hero3DScene() {
   const isMobile = useIsMobile();
   
   return (
-    <div className="absolute inset-0 pointer-events-none">
-      <Canvas
-        camera={{ position: [0, 0, 8], fov: 45 }}
-        dpr={isMobile ? 1 : [1, 2]}
-        gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
-        style={{ background: 'transparent' }}
-      >
-        <Suspense fallback={null}>
-          <Scene isMobile={isMobile} />
-        </Suspense>
-      </Canvas>
+    <div className="absolute inset-0 flex items-center justify-end pointer-events-auto pr-[5%] md:pr-[10%]">
+      <div className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] opacity-70">
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 45 }}
+          dpr={isMobile ? 1 : [1, 2]}
+          gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
+          style={{ background: 'transparent' }}
+        >
+          <Suspense fallback={null}>
+            <Scene isMobile={isMobile} />
+          </Suspense>
+        </Canvas>
+      </div>
     </div>
   );
 }
