@@ -32,6 +32,21 @@ function useMousePosition() {
   return mouse;
 }
 
+// Scroll position hook
+function useScrollPosition() {
+  const scroll = useRef(0);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      scroll.current = window.scrollY / window.innerHeight;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
+  return scroll;
+}
+
 interface SphereData {
   position: [number, number, number];
   scale: number;
@@ -40,40 +55,45 @@ interface SphereData {
   entryDelay: number;
 }
 
-function LogoSpheres({ isMobile }: { isMobile: boolean }) {
+function SpiralSpheres({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
   const mouse = useMousePosition();
   const targetRotation = useRef({ x: 0, y: 0 });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
-  // Generate spheres in circular pattern like the logo
+  // Generate spheres in a 3D spiral pattern like the logo
   const spheres = useMemo(() => {
     const result: SphereData[] = [];
-    const sphereCount = isMobile ? 20 : 32;
+    const sphereCount = isMobile ? 24 : 40;
+    const spiralTurns = 2.5; // Number of spiral rotations
     
-    // Create spheres in a circular arrangement
     for (let i = 0; i < sphereCount; i++) {
-      const angle = (i / sphereCount) * Math.PI * 2;
-      const radius = 2.8;
+      const t = i / sphereCount;
+      const angle = t * Math.PI * 2 * spiralTurns;
       
-      // Vary sizes like in the logo (some big, some small)
-      const sizePattern = [0.35, 0.15, 0.25, 0.1, 0.3, 0.12, 0.28, 0.08];
-      const scale = sizePattern[i % sizePattern.length];
+      // Spiral radius grows from center outward
+      const baseRadius = 0.5 + t * 2.5;
+      
+      // Add slight Z variation for 3D depth
+      const zOffset = Math.sin(t * Math.PI * 4) * 0.5;
+      
+      // Vary sizes - larger at the outside, smaller at the center (like the logo)
+      const scale = 0.08 + t * 0.28;
       
       // Gradient from teal (#12A6A3) to cyan (#23E6E6)
-      const t = i / sphereCount;
-      const color = t < 0.5 ? "#12A6A3" : "#23E6E6";
+      const colorLerp = t;
+      const color = colorLerp < 0.5 ? "#12A6A3" : "#23E6E6";
       
       result.push({
         position: [
-          Math.cos(angle) * radius,
-          Math.sin(angle) * radius,
-          0
+          Math.cos(angle) * baseRadius,
+          Math.sin(angle) * baseRadius,
+          zOffset
         ],
         scale,
         color,
-        phaseOffset: i * 0.2,
-        entryDelay: i * 0.05 // Stagger delay for entry animation
+        phaseOffset: i * 0.15,
+        entryDelay: i * 0.03
       });
     }
     
@@ -90,7 +110,13 @@ function LogoSpheres({ isMobile }: { isMobile: boolean }) {
       groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.05;
       
       // Slow continuous rotation
-      groupRef.current.rotation.z = state.clock.elapsedTime * 0.05;
+      groupRef.current.rotation.z = state.clock.elapsedTime * 0.08;
+      
+      // Parallax effect on scroll - move and rotate based on scroll
+      const scrollOffset = scrollY.current;
+      groupRef.current.position.y = scrollOffset * -2;
+      groupRef.current.position.z = scrollOffset * -1;
+      groupRef.current.rotation.x += scrollOffset * 0.3;
     }
   });
 
@@ -134,7 +160,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index
       // Entry animation with stagger
       const timeSinceStart = state.clock.elapsedTime - startTime.current;
       const entryTime = Math.max(0, timeSinceStart - entryDelay);
-      entryProgress.current = Math.min(1, entryTime / 0.6); // 0.6s animation duration
+      entryProgress.current = Math.min(1, entryTime / 0.6);
       
       // Easing function (ease out back for bounce effect)
       const easeOutBack = (t: number) => {
@@ -145,8 +171,8 @@ function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index
       const easedEntry = easeOutBack(entryProgress.current);
       
       // Gentle floating animation
-      const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.1;
-      meshRef.current.position.z = offset;
+      const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.08;
+      meshRef.current.position.z = position[2] + offset;
       
       // Smooth emissive intensity transition for glow (subtle)
       targetEmissive.current = isHovered ? 0.6 : 0.3;
@@ -170,7 +196,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index
       
       // Update glow sphere (subtle)
       if (glowRef.current) {
-        glowRef.current.position.z = offset;
+        glowRef.current.position.z = position[2] + offset;
         glowRef.current.scale.setScalar(pulseScale * 1.5);
         const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
         glowMaterial.opacity = isHovered ? 0.2 : 0.05;
@@ -179,7 +205,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index
   });
 
   return (
-    <group position={position}>
+    <group position={[position[0], position[1], 0]}>
       {/* Glow sphere */}
       <mesh ref={glowRef}>
         <sphereGeometry args={[1, 12, 12]} />
@@ -210,7 +236,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index
   );
 }
 
-function FloatingParticles({ isMobile }: { isMobile: boolean }) {
+function FloatingParticles({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
   const pointsRef = useRef<THREE.Points>(null);
   const particleCount = isMobile ? 30 : 60;
   const startTime = useRef<number | null>(null);
@@ -242,6 +268,9 @@ function FloatingParticles({ isMobile }: { isMobile: boolean }) {
       material.opacity = fadeIn * 0.6;
       
       pointsRef.current.rotation.z = state.clock.elapsedTime * 0.02;
+      
+      // Parallax on scroll
+      pointsRef.current.position.y = scrollY.current * -1.5;
     }
   });
 
@@ -264,21 +293,22 @@ function FloatingParticles({ isMobile }: { isMobile: boolean }) {
   );
 }
 
-function Scene({ isMobile }: { isMobile: boolean }) {
+function Scene({ isMobile, scrollY }: { isMobile: boolean; scrollY: React.MutableRefObject<number> }) {
   return (
     <>
       <ambientLight intensity={0.4} />
       <pointLight position={[10, 10, 10]} intensity={0.8} color="#23E6E6" />
       <pointLight position={[-10, -10, -5]} intensity={0.5} color="#12A6A3" />
       
-      <LogoSpheres isMobile={isMobile} />
-      <FloatingParticles isMobile={isMobile} />
+      <SpiralSpheres isMobile={isMobile} scrollY={scrollY} />
+      <FloatingParticles isMobile={isMobile} scrollY={scrollY} />
     </>
   );
 }
 
 export function Hero3DScene() {
   const isMobile = useIsMobile();
+  const scrollY = useScrollPosition();
   
   return (
     <div className="absolute inset-0 flex items-center justify-end pointer-events-auto pr-[5%] md:pr-[10%]">
@@ -290,7 +320,7 @@ export function Hero3DScene() {
           style={{ background: 'transparent' }}
         >
           <Suspense fallback={null}>
-            <Scene isMobile={isMobile} />
+            <Scene isMobile={isMobile} scrollY={scrollY} />
           </Suspense>
         </Canvas>
       </div>

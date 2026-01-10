@@ -27,10 +27,12 @@ export function HeroSection() {
         className="absolute inset-0"
         style={{ y: backgroundY }}
       >
+        {/* Background image - temporarily commented out
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-40"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
+        */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
         <div className="absolute inset-0 pattern-dots" />
       </motion.div>
