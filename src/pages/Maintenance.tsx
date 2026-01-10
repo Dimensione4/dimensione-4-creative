@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Linkedin, Instagram } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { FluidBackground } from "@/components/maintenance/FluidBackground";
 import { CountdownTimer } from "@/components/maintenance/CountdownTimer";
@@ -118,7 +118,7 @@ export default function Maintenance() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           onClick={handleWhatsAppClick}
-          className="mt-8 sm:mt-10 flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          className="mt-8 sm:mt-10 flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-pulse"
         >
           <MessageCircle className="w-5 h-5" />
           <span>Contattami su WhatsApp</span>
@@ -145,7 +145,7 @@ export default function Maintenance() {
             <span className="text-amber-400">Torno online a breve</span>
             <span className="text-muted-foreground">, se hai bisogno di un fullstack developer per il tuo progetto contattami</span>
           </p>
-          <p className="text-xs sm:text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-3">
             Email:{" "}
             <a
               href="mailto:dariomarcobellini@dimensione4.it"
@@ -154,6 +154,26 @@ export default function Maintenance() {
               dariomarcobellini@dimensione4.it
             </a>
           </p>
+          <div className="flex items-center justify-center gap-4">
+            <a
+              href="https://www.linkedin.com/in/dariomarcobellini"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/dimensione4.it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
         </motion.div>
       </div>
     </>

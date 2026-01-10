@@ -105,12 +105,13 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
   const pointerRef = useRef({ 
-    x: 0, 
-    y: 0, 
+    x: 0.5, 
+    y: 0.5, 
     dx: 0, 
     dy: 0, 
     down: false, 
     moved: false,
+    initialized: false,
     color: getRandomColor()
   });
   const glRef = useRef<WebGLRenderingContext | null>(null);
@@ -648,7 +649,29 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // NO initial splats - canvas starts dark/empty, user triggers the effect
+    // Add subtle initial splats to show the canvas is interactive
+    setTimeout(() => {
+      const initialSplats = [
+        { x: 0.3, y: 0.5 },
+        { x: 0.7, y: 0.5 },
+        { x: 0.5, y: 0.3 },
+      ];
+      initialSplats.forEach((pos, i) => {
+        setTimeout(() => {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 0.002;
+          splat(
+            pos.x,
+            pos.y,
+            Math.cos(angle) * speed * SPLAT_FORCE * 0.3,
+            Math.sin(angle) * speed * SPLAT_FORCE * 0.3,
+            getInterpolatedColor(),
+            0.6
+          );
+        }, i * 200);
+      });
+    }, 300);
+
     animate();
 
     // Event handlers
@@ -657,15 +680,19 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       const newX = (x - rect.left) / rect.width;
       const newY = 1.0 - (y - rect.top) / rect.height;
 
-      if (pointerRef.current.x !== 0 || pointerRef.current.y !== 0) {
-        pointerRef.current.dx = newX - pointerRef.current.x;
-        pointerRef.current.dy = newY - pointerRef.current.y;
+      // Always calculate delta for smooth movement
+      pointerRef.current.dx = newX - pointerRef.current.x;
+      pointerRef.current.dy = newY - pointerRef.current.y;
+      
+      // Only mark as moved if there's actual movement
+      if (Math.abs(pointerRef.current.dx) > 0.001 || Math.abs(pointerRef.current.dy) > 0.001) {
         pointerRef.current.moved = true;
       }
 
       pointerRef.current.x = newX;
       pointerRef.current.y = newY;
       pointerRef.current.down = isDown;
+      pointerRef.current.initialized = true;
     };
 
     // Mouse events - respond to movement AND click+drag
