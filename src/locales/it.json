@@ -129,11 +129,16 @@
   },
   "availability": {
     "status": "Disponibile per nuovi progetti",
+    "statusBusy": "Attualmente occupato",
     "title": "Pronto a collaborare",
+    "titleBusy": "Al momento sono impegnato",
     "description": "Sto attivamente cercando nuovi progetti interessanti. Se hai un'idea da realizzare, parliamone!",
+    "descriptionBusy": "Sto lavorando su altri progetti, ma puoi comunque contattarmi per pianificare una collaborazione futura.",
     "responseTime": "Risposta in 24h",
-    "slots": "2 slot disponibili",
+    "slotsLabel": "slot disponibili",
+    "noSlots": "Lista d'attesa",
     "projects": "Progetti di qualità",
-    "cta": "Inizia una conversazione"
+    "cta": "Inizia una conversazione",
+    "ctaBusy": "Contattami comunque"
   }
 }

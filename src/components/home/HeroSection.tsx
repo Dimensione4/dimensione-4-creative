@@ -4,6 +4,7 @@ import { useRef, Suspense, lazy } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { useAvailability } from "@/hooks/useAvailability";
 import heroImage from "@/assets/hero-4d.jpg";
 
 const Hero3DScene = lazy(() => 
@@ -13,6 +14,7 @@ const Hero3DScene = lazy(() =>
 export function HeroSection() {
   const ref = useRef(null);
   const { t } = useTranslation();
+  const { availability } = useAvailability();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"]
@@ -21,6 +23,8 @@ export function HeroSection() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const glow1Y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const glow2Y = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+
+  const isAvailable = availability.status === "available";
 
   return (
     <section ref={ref} className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -72,8 +76,14 @@ export function HeroSection() {
                 className="relative flex h-2.5 w-2.5 cursor-pointer group"
                 aria-label="View availability status"
               >
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75 group-hover:opacity-100" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--success))] shadow-[0_0_8px_hsl(var(--success))] group-hover:shadow-[0_0_12px_hsl(var(--success))]" />
+                {isAvailable && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75 group-hover:opacity-100" />
+                )}
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                  isAvailable 
+                    ? "bg-[hsl(var(--success))] shadow-[0_0_8px_hsl(var(--success))] group-hover:shadow-[0_0_12px_hsl(var(--success))]" 
+                    : "bg-muted-foreground"
+                }`} />
               </button>
               Creative Technology Studio
             </span>

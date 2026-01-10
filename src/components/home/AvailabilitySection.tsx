@@ -3,9 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Calendar, MessageCircle, Clock, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useAvailability } from "@/hooks/useAvailability";
 
 export function AvailabilitySection() {
   const { t } = useTranslation();
+  const { availability, loading } = useAvailability();
+
+  const isAvailable = availability.status === "available";
 
   return (
     <section id="availability" className="section-padding bg-surface/50 relative overflow-hidden">
@@ -14,7 +18,9 @@ export function AvailabilitySection() {
       <motion.div 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
         style={{
-          background: "radial-gradient(circle, hsl(var(--success) / 0.15) 0%, transparent 70%)"
+          background: isAvailable 
+            ? "radial-gradient(circle, hsl(var(--success) / 0.15) 0%, transparent 70%)"
+            : "radial-gradient(circle, hsl(var(--muted-foreground) / 0.1) 0%, transparent 70%)"
         }}
         animate={{
           scale: [1, 1.1, 1],
@@ -37,15 +43,34 @@ export function AvailabilitySection() {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-background border border-[hsl(var(--success)/0.3)] shadow-lg">
-              <span className="relative flex h-4 w-4">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
-                <span className="relative inline-flex rounded-full h-4 w-4 bg-[hsl(var(--success))] shadow-[0_0_15px_hsl(var(--success))]" />
-              </span>
-              <span className="font-mono text-sm font-semibold text-[hsl(var(--success))]">
-                {t('availability.status')}
-              </span>
-            </div>
+            {loading ? (
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-background border border-[hsl(var(--border))] shadow-lg">
+                <span className="w-4 h-4 rounded-full bg-muted-foreground/30 animate-pulse" />
+                <span className="font-mono text-sm text-muted-foreground">Caricamento...</span>
+              </div>
+            ) : (
+              <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-full bg-background shadow-lg ${
+                isAvailable 
+                  ? "border border-[hsl(var(--success)/0.3)]" 
+                  : "border border-[hsl(var(--border))]"
+              }`}>
+                <span className="relative flex h-4 w-4">
+                  {isAvailable && (
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-4 w-4 ${
+                    isAvailable 
+                      ? "bg-[hsl(var(--success))] shadow-[0_0_15px_hsl(var(--success))]" 
+                      : "bg-muted-foreground"
+                  }`} />
+                </span>
+                <span className={`font-mono text-sm font-semibold ${
+                  isAvailable ? "text-[hsl(var(--success))]" : "text-muted-foreground"
+                }`}>
+                  {isAvailable ? t('availability.status') : t('availability.statusBusy')}
+                </span>
+              </div>
+            )}
           </motion.div>
 
           {/* Heading */}
@@ -56,7 +81,7 @@ export function AvailabilitySection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-display text-section-mobile md:text-section font-bold mb-4"
           >
-            {t('availability.title')}
+            {isAvailable ? t('availability.title') : t('availability.titleBusy')}
           </motion.h2>
 
           <motion.p
@@ -66,7 +91,7 @@ export function AvailabilitySection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-body-lg text-muted-foreground mb-8"
           >
-            {t('availability.description')}
+            {isAvailable ? t('availability.description') : t('availability.descriptionBusy')}
           </motion.p>
 
           {/* Features */}
@@ -83,7 +108,12 @@ export function AvailabilitySection() {
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4 text-primary" />
-              <span>{t('availability.slots')}</span>
+              <span>
+                {availability.slots > 0 
+                  ? `${availability.slots} ${t('availability.slotsLabel')}`
+                  : t('availability.noSlots')
+                }
+              </span>
             </div>
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
               <CheckCircle className="w-4 h-4 text-primary" />
@@ -99,10 +129,15 @@ export function AvailabilitySection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Button variant="hero" size="xl" className="cta-glow" asChild>
+            <Button 
+              variant={isAvailable ? "hero" : "outline"} 
+              size="xl" 
+              className={isAvailable ? "cta-glow" : ""} 
+              asChild
+            >
               <Link to="/contatti">
                 <MessageCircle className="w-4 h-4" />
-                {t('availability.cta')}
+                {isAvailable ? t('availability.cta') : t('availability.ctaBusy')}
               </Link>
             </Button>
           </motion.div>
