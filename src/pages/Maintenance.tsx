@@ -82,7 +82,21 @@ export default function Maintenance() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-xs sm:max-w-md mb-8 sm:mb-12 px-2"
         >
-          {settings.subtitle}
+          {settings.subtitle
+            .replace(/prospettiva/gi, '{{CYAN}}prospettiva{{/CYAN}}')
+            .replace(/struttura/gi, '{{CYAN}}struttura{{/CYAN}}')
+            .replace(/tempo/gi, '{{CYAN}}tempo{{/CYAN}}')
+            .replace(/online a breve/gi, '{{GREEN}}online a breve{{/GREEN}}')
+            .split(/(\{\{CYAN\}\}.*?\{\{\/CYAN\}\}|\{\{GREEN\}\}.*?\{\{\/GREEN\}\})/g)
+            .map((part, i) => {
+              if (part.startsWith('{{CYAN}}')) {
+                return <span key={i} className="text-primary">{part.replace(/\{\{CYAN\}\}|\{\{\/CYAN\}\}/g, '')}</span>;
+              }
+              if (part.startsWith('{{GREEN}}')) {
+                return <span key={i} className="text-emerald-400">{part.replace(/\{\{GREEN\}\}|\{\{\/GREEN\}\}/g, '')}</span>;
+              }
+              return part;
+            })}
         </motion.p>
 
         {/* Countdown */}
