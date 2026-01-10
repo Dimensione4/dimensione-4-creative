@@ -65,7 +65,16 @@ export function HeroSection() {
             className="mb-6"
           >
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-[hsl(var(--border))] text-label text-muted-foreground font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <button
+                onClick={() => {
+                  document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="relative flex h-2.5 w-2.5 cursor-pointer group"
+                aria-label="View availability status"
+              >
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75 group-hover:opacity-100" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[hsl(var(--success))] shadow-[0_0_8px_hsl(var(--success))] group-hover:shadow-[0_0_12px_hsl(var(--success))]" />
+              </button>
               Creative Technology Studio
             </span>
           </motion.div>

@@ -5,6 +5,7 @@ import { ConceptSection } from "@/components/home/ConceptSection";
 import { ServicesSection } from "@/components/home/ServicesSection";
 import { MethodSection } from "@/components/home/MethodSection";
 import { ProofSection } from "@/components/home/ProofSection";
+import { AvailabilitySection } from "@/components/home/AvailabilitySection";
 import { CTASection } from "@/components/home/CTASection";
 
 const Index = () => {
@@ -19,6 +20,7 @@ const Index = () => {
       <ServicesSection />
       <MethodSection />
       <ProofSection />
+      <AvailabilitySection />
       <CTASection />
     </Layout>
   );

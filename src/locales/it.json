@@ -126,5 +126,14 @@
     "title": "Abbonamento Design",
     "subtitle": "Design e sviluppo illimitato con un canone mensile fisso",
     "description": "Niente preventivi, niente sorprese. Un team dedicato al tuo servizio con richieste illimitate."
+  },
+  "availability": {
+    "status": "Disponibile per nuovi progetti",
+    "title": "Pronto a collaborare",
+    "description": "Sto attivamente cercando nuovi progetti interessanti. Se hai un'idea da realizzare, parliamone!",
+    "responseTime": "Risposta in 24h",
+    "slots": "2 slot disponibili",
+    "projects": "Progetti di qualità",
+    "cta": "Inizia una conversazione"
   }
 }
