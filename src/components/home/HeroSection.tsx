@@ -73,15 +73,18 @@ export function HeroSection() {
                 onClick={() => {
                   document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="relative flex h-2.5 w-2.5 cursor-pointer group"
+                className="relative flex h-3 w-3 cursor-pointer group"
                 aria-label="View availability status"
               >
                 {isAvailable && (
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75 group-hover:opacity-100" />
+                  <>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-60" />
+                    <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success)/0.4)] scale-150" />
+                  </>
                 )}
-                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                <span className={`relative inline-flex rounded-full h-3 w-3 ${
                   isAvailable 
-                    ? "bg-[hsl(var(--success))] shadow-[0_0_8px_hsl(var(--success))] group-hover:shadow-[0_0_12px_hsl(var(--success))]" 
+                    ? "bg-[hsl(var(--success))] shadow-[0_0_10px_hsl(var(--success)),0_0_20px_hsl(var(--success)/0.5)] group-hover:shadow-[0_0_15px_hsl(var(--success)),0_0_30px_hsl(var(--success)/0.6)]" 
                     : "bg-muted-foreground"
                 }`} />
               </button>
