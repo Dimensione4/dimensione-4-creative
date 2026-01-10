@@ -625,24 +625,22 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
         pointerRef.current.color = getInterpolatedColor();
       }
 
-      // Handle pointer interaction - trigger on movement while down
-      if (pointerRef.current.moved) {
+      // Handle pointer interaction ONLY when user is actively interacting
+      if (pointerRef.current.moved && pointerRef.current.down) {
         pointerRef.current.moved = false;
         
-        if (pointerRef.current.down) {
-          // User is actively dragging
-          const forceMultiplier = 1.2;
-          const radiusMultiplier = 1.5;
-          
-          splat(
-            pointerRef.current.x,
-            pointerRef.current.y,
-            pointerRef.current.dx * SPLAT_FORCE * forceMultiplier,
-            pointerRef.current.dy * SPLAT_FORCE * forceMultiplier,
-            pointerRef.current.color,
-            radiusMultiplier
-          );
-        }
+        // Use stronger effect when actively pressing/touching
+        const forceMultiplier = pointerRef.current.down ? 1.2 : 0.8;
+        const radiusMultiplier = pointerRef.current.down ? 1.5 : 1.0;
+        
+        splat(
+          pointerRef.current.x,
+          pointerRef.current.y,
+          pointerRef.current.dx * SPLAT_FORCE * forceMultiplier,
+          pointerRef.current.dy * SPLAT_FORCE * forceMultiplier,
+          pointerRef.current.color,
+          radiusMultiplier
+        );
       }
 
       step(dt);
@@ -654,23 +652,17 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     animate();
 
     // Event handlers
-    let lastPointerX = -1;
-    let lastPointerY = -1;
-    
     const updatePointer = (x: number, y: number, isDown = false) => {
       const rect = canvas.getBoundingClientRect();
       const newX = (x - rect.left) / rect.width;
       const newY = 1.0 - (y - rect.top) / rect.height;
 
-      // Always calculate delta if we have a previous position
-      if (lastPointerX >= 0 && lastPointerY >= 0) {
-        pointerRef.current.dx = newX - lastPointerX;
-        pointerRef.current.dy = newY - lastPointerY;
+      if (pointerRef.current.x !== 0 || pointerRef.current.y !== 0) {
+        pointerRef.current.dx = newX - pointerRef.current.x;
+        pointerRef.current.dy = newY - pointerRef.current.y;
         pointerRef.current.moved = true;
       }
 
-      lastPointerX = newX;
-      lastPointerY = newY;
       pointerRef.current.x = newX;
       pointerRef.current.y = newY;
       pointerRef.current.down = isDown;
