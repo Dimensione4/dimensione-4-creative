@@ -54,13 +54,24 @@ export function AvailabilitySection() {
                   ? "border border-[hsl(var(--success)/0.3)]" 
                   : "border border-[hsl(var(--border))]"
               }`}>
-                <span className="relative flex h-4 w-4">
+                <span className="relative flex items-center justify-center h-5 w-5">
                   {isAvailable && (
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
+                    <motion.span
+                      className="absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success)/0.4)]"
+                      animate={{
+                        scale: [1, 2, 1],
+                        opacity: [0.6, 0, 0.6],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                      }}
+                    />
                   )}
                   <span className={`relative inline-flex rounded-full h-4 w-4 ${
                     isAvailable 
-                      ? "bg-[hsl(var(--success))] shadow-[0_0_15px_hsl(var(--success))]" 
+                      ? "bg-[hsl(var(--success))] shadow-[0_0_15px_hsl(var(--success)),0_0_25px_hsl(var(--success)/0.5)]" 
                       : "bg-muted-foreground"
                   }`} />
                 </span>
