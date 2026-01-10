@@ -730,7 +730,43 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       updatePointer(touch.clientX, touch.clientY, true);
     };
 
-    // Register all event listeners
+    // Register event listeners on document to capture events even over content overlay
+    const onMouseDownDoc = (e: MouseEvent) => {
+      // Check if target is within the canvas bounds
+      const rect = canvas.getBoundingClientRect();
+      if (e.clientX >= rect.left && e.clientX <= rect.right && 
+          e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        onMouseDown(e);
+      }
+    };
+
+    const onMouseMoveDoc = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      if (e.clientX >= rect.left && e.clientX <= rect.right && 
+          e.clientY >= rect.top && e.clientY <= rect.bottom) {
+        onMouseMove(e);
+      }
+    };
+
+    const onTouchStartDoc = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && 
+          touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        onTouchStart(e);
+      }
+    };
+
+    const onTouchMoveDoc = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      if (touch.clientX >= rect.left && touch.clientX <= rect.right && 
+          touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+        onTouchMove(e);
+      }
+    };
+
+    // Canvas events as fallback
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mouseup", onMouseUp);
     canvas.addEventListener("mouseleave", onMouseUp);
@@ -738,6 +774,14 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     canvas.addEventListener("touchstart", onTouchStart, { passive: false });
     canvas.addEventListener("touchend", onTouchEnd);
     canvas.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    // Document-level events to capture through overlay
+    document.addEventListener("mousedown", onMouseDownDoc);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mousemove", onMouseMoveDoc);
+    document.addEventListener("touchstart", onTouchStartDoc, { passive: false });
+    document.addEventListener("touchend", onTouchEnd);
+    document.addEventListener("touchmove", onTouchMoveDoc, { passive: false });
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
@@ -748,6 +792,12 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       canvas.removeEventListener("touchstart", onTouchStart);
       canvas.removeEventListener("touchend", onTouchEnd);
       canvas.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("mousedown", onMouseDownDoc);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mousemove", onMouseMoveDoc);
+      document.removeEventListener("touchstart", onTouchStartDoc);
+      document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchmove", onTouchMoveDoc);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
