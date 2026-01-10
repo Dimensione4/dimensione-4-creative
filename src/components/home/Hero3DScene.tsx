@@ -1,5 +1,5 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, Suspense, useMemo, useEffect, useState, useCallback } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, Suspense, useMemo, useEffect, useState } from "react";
 import * as THREE from "three";
 
 // Hook for mobile detection
@@ -16,22 +16,20 @@ function useIsMobile() {
   return isMobile;
 }
 
-// Mouse tracking hook with raycaster support
+// Mouse tracking hook
 function useMousePosition() {
   const mouse = useRef({ x: 0, y: 0 });
-  const mouseVec = useRef(new THREE.Vector2());
   
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      mouseVec.current.set(mouse.current.x, mouse.current.y);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
   
-  return { mouse, mouseVec };
+  return mouse;
 }
 
 interface SphereData {
@@ -39,11 +37,12 @@ interface SphereData {
   scale: number;
   color: string;
   phaseOffset: number;
+  entryDelay: number;
 }
 
 function LogoSpheres({ isMobile }: { isMobile: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
-  const { mouse } = useMousePosition();
+  const mouse = useMousePosition();
   const targetRotation = useRef({ x: 0, y: 0 });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   
@@ -73,7 +72,8 @@ function LogoSpheres({ isMobile }: { isMobile: boolean }) {
         ],
         scale,
         color,
-        phaseOffset: i * 0.2
+        phaseOffset: i * 0.2,
+        entryDelay: i * 0.05 // Stagger delay for entry animation
       });
     }
     
@@ -115,30 +115,51 @@ interface AnimatedSphereProps extends SphereData {
   onHover: (index: number | null) => void;
 }
 
-function AnimatedSphere({ position, scale, color, phaseOffset, index, isHovered, onHover }: AnimatedSphereProps) {
+function AnimatedSphere({ position, scale, color, phaseOffset, entryDelay, index, isHovered, onHover }: AnimatedSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const entryProgress = useRef(0);
+  const startTime = useRef<number | null>(null);
   const targetEmissive = useRef(0.3);
   const currentEmissive = useRef(0.3);
-  const targetScale = useRef(scale);
+  const targetScale = useRef(0);
   
   useFrame((state) => {
     if (meshRef.current) {
+      // Initialize start time
+      if (startTime.current === null) {
+        startTime.current = state.clock.elapsedTime;
+      }
+      
+      // Entry animation with stagger
+      const timeSinceStart = state.clock.elapsedTime - startTime.current;
+      const entryTime = Math.max(0, timeSinceStart - entryDelay);
+      entryProgress.current = Math.min(1, entryTime / 0.6); // 0.6s animation duration
+      
+      // Easing function (ease out back for bounce effect)
+      const easeOutBack = (t: number) => {
+        const c1 = 1.70158;
+        const c3 = c1 + 1;
+        return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+      };
+      const easedEntry = easeOutBack(entryProgress.current);
+      
       // Gentle floating animation
       const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.1;
       meshRef.current.position.z = offset;
       
-      // Smooth emissive intensity transition for glow
-      targetEmissive.current = isHovered ? 1.2 : 0.3;
+      // Smooth emissive intensity transition for glow (subtle)
+      targetEmissive.current = isHovered ? 0.6 : 0.3;
       currentEmissive.current += (targetEmissive.current - currentEmissive.current) * 0.1;
       
-      // Smooth scale transition for hover
-      targetScale.current = isHovered ? scale * 1.4 : scale;
+      // Smooth scale transition for hover (subtle - only 15% increase)
+      const hoverScale = isHovered ? scale * 1.15 : scale;
+      targetScale.current = hoverScale * easedEntry;
       const currentScale = meshRef.current.scale.x;
-      const newScale = currentScale + (targetScale.current - currentScale) * 0.1;
+      const newScale = currentScale + (targetScale.current - currentScale) * 0.15;
       
       // Subtle scale pulsing
-      const pulseScale = newScale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.1);
+      const pulseScale = newScale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.05);
       meshRef.current.scale.setScalar(pulseScale);
       
       // Update material emissive
@@ -147,12 +168,12 @@ function AnimatedSphere({ position, scale, color, phaseOffset, index, isHovered,
         material.emissiveIntensity = currentEmissive.current;
       }
       
-      // Update glow sphere
+      // Update glow sphere (subtle)
       if (glowRef.current) {
         glowRef.current.position.z = offset;
-        glowRef.current.scale.setScalar(pulseScale * 2);
+        glowRef.current.scale.setScalar(pulseScale * 1.5);
         const glowMaterial = glowRef.current.material as THREE.MeshBasicMaterial;
-        glowMaterial.opacity = isHovered ? 0.4 : 0.1;
+        glowMaterial.opacity = isHovered ? 0.2 : 0.05;
       }
     }
   });
@@ -165,7 +186,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, index, isHovered,
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.1}
+          opacity={0.05}
           depthWrite={false}
         />
       </mesh>
@@ -192,6 +213,7 @@ function AnimatedSphere({ position, scale, color, phaseOffset, index, isHovered,
 function FloatingParticles({ isMobile }: { isMobile: boolean }) {
   const pointsRef = useRef<THREE.Points>(null);
   const particleCount = isMobile ? 30 : 60;
+  const startTime = useRef<number | null>(null);
   
   const positions = useMemo(() => {
     const pos = new Float32Array(particleCount * 3);
@@ -207,6 +229,18 @@ function FloatingParticles({ isMobile }: { isMobile: boolean }) {
 
   useFrame((state) => {
     if (pointsRef.current) {
+      // Initialize start time
+      if (startTime.current === null) {
+        startTime.current = state.clock.elapsedTime;
+      }
+      
+      // Fade in particles
+      const timeSinceStart = state.clock.elapsedTime - startTime.current;
+      const fadeIn = Math.min(1, timeSinceStart / 1.5);
+      
+      const material = pointsRef.current.material as THREE.PointsMaterial;
+      material.opacity = fadeIn * 0.6;
+      
       pointsRef.current.rotation.z = state.clock.elapsedTime * 0.02;
     }
   });
@@ -223,7 +257,7 @@ function FloatingParticles({ isMobile }: { isMobile: boolean }) {
         size={isMobile ? 0.04 : 0.03}
         color="#23E6E6"
         transparent
-        opacity={0.6}
+        opacity={0}
         sizeAttenuation
       />
     </points>
