@@ -73,14 +73,22 @@ export function HeroSection() {
                 onClick={() => {
                   document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="relative flex h-3 w-3 cursor-pointer group"
+                className="relative flex items-center justify-center h-4 w-4 cursor-pointer group"
                 aria-label="View availability status"
               >
                 {isAvailable && (
-                  <>
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-60" />
-                    <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success)/0.4)] scale-150" />
-                  </>
+                  <motion.span
+                    className="absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success)/0.4)]"
+                    animate={{
+                      scale: [1, 2, 1],
+                      opacity: [0.6, 0, 0.6],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                    }}
+                  />
                 )}
                 <span className={`relative inline-flex rounded-full h-3 w-3 ${
                   isAvailable 
