@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Linkedin, Github, Instagram } from "lucide-react";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
@@ -12,10 +12,26 @@ const navLinks = [
   { href: "/chi-sono", label: "Chi sono" },
 ];
 
+// X (Twitter) icon component
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+// TikTok icon component
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+  </svg>
+);
+
 const socialLinks = [
-  { href: "https://linkedin.com", label: "LinkedIn" },
-  { href: "https://github.com", label: "GitHub" },
-  { href: "https://twitter.com", label: "X/Twitter" },
+  { href: "https://linkedin.com/in/dariomarcobellini", label: "LinkedIn", icon: Linkedin },
+  { href: "https://github.com/dariomarcobellini", label: "GitHub", icon: Github },
+  { href: "https://x.com/dariomarcobellini", label: "X", icon: XIcon },
+  { href: "https://instagram.com/dariomarcobellini", label: "Instagram", icon: Instagram },
+  { href: "https://tiktok.com/@dariomarcobellini", label: "TikTok", icon: TikTokIcon },
 ];
 
 function MagneticLink({ href, children, external = false }: { href: string; children: React.ReactNode; external?: boolean }) {
@@ -125,13 +141,25 @@ export function Footer() {
             <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
               Social
             </h4>
-            <ul className="space-y-3">
-              {socialLinks.map((link) => (
-                <li key={link.href}>
-                  <MagneticLink href={link.href} external>{link.label}</MagneticLink>
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-surface border border-[hsl(var(--border))] flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors duration-300"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label={link.label}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </motion.a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Contact Column */}
