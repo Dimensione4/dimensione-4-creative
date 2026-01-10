@@ -62,7 +62,7 @@ export function HeroSection() {
           >
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-[hsl(var(--border))] text-label text-muted-foreground font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Creative Full-Stack Studio
+              Creative Technology Studio
             </span>
           </motion.div>
 
