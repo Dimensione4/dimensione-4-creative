@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useScroll } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import logoSymbol from "@/assets/logo-symbol.png";
@@ -83,6 +83,9 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const location = useLocation();
+  
+  // Page scroll progress for the indicator
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -105,10 +108,16 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         hasScrolled
-          ? "bg-background/60 backdrop-blur-2xl border-b border-[hsl(var(--border))]"
-          : "bg-transparent border-b border-transparent"
+          ? "bg-background/60 backdrop-blur-2xl"
+          : "bg-transparent"
       }`}
     >
+      {/* Scroll Progress Indicator */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-accent to-primary origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+      
       <div className="container-tight">
         <motion.div 
           className="flex items-center justify-between"
