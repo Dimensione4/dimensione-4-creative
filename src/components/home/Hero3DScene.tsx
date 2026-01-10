@@ -2,48 +2,64 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 
-// Logo symbol circle data - exact positions from the logo
+// Logo symbol circle data - manually traced from the original logo
+// Ring of circles going clockwise from top-left, dark teal to bright cyan
 const SYMBOL_DATA = [
-  { x: -0.757, y: -0.1546, r: 0.1192, color: "#188F80" },
-  { x: -0.9786, y: -0.2059, r: 0.0345, color: "#1C8473" },
-  { x: -0.9271, y: -0.3629, r: 0.0502, color: "#1A8576" },
-  { x: -0.5743, y: -0.3991, r: 0.0838, color: "#199B8D" },
-  { x: -0.788, y: -0.5665, r: 0.0838, color: "#188D7E" },
-  { x: -0.5889, y: -0.6031, r: 0.05, color: "#199B8C" },
-  { x: -0.7002, y: -0.7328, r: 0.0344, color: "#19998B" },
-  { x: -0.3612, y: -0.7136, r: 0.0838, color: "#1AAE9F" },
-  { x: -0.1921, y: -0.6814, r: 0.1193, color: "#18A595" },
-  { x: -0.0132, y: -0.7335, r: 0.0838, color: "#1ABBAE" },
-  { x: 0.1307, y: -0.8092, r: 0.0345, color: "#1CC8BD" },
-  { x: 0.2201, y: -0.9066, r: 0.0501, color: "#1ECBC0" },
-  { x: 0.3917, y: -0.9176, r: 0.1193, color: "#1CD7CD" },
-  { x: 0.5438, y: -0.7493, r: 0.1193, color: "#19E1DD" },
-  { x: 0.6892, y: -0.6288, r: 0.0838, color: "#1DE8E5" },
-  { x: 0.7885, y: -0.4693, r: 0.0502, color: "#1FE8E6" },
-  { x: 0.8837, y: -0.394, r: 0.0345, color: "#22F0EF" },
-  { x: 0.8359, y: -0.1758, r: 0.0838, color: "#21F4F3" },
-  { x: 0.9167, y: -0.0368, r: 0.1192, color: "#1FF4F2" },
-  { x: 0.978, y: -0.0433, r: 0.0345, color: "#23FAF9" },
-  { x: 0.9801, y: 0.1814, r: 0.0502, color: "#25FDFD" },
-  { x: 0.787, y: 0.3209, r: 0.0838, color: "#1FF4F3" },
-  { x: 0.9031, y: 0.4402, r: 0.0838, color: "#20F4F4" },
-  { x: 0.976, y: 0.5195, r: 0.0345, color: "#1FF3F3" },
-  { x: 0.8327, y: 0.6638, r: 0.1192, color: "#1CE7E4" },
-  { x: 0.6407, y: 0.6465, r: 0.0838, color: "#1ADEDA" },
-  { x: 0.4983, y: 0.7514, r: 0.0345, color: "#1ACAC0" },
-  { x: 0.2344, y: 0.8204, r: 0.1192, color: "#1CCBC1" },
-  { x: 0.0969, y: 0.9246, r: 0.0502, color: "#18C2B5" },
-  { x: -0.0865, y: 0.8841, r: 0.0345, color: "#18B4A6" },
-  { x: -0.2541, y: 0.826, r: 0.0838, color: "#19AFA1" },
-  { x: -0.4643, y: 0.7676, r: 0.05, color: "#198C7C" },
-  { x: -0.756, y: 0.3831, r: 0.05, color: "#188C7D" },
-  { x: -0.8322, y: 0.1921, r: 0.0838, color: "#188D7E" },
-  { x: -0.8321, y: 0.5147, r: 0.1192, color: "#199B8C" },
-  { x: -0.8334, y: 0.1926, r: 0.1456, color: "#178A7A" }
+  // Left side - dark teal
+  { x: -0.85, y: 0.15, r: 0.14, color: "#1A8B7C" },  // Large left
+  { x: -0.82, y: -0.12, r: 0.11, color: "#188F80" }, // Medium left
+  { x: -0.78, y: 0.42, r: 0.09, color: "#1A9385" },  // Medium upper-left
+  { x: -0.72, y: -0.35, r: 0.07, color: "#199489" }, // Small lower-left
+  
+  // Bottom-left - teal
+  { x: -0.58, y: -0.52, r: 0.08, color: "#1A9B8E" },
+  { x: -0.68, y: -0.62, r: 0.05, color: "#1A9889" },
+  { x: -0.45, y: -0.68, r: 0.06, color: "#1AA396" },
+  
+  // Bottom - transitioning
+  { x: -0.25, y: -0.78, r: 0.10, color: "#1AAD9F" },
+  { x: -0.02, y: -0.82, r: 0.07, color: "#1CB8AB" },
+  { x: 0.18, y: -0.85, r: 0.04, color: "#1DC2B6" },
+  { x: 0.32, y: -0.82, r: 0.06, color: "#1ECDC2" },
+  
+  // Bottom-right - cyan
+  { x: 0.50, y: -0.72, r: 0.10, color: "#1FD8CE" },
+  { x: 0.65, y: -0.58, r: 0.09, color: "#20E0D8" },
+  { x: 0.75, y: -0.42, r: 0.06, color: "#22E6E0" },
+  
+  // Right side - bright cyan
+  { x: 0.85, y: -0.20, r: 0.04, color: "#24EBE7" },
+  { x: 0.88, y: 0.02, r: 0.10, color: "#26F0ED" },
+  { x: 0.90, y: 0.25, r: 0.05, color: "#28F4F2" },
+  { x: 0.85, y: 0.45, r: 0.08, color: "#2AF6F5" },
+  { x: 0.82, y: 0.65, r: 0.04, color: "#2CF8F7" },
+  
+  // Top-right - bright cyan
+  { x: 0.72, y: 0.78, r: 0.10, color: "#2EFAF9" },
+  { x: 0.52, y: 0.85, r: 0.07, color: "#28F2F0" },
+  { x: 0.35, y: 0.88, r: 0.04, color: "#24EAE7" },
+  
+  // Top - transitioning back
+  { x: 0.15, y: 0.90, r: 0.09, color: "#20E0DC" },
+  { x: -0.08, y: 0.88, r: 0.05, color: "#1CD4CE" },
+  { x: -0.28, y: 0.82, r: 0.08, color: "#1AC8C0" },
+  
+  // Top-left - back to teal
+  { x: -0.48, y: 0.72, r: 0.06, color: "#18B8AC" },
+  { x: -0.62, y: 0.58, r: 0.10, color: "#17A89C" },
+  { x: -0.75, y: 0.55, r: 0.04, color: "#169C8E" },
+  
+  // Additional scattered dots for organic feel
+  { x: -0.92, y: 0.32, r: 0.035, color: "#188C7D" },
+  { x: -0.88, y: -0.28, r: 0.04, color: "#198E80" },
+  { x: 0.78, y: -0.08, r: 0.035, color: "#25EDEA" },
+  { x: 0.62, y: 0.68, r: 0.035, color: "#2CFCFB" },
+  { x: -0.38, y: -0.72, r: 0.035, color: "#1BA89A" },
+  { x: 0.42, y: -0.78, r: 0.035, color: "#1DD2C8" },
 ];
 
 // Scale factor to fill the canvas appropriately
-const SCALE = 3.2;
+const SCALE = 3.5;
 
 // Hook for mobile detection
 function useIsMobile() {
