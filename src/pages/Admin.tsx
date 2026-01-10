@@ -1,22 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader2, Settings, CircleDot, Users } from "lucide-react";
+import { LogOut, Loader2, Settings, CircleDot, Users, Wrench, Calendar } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAuth } from "@/hooks/useAuth";
 import { useAvailability } from "@/hooks/useAvailability";
+import { useMaintenance } from "@/hooks/useMaintenance";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { it } from "date-fns/locale";
 
 export default function Admin() {
   const navigate = useNavigate();
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const { availability, loading: availLoading, updateAvailability } = useAvailability();
+  const { settings: maintenanceSettings, loading: maintenanceLoading, updateSettings: updateMaintenance } = useMaintenance();
   const { toast } = useToast();
+  const [maintenanceTitle, setMaintenanceTitle] = useState("");
+  const [maintenanceSubtitle, setMaintenanceSubtitle] = useState("");
+  const [countdownDate, setCountdownDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     if (!authLoading) {
@@ -32,6 +41,17 @@ export default function Admin() {
       }
     }
   }, [user, isAdmin, authLoading, navigate, toast]);
+
+  // Sync maintenance settings to local state
+  useEffect(() => {
+    if (!maintenanceLoading && maintenanceSettings) {
+      setMaintenanceTitle(maintenanceSettings.title);
+      setMaintenanceSubtitle(maintenanceSettings.subtitle);
+      if (maintenanceSettings.countdown_date) {
+        setCountdownDate(new Date(maintenanceSettings.countdown_date));
+      }
+    }
+  }, [maintenanceSettings, maintenanceLoading]);
 
   const handleStatusToggle = async (checked: boolean) => {
     const newStatus = checked ? "available" : "busy";
@@ -74,7 +94,38 @@ export default function Admin() {
     navigate("/");
   };
 
-  if (authLoading || availLoading) {
+  // Maintenance handlers
+  const handleMaintenanceToggle = async (checked: boolean) => {
+    const { error } = await updateMaintenance({ enabled: checked });
+    if (error) {
+      toast({ title: "Errore", description: "Impossibile aggiornare la modalità manutenzione", variant: "destructive" });
+    } else {
+      toast({ title: checked ? "Manutenzione attivata" : "Manutenzione disattivata" });
+    }
+  };
+
+  const handleMaintenanceTitleBlur = async () => {
+    if (maintenanceTitle !== maintenanceSettings.title) {
+      await updateMaintenance({ title: maintenanceTitle });
+    }
+  };
+
+  const handleMaintenanceSubtitleBlur = async () => {
+    if (maintenanceSubtitle !== maintenanceSettings.subtitle) {
+      await updateMaintenance({ subtitle: maintenanceSubtitle });
+    }
+  };
+
+  const handleCountdownToggle = async (checked: boolean) => {
+    await updateMaintenance({ show_countdown: checked });
+  };
+
+  const handleCountdownDateChange = async (date: Date | undefined) => {
+    setCountdownDate(date);
+    await updateMaintenance({ countdown_date: date ? date.toISOString() : null });
+  };
+
+  if (authLoading || availLoading || maintenanceLoading) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -194,6 +245,117 @@ export default function Admin() {
                     Numero di progetti che puoi accettare
                   </p>
                 </div>
+              </div>
+            </motion.div>
+
+            {/* Maintenance Mode Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="surface-card p-6 rounded-2xl border border-[hsl(var(--border))]"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Wrench className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="font-display text-lg font-semibold">Modalità Manutenzione</h2>
+                  <p className="text-sm text-muted-foreground">Mostra pagina manutenzione ai visitatori</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Enable Toggle */}
+                <div className="flex items-center justify-between p-4 bg-background rounded-lg border border-[hsl(var(--border))]">
+                  <div className="flex items-center gap-3">
+                    <span className={`relative flex h-3 w-3`}>
+                      {maintenanceSettings.enabled && (
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--warm))] opacity-75" />
+                      )}
+                      <span className={`relative inline-flex rounded-full h-3 w-3 ${
+                        maintenanceSettings.enabled 
+                          ? "bg-[hsl(var(--warm))] shadow-[0_0_10px_hsl(var(--warm))]" 
+                          : "bg-muted-foreground"
+                      }`} />
+                    </span>
+                    <span className="font-medium">
+                      {maintenanceSettings.enabled ? "Attiva" : "Disattiva"}
+                    </span>
+                  </div>
+                  <Switch
+                    checked={maintenanceSettings.enabled}
+                    onCheckedChange={handleMaintenanceToggle}
+                  />
+                </div>
+
+                {/* Title Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="maintenance-title">Titolo</Label>
+                  <Input
+                    id="maintenance-title"
+                    value={maintenanceTitle}
+                    onChange={(e) => setMaintenanceTitle(e.target.value)}
+                    onBlur={handleMaintenanceTitleBlur}
+                    placeholder="Sito in manutenzione"
+                  />
+                </div>
+
+                {/* Subtitle Input */}
+                <div className="space-y-2">
+                  <Label htmlFor="maintenance-subtitle">Sottotitolo</Label>
+                  <Input
+                    id="maintenance-subtitle"
+                    value={maintenanceSubtitle}
+                    onChange={(e) => setMaintenanceSubtitle(e.target.value)}
+                    onBlur={handleMaintenanceSubtitleBlur}
+                    placeholder="Torneremo presto con novità!"
+                  />
+                </div>
+
+                {/* Countdown Toggle & Date */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="countdown-toggle">Mostra Countdown</Label>
+                    <Switch
+                      id="countdown-toggle"
+                      checked={maintenanceSettings.show_countdown}
+                      onCheckedChange={handleCountdownToggle}
+                    />
+                  </div>
+                  
+                  {maintenanceSettings.show_countdown && (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {countdownDate ? format(countdownDate, "PPP", { locale: it }) : "Seleziona data"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarComponent
+                          mode="single"
+                          selected={countdownDate}
+                          onSelect={handleCountdownDateChange}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>
+
+                {/* Preview Link */}
+                {maintenanceSettings.enabled && (
+                  <a
+                    href="/manutenzione"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center text-sm text-primary hover:underline mt-4"
+                  >
+                    Anteprima pagina manutenzione →
+                  </a>
+                )}
               </div>
             </motion.div>
 
