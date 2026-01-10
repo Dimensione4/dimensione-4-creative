@@ -1,9 +1,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, Suspense, lazy } from "react";
 import { ArrowRight, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-4d.jpg";
+
+const Hero3DScene = lazy(() => 
+  import("./Hero3DScene").then(mod => ({ default: mod.Hero3DScene }))
+);
 
 export function HeroSection() {
   const ref = useRef(null);
@@ -41,6 +45,11 @@ export function HeroSection() {
         style={{ y: glow2Y }}
       />
 
+      {/* 3D Scene */}
+      <Suspense fallback={null}>
+        <Hero3DScene />
+      </Suspense>
+
       {/* Content */}
       <div className="container-tight relative z-10 py-20 md:py-32">
         <div className="max-w-3xl">
@@ -53,7 +62,7 @@ export function HeroSection() {
           >
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-[hsl(var(--border))] text-label text-muted-foreground font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Creative Engineering Studio
+              Creative Full-Stack Studio
             </span>
           </motion.div>
 
