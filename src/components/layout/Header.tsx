@@ -183,7 +183,7 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation - Center with shrinking pill */}
-          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden lg:flex items-center justify-center flex-1 mx-4">
             <motion.div 
               className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
               animate={{
