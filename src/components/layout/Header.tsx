@@ -102,6 +102,32 @@ export function Header() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+    };
+  }, [isMenuOpen]);
+
   const hasScrolled = scrollProgress > 0.1;
 
   return (
@@ -244,14 +270,14 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 top-20 bg-background/95 backdrop-blur-3xl z-40"
+            className="lg:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
           >
             <motion.nav
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="container-tight pt-8 pb-12 flex flex-col h-full"
+              className="container-tight pt-24 pb-12 flex flex-col min-h-full"
             >
               <div className="flex-1 flex flex-col justify-center gap-2">
                 {navLinks.map((link, index) => (
