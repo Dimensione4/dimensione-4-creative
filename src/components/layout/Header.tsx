@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import logoSymbol from "@/assets/logo-symbol.png";
@@ -15,14 +15,80 @@ const navLinks = [
   { href: "/chi-sono", label: "Chi sono" },
 ];
 
+// Magnetic link component
+function MagneticLink({ 
+  href, 
+  isActive, 
+  children 
+}: { 
+  href: string; 
+  isActive: boolean; 
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const springConfig = { damping: 15, stiffness: 150 };
+  const springX = useSpring(x, springConfig);
+  const springY = useSpring(y, springConfig);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Magnetic pull strength
+    const pullStrength = 0.3;
+    x.set((e.clientX - centerX) * pullStrength);
+    y.set((e.clientY - centerY) * pullStrength);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <Link
+      ref={ref}
+      to={href}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative px-4 py-2 text-sm font-medium transition-colors duration-300"
+    >
+      {isActive && (
+        <motion.div
+          layoutId="nav-pill"
+          className="absolute inset-0 bg-primary/10 rounded-full"
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+        />
+      )}
+      <motion.span
+        style={{ x: springX, y: springY }}
+        className={`relative z-10 block ${
+          isActive
+            ? "text-primary"
+            : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        {children}
+      </motion.span>
+    </Link>
+  );
+}
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setHasScrolled(window.scrollY > 20);
+      // Progress from 0 to 1 over 100px of scroll
+      const progress = Math.min(window.scrollY / 100, 1);
+      setScrollProgress(progress);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -33,6 +99,8 @@ export function Header() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
+  const hasScrolled = scrollProgress > 0.1;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -42,12 +110,19 @@ export function Header() {
       }`}
     >
       <div className="container-tight">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <motion.div 
+          className="flex items-center justify-between"
+          animate={{ 
+            height: hasScrolled ? 64 : 80,
+          }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group relative z-10">
             <motion.div
               whileHover={{ rotate: 180 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              animate={{ scale: hasScrolled ? 0.9 : 1 }}
             >
               <img
                 src={logoSymbol}
@@ -55,62 +130,65 @@ export function Header() {
                 className="w-10 h-10 object-contain"
               />
             </motion.div>
-            <div className="overflow-hidden">
-              <motion.span
-                className="font-display font-semibold text-lg tracking-tight block"
-                initial={false}
-              >
+            <motion.div 
+              className="overflow-hidden"
+              animate={{ 
+                opacity: hasScrolled ? 0 : 1,
+                width: hasScrolled ? 0 : "auto",
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="font-display font-semibold text-lg tracking-tight whitespace-nowrap">
                 Dimensione 4
-              </motion.span>
-            </div>
+              </span>
+            </motion.div>
           </Link>
 
-          {/* Desktop Navigation - Center */}
-          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-            <div className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]">
+          {/* Desktop Navigation - Center with shrinking pill */}
+          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
+            <motion.div 
+              className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
+              animate={{
+                gap: hasScrolled ? 0 : 4,
+                paddingLeft: hasScrolled ? 6 : 8,
+                paddingRight: hasScrolled ? 6 : 8,
+                paddingTop: hasScrolled ? 4 : 6,
+                paddingBottom: hasScrolled ? 4 : 6,
+              }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               {navLinks.map((link) => (
-                <Link
+                <MagneticLink
                   key={link.href}
-                  to={link.href}
-                  className="relative px-4 py-2 text-sm font-medium transition-colors duration-300"
+                  href={link.href}
+                  isActive={location.pathname === link.href}
                 >
-                  {location.pathname === link.href && (
-                    <motion.div
-                      layoutId="nav-pill"
-                      className="absolute inset-0 bg-primary/10 rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  <span
-                    className={`relative z-10 ${
-                      location.pathname === link.href
-                        ? "text-primary"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {link.label}
-                  </span>
-                </Link>
+                  {link.label}
+                </MagneticLink>
               ))}
-            </div>
+            </motion.div>
           </nav>
 
           {/* Right side - Theme Toggle + CTA */}
           <div className="hidden lg:flex items-center gap-4 relative z-10">
             <ThemeToggle />
-            <Button variant="hero" size="default" className="group" asChild>
-              <Link to="/contatti">
-                <span>Prenota una call</span>
-                <motion.span
-                  className="inline-block ml-2"
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 4 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  →
-                </motion.span>
-              </Link>
-            </Button>
+            <motion.div
+              animate={{ scale: hasScrolled ? 0.95 : 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Button variant="hero" size={hasScrolled ? "sm" : "default"} className="group" asChild>
+                <Link to="/contatti">
+                  <span>Prenota una call</span>
+                  <motion.span
+                    className="inline-block ml-2"
+                    whileHover={{ x: 4 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    →
+                  </motion.span>
+                </Link>
+              </Button>
+            </motion.div>
           </div>
 
           {/* Mobile Menu Button - Animated Hamburger */}
@@ -146,7 +224,7 @@ export function Header() {
               />
             </div>
           </button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Mobile Navigation - Full Screen Overlay */}
