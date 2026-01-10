@@ -73,13 +73,36 @@ function useScrollPosition() {
   return scroll;
 }
 
-// Single circle - flat, no effects
-function SymbolCircle({ x, y, r, color }: { x: number; y: number; r: number; color: string }) {
+// Circle with glow effect
+function GlowCircle({ x, y, r, color, index }: { x: number; y: number; r: number; color: string; index: number }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state) => {
+    if (!meshRef.current || !glowRef.current) return;
+    
+    // Subtle pulse animation offset by index
+    const pulse = Math.sin(state.clock.elapsedTime * 1.5 + index * 0.3) * 0.1 + 0.9;
+    glowRef.current.scale.setScalar(pulse);
+  });
+  
   return (
-    <mesh position={[x * SCALE, y * SCALE, 0]}>
-      <circleGeometry args={[r * SCALE, 64]} />
-      <meshBasicMaterial color={color} />
-    </mesh>
+    <group position={[x * SCALE, y * SCALE, 0]}>
+      {/* Glow layer behind */}
+      <mesh ref={glowRef} position={[0, 0, -0.01]}>
+        <circleGeometry args={[r * SCALE * 1.8, 64]} />
+        <meshBasicMaterial 
+          color={color} 
+          transparent 
+          opacity={0.15}
+        />
+      </mesh>
+      {/* Main circle */}
+      <mesh ref={meshRef}>
+        <circleGeometry args={[r * SCALE, 64]} />
+        <meshBasicMaterial color={color} />
+      </mesh>
+    </group>
   );
 }
 
@@ -100,8 +123,9 @@ function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   return (
     <group ref={groupRef}>
       {SYMBOL_DATA.map((circle, i) => (
-        <SymbolCircle
+        <GlowCircle
           key={i}
+          index={i}
           x={circle.x}
           y={circle.y}
           r={circle.r}
