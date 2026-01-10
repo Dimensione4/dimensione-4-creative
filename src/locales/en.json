@@ -129,11 +129,16 @@
   },
   "availability": {
     "status": "Available for new projects",
+    "statusBusy": "Currently busy",
     "title": "Ready to collaborate",
+    "titleBusy": "I'm currently busy",
     "description": "I'm actively looking for exciting new projects. If you have an idea to bring to life, let's talk!",
+    "descriptionBusy": "I'm working on other projects, but you can still contact me to plan a future collaboration.",
     "responseTime": "24h response",
-    "slots": "2 slots available",
+    "slotsLabel": "slots available",
+    "noSlots": "Waitlist",
     "projects": "Quality projects",
-    "cta": "Start a conversation"
+    "cta": "Start a conversation",
+    "ctaBusy": "Contact me anyway"
   }
 }
