@@ -15,7 +15,7 @@ export function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
-      <WhatsAppWidget phoneNumber="393401234567" message="Ciao! Vorrei maggiori informazioni sui tuoi servizi." />
+      <WhatsAppWidget phoneNumber="393334404903" message="Ciao! Vorrei maggiori informazioni sui tuoi servizi." />
     </div>
   );
 }
