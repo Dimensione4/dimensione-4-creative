@@ -118,14 +118,14 @@ export function Footer() {
             <p className="text-muted-foreground text-base leading-relaxed max-w-sm mb-8">
               {t('footer.description')}
             </p>
-            <p className="text-xs text-muted-foreground font-mono tracking-wide">
+            <p className="text-xs text-primary font-mono tracking-wide">
               {t('footer.tagline')}
             </p>
           </div>
 
           {/* Navigation Column */}
           <div className="md:col-span-3">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
               {t('footer.navigation')}
             </h4>
             <ul className="space-y-3">
@@ -139,7 +139,7 @@ export function Footer() {
 
           {/* Social Column */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
               {t('footer.social')}
             </h4>
             <div className="flex flex-wrap gap-3">
@@ -165,7 +165,7 @@ export function Footer() {
 
           {/* Contact Column */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
               {t('footer.contacts')}
             </h4>
             <ul className="space-y-3">
