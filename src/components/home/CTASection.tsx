@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -8,11 +8,21 @@ export function CTASection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const glowY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+
   return (
     <section ref={ref} className="section-padding relative overflow-hidden">
-      {/* Glow effect */}
+      {/* Glow effect with parallax */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[600px] h-[400px] bg-primary/10 rounded-full blur-3xl animate-glow-pulse" />
+        <motion.div 
+          className="w-[600px] h-[400px] bg-primary/10 rounded-full blur-3xl animate-glow-pulse"
+          style={{ y: glowY }}
+        />
       </div>
 
       <motion.div

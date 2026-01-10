@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Eye, Layers, Clock } from "lucide-react";
 
@@ -27,11 +26,21 @@ const dimensions = [
 export function ConceptSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
 
   return (
     <section ref={ref} className="section-padding relative overflow-hidden">
-      {/* Background accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/3 rounded-full blur-3xl" />
+      {/* Background accent with parallax */}
+      <motion.div 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/3 rounded-full blur-3xl geo-breathing"
+        style={{ y: glowY }}
+      />
       
       <div className="container-tight relative">
         {/* Header */}

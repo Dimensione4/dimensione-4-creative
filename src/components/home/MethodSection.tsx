@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Map, Hammer, TrendingUp, ArrowRight } from "lucide-react";
 
@@ -30,10 +30,20 @@ export function MethodSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
+
   return (
     <section ref={ref} className="section-padding relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 pattern-grid opacity-50" />
+      {/* Background pattern with parallax */}
+      <motion.div 
+        className="absolute inset-0 pattern-grid opacity-50"
+        style={{ y: patternY }}
+      />
       
       <div className="container-tight relative">
         {/* Header */}
