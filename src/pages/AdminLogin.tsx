@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Lock, Mail, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Lock, Mail, Eye, EyeOff, Loader2, UserPlus } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -12,15 +11,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminLogin() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const { signIn, user, isAdmin, loading: authLoading } = useAuth();
+  const { signIn, signUp, user, isAdmin, loading: authLoading } = useAuth();
   const { toast } = useToast();
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user && isAdmin) {
@@ -32,14 +31,35 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await signIn(email, password);
-
-    if (error) {
-      toast({
-        title: "Errore",
-        description: "Credenziali non valide",
-        variant: "destructive"
-      });
+    if (isSignUp) {
+      const { error, isFirstAdmin } = await signUp(email, password);
+      if (error) {
+        toast({
+          title: "Errore",
+          description: error.message || "Errore durante la registrazione",
+          variant: "destructive"
+        });
+      } else if (isFirstAdmin) {
+        toast({
+          title: "Benvenuto Admin! 🎉",
+          description: "Sei stato registrato come primo amministratore"
+        });
+        navigate("/admin");
+      } else {
+        toast({
+          title: "Registrazione completata",
+          description: "Esiste già un admin. Contattalo per ottenere i permessi."
+        });
+      }
+    } else {
+      const { error } = await signIn(email, password);
+      if (error) {
+        toast({
+          title: "Errore",
+          description: "Credenziali non valide",
+          variant: "destructive"
+        });
+      }
     }
     
     setLoading(false);
@@ -72,11 +92,20 @@ export default function AdminLogin() {
           <div className="surface-card p-8 rounded-2xl border border-[hsl(var(--border))]">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-8 h-8 text-primary" />
+                {isSignUp ? (
+                  <UserPlus className="w-8 h-8 text-primary" />
+                ) : (
+                  <Lock className="w-8 h-8 text-primary" />
+                )}
               </div>
-              <h1 className="font-display text-2xl font-bold mb-2">Admin Login</h1>
+              <h1 className="font-display text-2xl font-bold mb-2">
+                {isSignUp ? "Registrazione Admin" : "Admin Login"}
+              </h1>
               <p className="text-muted-foreground text-sm">
-                Accedi all'area riservata
+                {isSignUp 
+                  ? "Il primo utente diventerà automaticamente admin"
+                  : "Accedi all'area riservata"
+                }
               </p>
             </div>
 
@@ -109,6 +138,7 @@ export default function AdminLogin() {
                     placeholder="••••••••"
                     className="pl-10 pr-10"
                     required
+                    minLength={6}
                   />
                   <button
                     type="button"
@@ -118,6 +148,11 @@ export default function AdminLogin() {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+                {isSignUp && (
+                  <p className="text-xs text-muted-foreground">
+                    Minimo 6 caratteri
+                  </p>
+                )}
               </div>
 
               <Button
@@ -128,13 +163,26 @@ export default function AdminLogin() {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    Accesso in corso...
+                    {isSignUp ? "Registrazione..." : "Accesso in corso..."}
                   </>
                 ) : (
-                  "Accedi"
+                  isSignUp ? "Registrati" : "Accedi"
                 )}
               </Button>
             </form>
+
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                {isSignUp 
+                  ? "Hai già un account? Accedi"
+                  : "Non hai un account? Registrati"
+                }
+              </button>
+            </div>
           </div>
         </motion.div>
       </section>
