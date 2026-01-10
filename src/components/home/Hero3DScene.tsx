@@ -2,64 +2,47 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 
-// Logo symbol circle data - manually traced from the original logo
-// Ring of circles going clockwise from top-left, dark teal to bright cyan
+// Exact 36 circles from the Dimensione 4 logo - DO NOT MODIFY
 const SYMBOL_DATA = [
-  // Left side - dark teal
-  { x: -0.85, y: 0.15, r: 0.14, color: "#1A8B7C" },  // Large left
-  { x: -0.82, y: -0.12, r: 0.11, color: "#188F80" }, // Medium left
-  { x: -0.78, y: 0.42, r: 0.09, color: "#1A9385" },  // Medium upper-left
-  { x: -0.72, y: -0.35, r: 0.07, color: "#199489" }, // Small lower-left
-  
-  // Bottom-left - teal
-  { x: -0.58, y: -0.52, r: 0.08, color: "#1A9B8E" },
-  { x: -0.68, y: -0.62, r: 0.05, color: "#1A9889" },
-  { x: -0.45, y: -0.68, r: 0.06, color: "#1AA396" },
-  
-  // Bottom - transitioning
-  { x: -0.25, y: -0.78, r: 0.10, color: "#1AAD9F" },
-  { x: -0.02, y: -0.82, r: 0.07, color: "#1CB8AB" },
-  { x: 0.18, y: -0.85, r: 0.04, color: "#1DC2B6" },
-  { x: 0.32, y: -0.82, r: 0.06, color: "#1ECDC2" },
-  
-  // Bottom-right - cyan
-  { x: 0.50, y: -0.72, r: 0.10, color: "#1FD8CE" },
-  { x: 0.65, y: -0.58, r: 0.09, color: "#20E0D8" },
-  { x: 0.75, y: -0.42, r: 0.06, color: "#22E6E0" },
-  
-  // Right side - bright cyan
-  { x: 0.85, y: -0.20, r: 0.04, color: "#24EBE7" },
-  { x: 0.88, y: 0.02, r: 0.10, color: "#26F0ED" },
-  { x: 0.90, y: 0.25, r: 0.05, color: "#28F4F2" },
-  { x: 0.85, y: 0.45, r: 0.08, color: "#2AF6F5" },
-  { x: 0.82, y: 0.65, r: 0.04, color: "#2CF8F7" },
-  
-  // Top-right - bright cyan
-  { x: 0.72, y: 0.78, r: 0.10, color: "#2EFAF9" },
-  { x: 0.52, y: 0.85, r: 0.07, color: "#28F2F0" },
-  { x: 0.35, y: 0.88, r: 0.04, color: "#24EAE7" },
-  
-  // Top - transitioning back
-  { x: 0.15, y: 0.90, r: 0.09, color: "#20E0DC" },
-  { x: -0.08, y: 0.88, r: 0.05, color: "#1CD4CE" },
-  { x: -0.28, y: 0.82, r: 0.08, color: "#1AC8C0" },
-  
-  // Top-left - back to teal
-  { x: -0.48, y: 0.72, r: 0.06, color: "#18B8AC" },
-  { x: -0.62, y: 0.58, r: 0.10, color: "#17A89C" },
-  { x: -0.75, y: 0.55, r: 0.04, color: "#169C8E" },
-  
-  // Additional scattered dots for organic feel
-  { x: -0.92, y: 0.32, r: 0.035, color: "#188C7D" },
-  { x: -0.88, y: -0.28, r: 0.04, color: "#198E80" },
-  { x: 0.78, y: -0.08, r: 0.035, color: "#25EDEA" },
-  { x: 0.62, y: 0.68, r: 0.035, color: "#2CFCFB" },
-  { x: -0.38, y: -0.72, r: 0.035, color: "#1BA89A" },
-  { x: 0.42, y: -0.78, r: 0.035, color: "#1DD2C8" },
+  { x: -0.8078, y: -0.18, r: 0.1423, color: "#178A7A" },
+  { x: -0.5534, y: -0.1926, r: 0.0338, color: "#1E9D90" },
+  { x: -0.5057, y: -0.3462, r: 0.0489, color: "#1C9F92" },
+  { x: -0.7347, y: -0.5124, r: 0.1169, color: "#188F80" },
+  { x: -0.5559, y: -0.7544, r: 0.082, color: "#199B8D" },
+  { x: -0.6383, y: -0.84, r: 0.0338, color: "#1AA092" },
+  { x: -0.382, y: -0.7993, r: 0.082, color: "#1AAE9F" },
+  { x: -0.1851, y: -0.7627, r: 0.1169, color: "#18A595" },
+  { x: -0.0142, y: -0.8138, r: 0.082, color: "#1ABBAE" },
+  { x: 0.107, y: -0.8922, r: 0.0338, color: "#1CC8BD" },
+  { x: 0.1915, y: -0.9722, r: 0.0489, color: "#1ECBC0" },
+  { x: 0.3775, y: -0.9687, r: 0.1169, color: "#1CD7CD" },
+  { x: 0.5522, y: -0.8278, r: 0.1169, color: "#19E1DD" },
+  { x: 0.7128, y: -0.6864, r: 0.082, color: "#1DE8E5" },
+  { x: 0.8155, y: -0.5024, r: 0.0489, color: "#1FE8E6" },
+  { x: 0.9067, y: -0.4086, r: 0.0338, color: "#22F0EF" },
+  { x: 0.8768, y: -0.2052, r: 0.082, color: "#21F4F3" },
+  { x: 0.9579, y: -0.0568, r: 0.1169, color: "#1FF4F2" },
+  { x: 0.9723, y: 0.0011, r: 0.0338, color: "#23FAF9" },
+  { x: 0.974, y: 0.1758, r: 0.0489, color: "#25FDFD" },
+  { x: 0.8215, y: 0.3476, r: 0.082, color: "#1FF4F3" },
+  { x: 0.9378, y: 0.469, r: 0.082, color: "#20F4F4" },
+  { x: 0.986, y: 0.5447, r: 0.0338, color: "#1FF3F3" },
+  { x: 0.8504, y: 0.6905, r: 0.1169, color: "#1CE7E4" },
+  { x: 0.6517, y: 0.6774, r: 0.082, color: "#1ADEDA" },
+  { x: 0.5046, y: 0.7777, r: 0.0338, color: "#1ACAC0" },
+  { x: 0.2364, y: 0.8467, r: 0.1169, color: "#1CCBC1" },
+  { x: 0.0899, y: 0.949, r: 0.0489, color: "#18C2B5" },
+  { x: -0.0942, y: 0.9091, r: 0.0338, color: "#18B4A6" },
+  { x: -0.2672, y: 0.8521, r: 0.082, color: "#19AFA1" },
+  { x: -0.4742, y: 0.7928, r: 0.0489, color: "#198C7C" },
+  { x: -0.8264, y: 0.5452, r: 0.1169, color: "#199B8C" },
+  { x: -0.8123, y: 0.234, r: 0.082, color: "#188D7E" },
+  { x: -0.7459, y: 0.1066, r: 0.0489, color: "#188C7D" },
+  { x: -0.6678, y: 0.5954, r: 0.082, color: "#19998B" },
+  { x: -0.571, y: 0.8323, r: 0.1423, color: "#178A7A" }
 ];
 
-// Scale factor to fill the canvas appropriately
-const SCALE = 3.5;
+const SCALE = 6;
 
 // Hook for mobile detection
 function useIsMobile() {
@@ -90,60 +73,28 @@ function useScrollPosition() {
   return scroll;
 }
 
-// Single circle component
-function SymbolCircle({ x, y, r, color, index }: { x: number; y: number; r: number; color: string; index: number }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const startTime = useRef<number | null>(null);
-  const entryDelay = index * 0.025;
-  
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    
-    // Initialize start time
-    if (startTime.current === null) {
-      startTime.current = state.clock.elapsedTime;
-    }
-    
-    // Staggered entry animation
-    const timeSinceStart = state.clock.elapsedTime - startTime.current;
-    const entryTime = Math.max(0, timeSinceStart - entryDelay);
-    const entryProgress = Math.min(1, entryTime / 0.4);
-    
-    // Ease out back for slight bounce
-    const c1 = 1.70158;
-    const c3 = c1 + 1;
-    const eased = entryProgress === 1 
-      ? 1 
-      : 1 + c3 * Math.pow(entryProgress - 1, 3) + c1 * Math.pow(entryProgress - 1, 2);
-    
-    meshRef.current.scale.setScalar(Math.max(0, eased));
-  });
-  
+// Single circle - flat, no effects
+function SymbolCircle({ x, y, r, color }: { x: number; y: number; r: number; color: string }) {
   return (
-    <mesh
-      ref={meshRef}
-      position={[x * SCALE, y * SCALE, 0]}
-      scale={0}
-    >
+    <mesh position={[x * SCALE, y * SCALE, 0]}>
       <circleGeometry args={[r * SCALE, 64]} />
       <meshBasicMaterial color={color} />
     </mesh>
   );
 }
 
-// Main symbol group with subtle rotation
+// Symbol group with optional slow rotation
 function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
   const groupRef = useRef<THREE.Group>(null);
   
   useFrame((state) => {
     if (!groupRef.current) return;
     
-    // Very slow continuous rotation (optional enhancement)
-    groupRef.current.rotation.z = state.clock.elapsedTime * 0.02;
+    // Very slow rotation
+    groupRef.current.rotation.z = state.clock.elapsedTime * 0.015;
     
     // Parallax on scroll
-    const scrollOffset = scrollY.current;
-    groupRef.current.position.y = scrollOffset * -0.8;
+    groupRef.current.position.y = scrollY.current * -0.5;
   });
   
   return (
@@ -151,7 +102,6 @@ function SymbolGroup({ scrollY }: { scrollY: React.MutableRefObject<number> }) {
       {SYMBOL_DATA.map((circle, i) => (
         <SymbolCircle
           key={i}
-          index={i}
           x={circle.x}
           y={circle.y}
           r={circle.r}
@@ -170,27 +120,29 @@ export function Hero3DScene() {
   const isMobile = useIsMobile();
   const scrollY = useScrollPosition();
   
-  // Orthographic camera frustum size
+  // Frustum size for orthographic camera
   const frustumSize = 8;
-  const aspect = 1; // Square canvas
   
   return (
-    <div className="absolute inset-0 flex items-center justify-end pointer-events-auto pr-[5%] md:pr-[10%]">
-      <div className="w-[400px] h-[400px] md:w-[500px] md:h-[500px] lg:w-[600px] lg:h-[600px] opacity-80">
+    <div className="absolute inset-0 flex items-center justify-end pointer-events-none pr-[5%] md:pr-[10%]">
+      <div 
+        className="w-[350px] h-[350px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] opacity-90"
+        style={{ aspectRatio: '1 / 1' }}
+      >
         <Canvas
           orthographic
           camera={{
             zoom: 1,
             position: [0, 0, 10],
-            left: -frustumSize * aspect,
-            right: frustumSize * aspect,
+            left: -frustumSize,
+            right: frustumSize,
             top: frustumSize,
             bottom: -frustumSize,
             near: 0.1,
             far: 100
           }}
           dpr={isMobile ? 1 : [1, 2]}
-          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+          gl={{ antialias: true, alpha: true }}
           style={{ background: 'transparent' }}
         >
           <Suspense fallback={null}>
