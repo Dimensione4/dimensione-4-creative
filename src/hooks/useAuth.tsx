@@ -8,7 +8,7 @@ interface AuthContextType {
   loading: boolean;
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string) => Promise<{ error: Error | null; isFirstAdmin?: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -20,6 +20,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const checkAdminStatus = async (userId: string) => {
+    const { data } = await supabase.rpc('has_role', {
+      _user_id: userId,
+      _role: 'admin'
+    });
+    setIsAdmin(!!data);
+  };
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -29,13 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         if (session?.user) {
           // Check if user is admin using setTimeout to avoid Supabase deadlock
-          setTimeout(async () => {
-            const { data } = await supabase.rpc('has_role', {
-              _user_id: session.user.id,
-              _role: 'admin'
-            });
-            setIsAdmin(!!data);
-          }, 0);
+          setTimeout(() => checkAdminStatus(session.user.id), 0);
         } else {
           setIsAdmin(false);
         }
@@ -50,13 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        supabase.rpc('has_role', {
-          _user_id: session.user.id,
-          _role: 'admin'
-        }).then(({ data }) => {
-          setIsAdmin(!!data);
-          setLoading(false);
-        });
+        checkAdminStatus(session.user.id).then(() => setLoading(false));
       } else {
         setLoading(false);
       }
@@ -73,14 +69,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: window.location.origin
       }
     });
-    return { error };
+
+    if (error) {
+      return { error };
+    }
+
+    // After signup, try to assign first admin role
+    if (data.session) {
+      try {
+        const response = await supabase.functions.invoke('assign-first-admin');
+        if (response.data?.isFirstAdmin) {
+          setIsAdmin(true);
+          return { error: null, isFirstAdmin: true };
+        }
+      } catch (err) {
+        console.error('Error checking first admin:', err);
+      }
+    }
+
+    return { error: null };
   };
 
   const signOut = async () => {
