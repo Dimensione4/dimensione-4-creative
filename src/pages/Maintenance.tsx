@@ -37,25 +37,28 @@ export default function Maintenance() {
       <FluidBackground className="z-0" />
       
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12 safe-area-inset">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 sm:px-8 py-12 sm:py-16">
         {/* Logo + Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-6 sm:mb-8"
+          className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5 mb-10 sm:mb-12"
         >
           <img
             src={logoSymbol}
             alt="Dimensione 4"
-            className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24"
           />
           <div className="text-center sm:text-left">
             <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
               DIMENSIONE 4
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              di Dario Marco Bellini
+            <p className="text-sm sm:text-base text-primary font-medium mt-1">
+              Quarta Dimensione
+            </p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 tracking-wide">
+              prospettiva · struttura · tempo
             </p>
           </div>
         </motion.div>
@@ -65,7 +68,7 @@ export default function Maintenance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center text-foreground mb-3 sm:mb-4 px-2"
+          className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center text-foreground mb-4 sm:mb-5 px-4"
         >
           {settings.title}
         </motion.h1>
@@ -75,7 +78,7 @@ export default function Maintenance() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-xs sm:max-w-md mb-8 sm:mb-12 px-2"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-sm sm:max-w-md md:max-w-lg mb-10 sm:mb-14 px-4"
         >
           {settings.subtitle}
         </motion.p>
@@ -86,30 +89,50 @@ export default function Maintenance() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="w-full max-w-sm sm:max-w-md md:max-w-lg px-2"
+            className="w-full max-w-sm sm:max-w-md md:max-w-lg px-4 mb-10 sm:mb-12"
           >
             <CountdownTimer targetDate={settings.countdown_date} />
           </motion.div>
         )}
 
-        {/* WhatsApp CTA */}
-        <motion.button
+        {/* WhatsApp CTA with pulse effect */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          onClick={handleWhatsAppClick}
-          className="mt-8 sm:mt-10 flex items-center gap-2 px-5 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          className="relative"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span>Contattami su WhatsApp</span>
-        </motion.button>
+          <motion.button
+            onClick={handleWhatsAppClick}
+            className="relative flex items-center gap-2.5 px-6 py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white font-medium rounded-full shadow-lg hover:shadow-[0_0_30px_rgba(37,211,102,0.4)] transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span>Contattami su WhatsApp</span>
+          </motion.button>
+          
+          {/* Pulse ring effect */}
+          <motion.div
+            className="absolute inset-0 rounded-full bg-[#25D366]/30 pointer-events-none"
+            animate={{
+              scale: [1, 1.4, 1],
+              opacity: [0.5, 0, 0.5],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeOut",
+            }}
+          />
+        </motion.div>
 
-        {/* Interaction hint - visible on desktop */}
+        {/* Interaction hint */}
         <motion.p
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="hidden md:block text-xs text-muted-foreground/60 mt-8 text-center"
+          animate={{ opacity: 0.5 }}
+          transition={{ duration: 0.8, delay: 1 }}
+          className="text-xs text-muted-foreground/60 mt-10 sm:mt-12 text-center"
         >
           Clicca e trascina per interagire con lo sfondo
         </motion.p>
@@ -118,14 +141,14 @@ export default function Maintenance() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-auto pt-8 sm:pt-12 text-center"
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-auto pt-10 sm:pt-14 text-center"
         >
           <p className="text-xs sm:text-sm text-muted-foreground">
             Email:{" "}
             <a
               href="mailto:dariomarcobellini@dimensione4.it"
-              className="text-primary hover:underline break-all"
+              className="text-primary hover:underline"
             >
               dariomarcobellini@dimensione4.it
             </a>
