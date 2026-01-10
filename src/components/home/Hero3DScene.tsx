@@ -1,77 +1,153 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial } from "@react-three/drei";
-import { useRef, Suspense } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useRef, Suspense, useMemo, useEffect, useState } from "react";
 import * as THREE from "three";
 
-function AnimatedIcosahedron() {
-  const meshRef = useRef<THREE.Mesh>(null);
+// Hook for mobile detection
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
   
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+}
+
+// Mouse tracking hook
+function useMousePosition() {
+  const mouse = useRef({ x: 0, y: 0 });
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+  
+  return mouse;
+}
+
+interface SphereData {
+  position: [number, number, number];
+  scale: number;
+  color: string;
+  phaseOffset: number;
+}
+
+function LogoSpheres({ isMobile }: { isMobile: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const mouse = useMousePosition();
+  const targetRotation = useRef({ x: 0, y: 0 });
+  
+  // Generate spheres in circular pattern like the logo
+  const spheres = useMemo(() => {
+    const result: SphereData[] = [];
+    const sphereCount = isMobile ? 20 : 32;
+    
+    // Create spheres in a circular arrangement
+    for (let i = 0; i < sphereCount; i++) {
+      const angle = (i / sphereCount) * Math.PI * 2;
+      const radius = 2.8;
+      
+      // Vary sizes like in the logo (some big, some small)
+      const sizePattern = [0.35, 0.15, 0.25, 0.1, 0.3, 0.12, 0.28, 0.08];
+      const scale = sizePattern[i % sizePattern.length];
+      
+      // Gradient from teal (#12A6A3) to cyan (#23E6E6)
+      const t = i / sphereCount;
+      const color = t < 0.5 ? "#12A6A3" : "#23E6E6";
+      
+      result.push({
+        position: [
+          Math.cos(angle) * radius,
+          Math.sin(angle) * radius,
+          0
+        ],
+        scale,
+        color,
+        phaseOffset: i * 0.2
+      });
+    }
+    
+    return result;
+  }, [isMobile]);
+
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.1;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.15;
+    if (groupRef.current) {
+      // Smooth mouse following
+      targetRotation.current.x = mouse.current.y * 0.3;
+      targetRotation.current.y = mouse.current.x * 0.5;
+      
+      groupRef.current.rotation.x += (targetRotation.current.x - groupRef.current.rotation.x) * 0.05;
+      groupRef.current.rotation.y += (targetRotation.current.y - groupRef.current.rotation.y) * 0.05;
+      
+      // Slow continuous rotation
+      groupRef.current.rotation.z = state.clock.elapsedTime * 0.05;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef} scale={2.5}>
-        <icosahedronGeometry args={[1, 1]} />
-        <MeshDistortMaterial
-          color="#12A6A3"
-          emissive="#0a5a58"
-          emissiveIntensity={0.3}
-          roughness={0.4}
-          metalness={0.8}
-          distort={0.3}
-          speed={2}
-          wireframe
-        />
-      </mesh>
-    </Float>
+    <group ref={groupRef}>
+      {spheres.map((sphere, i) => (
+        <AnimatedSphere key={i} {...sphere} time={0} />
+      ))}
+    </group>
   );
 }
 
-function InnerCore() {
+function AnimatedSphere({ position, scale, color, phaseOffset }: SphereData & { time: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = -state.clock.elapsedTime * 0.2;
-      meshRef.current.rotation.z = state.clock.elapsedTime * 0.1;
+      // Gentle floating animation
+      const offset = Math.sin(state.clock.elapsedTime * 0.8 + phaseOffset) * 0.1;
+      meshRef.current.position.z = offset;
+      
+      // Subtle scale pulsing
+      const pulseScale = scale * (1 + Math.sin(state.clock.elapsedTime * 1.2 + phaseOffset) * 0.1);
+      meshRef.current.scale.setScalar(pulseScale);
     }
   });
 
   return (
-    <mesh ref={meshRef} scale={1.2}>
-      <octahedronGeometry args={[1, 0]} />
+    <mesh ref={meshRef} position={position}>
+      <sphereGeometry args={[1, 16, 16]} />
       <meshStandardMaterial
-        color="#23E6E6"
-        emissive="#23E6E6"
-        emissiveIntensity={0.5}
-        transparent
-        opacity={0.6}
+        color={color}
+        emissive={color}
+        emissiveIntensity={0.3}
+        roughness={0.3}
+        metalness={0.7}
       />
     </mesh>
   );
 }
 
-function ParticleRing() {
+function FloatingParticles({ isMobile }: { isMobile: boolean }) {
   const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = 100;
+  const particleCount = isMobile ? 30 : 60;
   
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    const angle = (i / particleCount) * Math.PI * 2;
-    const radius = 3.5 + Math.random() * 0.5;
-    positions[i * 3] = Math.cos(angle) * radius;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-    positions[i * 3 + 2] = Math.sin(angle) * radius;
-  }
+  const positions = useMemo(() => {
+    const pos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = 3.5 + Math.random() * 2;
+      pos[i * 3] = Math.cos(angle) * radius;
+      pos[i * 3 + 1] = Math.sin(angle) * radius;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 2;
+    }
+    return pos;
+  }, [particleCount]);
 
   useFrame((state) => {
     if (pointsRef.current) {
-      pointsRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+      pointsRef.current.rotation.z = state.clock.elapsedTime * 0.02;
     }
   });
 
@@ -84,32 +160,42 @@ function ParticleRing() {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.03}
+        size={isMobile ? 0.04 : 0.03}
         color="#23E6E6"
         transparent
-        opacity={0.8}
+        opacity={0.6}
         sizeAttenuation
       />
     </points>
   );
 }
 
+function Scene({ isMobile }: { isMobile: boolean }) {
+  return (
+    <>
+      <ambientLight intensity={0.4} />
+      <pointLight position={[10, 10, 10]} intensity={0.8} color="#23E6E6" />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#12A6A3" />
+      
+      <LogoSpheres isMobile={isMobile} />
+      <FloatingParticles isMobile={isMobile} />
+    </>
+  );
+}
+
 export function Hero3DScene() {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="absolute inset-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
+        dpr={isMobile ? 1 : [1, 2]}
+        gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
+        style={{ background: 'transparent' }}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.3} />
-          <pointLight position={[10, 10, 10]} intensity={0.8} color="#23E6E6" />
-          <pointLight position={[-10, -10, -10]} intensity={0.4} color="#12A6A3" />
-          
-          <AnimatedIcosahedron />
-          <InnerCore />
-          <ParticleRing />
+          <Scene isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>
