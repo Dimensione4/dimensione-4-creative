@@ -126,5 +126,14 @@
     "title": "Design Subscription",
     "subtitle": "Unlimited design and development with a fixed monthly fee",
     "description": "No quotes, no surprises. A dedicated team at your service with unlimited requests."
+  },
+  "availability": {
+    "status": "Available for new projects",
+    "title": "Ready to collaborate",
+    "description": "I'm actively looking for exciting new projects. If you have an idea to bring to life, let's talk!",
+    "responseTime": "24h response",
+    "slots": "2 slots available",
+    "projects": "Quality projects",
+    "cta": "Start a conversation"
   }
 }
