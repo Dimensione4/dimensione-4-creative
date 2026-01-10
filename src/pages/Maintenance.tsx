@@ -67,7 +67,12 @@ export default function Maintenance() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold text-center text-foreground mb-3 sm:mb-4 px-2"
         >
-          {settings.title}
+          {settings.title.split("Quarta Dimensione").map((part, i, arr) => (
+            <span key={i}>
+              {part}
+              {i < arr.length - 1 && <span className="text-primary">Quarta Dimensione</span>}
+            </span>
+          ))}
         </motion.h1>
 
         {/* Subtitle */}
