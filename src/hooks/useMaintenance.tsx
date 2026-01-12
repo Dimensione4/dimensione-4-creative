@@ -18,7 +18,8 @@ const DEFAULT_SETTINGS: MaintenanceSettings = {
   countdown_date: "2026-01-20T18:00:00.000Z",
 };
 
-const APP_ENV = import.meta.env.VITE_APP_ENV ?? "staging";
+const APP_ENV =
+  (import.meta.env.VITE_APP_ENV as "local" | "staging" | "prod") ?? "prod";
 
 export function useMaintenance() {
   const [settings, setSettings] =
