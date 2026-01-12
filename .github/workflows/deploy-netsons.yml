@@ -3,7 +3,7 @@ name: Deploy to Netsons (public_html)
 on:
   push:
     branches: ["main"]
-  workflow_dispactch:
+  workflow_dispatch:
 
 jobs:
   deploy:

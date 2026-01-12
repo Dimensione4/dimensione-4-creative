@@ -3,7 +3,7 @@ name: Deploy to Netsons (staging)
 on:
   push:
     branches: ["staging"]
-  workflow_dispactch:
+  workflow_dispatch:
 
 jobs:
   deploy:
