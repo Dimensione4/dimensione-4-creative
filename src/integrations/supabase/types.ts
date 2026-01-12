@@ -68,6 +68,36 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_settings: {
+        Row: {
+          env: string
+          enabled: boolean
+          title: string
+          subtitle: string
+          show_countdown: boolean
+          countdown_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          env: string
+          enabled?: boolean
+          title?: string
+          subtitle?: string
+          show_countdown?: boolean
+          countdown_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          env?: string
+          enabled?: boolean
+          title?: string
+          subtitle?: string
+          show_countdown?: boolean
+          countdown_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

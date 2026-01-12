@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LogOut, Loader2, Settings, CircleDot, Users, Wrench, Calendar } from "lucide-react";
+import {
+  LogOut,
+  Loader2,
+  Settings,
+  CircleDot,
+  Users,
+  Wrench,
+  Calendar,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -9,7 +17,11 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useAuth } from "@/hooks/useAuth";
 import { useAvailability } from "@/hooks/useAvailability";
 import { useMaintenance } from "@/hooks/useMaintenance";
@@ -20,12 +32,23 @@ import { it } from "date-fns/locale";
 export default function Admin() {
   const navigate = useNavigate();
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
-  const { availability, loading: availLoading, updateAvailability } = useAvailability();
-  const { settings: maintenanceSettings, loading: maintenanceLoading, updateSettings: updateMaintenance } = useMaintenance();
+  const {
+    availability,
+    loading: availLoading,
+    updateAvailability,
+  } = useAvailability();
+  const {
+    settings: maintenanceSettings,
+    loading: maintenanceLoading,
+    updateSettings: updateMaintenance,
+  } = useMaintenance();
   const { toast } = useToast();
+  const { env } = useMaintenance();
   const [maintenanceTitle, setMaintenanceTitle] = useState("");
   const [maintenanceSubtitle, setMaintenanceSubtitle] = useState("");
-  const [countdownDate, setCountdownDate] = useState<Date | undefined>(undefined);
+  const [countdownDate, setCountdownDate] = useState<Date | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (!authLoading) {
@@ -35,7 +58,7 @@ export default function Admin() {
         toast({
           title: "Accesso negato",
           description: "Non hai i permessi per accedere a questa pagina",
-          variant: "destructive"
+          variant: "destructive",
         });
         navigate("/");
       }
@@ -57,19 +80,21 @@ export default function Admin() {
     const newStatus = checked ? "available" : "busy";
     const { error } = await updateAvailability({
       ...availability,
-      status: newStatus
+      status: newStatus,
     });
 
     if (error) {
       toast({
         title: "Errore",
         description: "Impossibile aggiornare lo stato",
-        variant: "destructive"
+        variant: "destructive",
       });
     } else {
       toast({
         title: "Stato aggiornato",
-        description: `Ora sei ${newStatus === "available" ? "disponibile" : "occupato"}`
+        description: `Ora sei ${
+          newStatus === "available" ? "disponibile" : "occupato"
+        }`,
       });
     }
   };
@@ -77,14 +102,14 @@ export default function Admin() {
   const handleSlotsChange = async (slots: number) => {
     const { error } = await updateAvailability({
       ...availability,
-      slots: Math.max(0, Math.min(10, slots))
+      slots: Math.max(0, Math.min(10, slots)),
     });
 
     if (error) {
       toast({
         title: "Errore",
         description: "Impossibile aggiornare gli slot",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -98,9 +123,15 @@ export default function Admin() {
   const handleMaintenanceToggle = async (checked: boolean) => {
     const { error } = await updateMaintenance({ enabled: checked });
     if (error) {
-      toast({ title: "Errore", description: "Impossibile aggiornare la modalità manutenzione", variant: "destructive" });
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare la modalità manutenzione",
+        variant: "destructive",
+      });
     } else {
-      toast({ title: checked ? "Manutenzione attivata" : "Manutenzione disattivata" });
+      toast({
+        title: checked ? "Manutenzione attivata" : "Manutenzione disattivata",
+      });
     }
   };
 
@@ -122,7 +153,9 @@ export default function Admin() {
 
   const handleCountdownDateChange = async (date: Date | undefined) => {
     setCountdownDate(date);
-    await updateMaintenance({ countdown_date: date ? date.toISOString() : null });
+    await updateMaintenance({
+      countdown_date: date ? date.toISOString() : null,
+    });
   };
 
   if (authLoading || availLoading || maintenanceLoading) {
@@ -141,7 +174,7 @@ export default function Admin() {
 
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Admin Panel"
         description="Pannello di amministrazione"
         noindex
@@ -162,6 +195,9 @@ export default function Admin() {
               <p className="text-muted-foreground">
                 Gestisci le impostazioni del sito
               </p>
+              <div className="mt-2 text-xs opacity-70">
+                Environment: <b>{env}</b>
+              </div>
             </div>
             <Button variant="outline" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
@@ -182,8 +218,12 @@ export default function Admin() {
                   <CircleDot className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="font-display text-lg font-semibold">Stato Disponibilità</h2>
-                  <p className="text-sm text-muted-foreground">Mostra ai visitatori se sei disponibile</p>
+                  <h2 className="font-display text-lg font-semibold">
+                    Stato Disponibilità
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Mostra ai visitatori se sei disponibile
+                  </p>
                 </div>
               </div>
 
@@ -191,18 +231,26 @@ export default function Admin() {
                 {/* Status Toggle */}
                 <div className="flex items-center justify-between p-4 bg-background rounded-lg border border-[hsl(var(--border))]">
                   <div className="flex items-center gap-3">
-                    <span className={`relative flex h-3 w-3 ${availability.status === "available" ? "" : ""}`}>
+                    <span
+                      className={`relative flex h-3 w-3 ${
+                        availability.status === "available" ? "" : ""
+                      }`}
+                    >
                       {availability.status === "available" && (
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success))] opacity-75" />
                       )}
-                      <span className={`relative inline-flex rounded-full h-3 w-3 ${
-                        availability.status === "available" 
-                          ? "bg-[hsl(var(--success))] shadow-[0_0_10px_hsl(var(--success))]" 
-                          : "bg-muted-foreground"
-                      }`} />
+                      <span
+                        className={`relative inline-flex rounded-full h-3 w-3 ${
+                          availability.status === "available"
+                            ? "bg-[hsl(var(--success))] shadow-[0_0_10px_hsl(var(--success))]"
+                            : "bg-muted-foreground"
+                        }`}
+                      />
                     </span>
                     <span className="font-medium">
-                      {availability.status === "available" ? "Disponibile" : "Occupato"}
+                      {availability.status === "available"
+                        ? "Disponibile"
+                        : "Occupato"}
                     </span>
                   </div>
                   <Switch
@@ -227,7 +275,9 @@ export default function Admin() {
                       id="slots"
                       type="number"
                       value={availability.slots}
-                      onChange={(e) => handleSlotsChange(parseInt(e.target.value) || 0)}
+                      onChange={(e) =>
+                        handleSlotsChange(parseInt(e.target.value) || 0)
+                      }
                       className="w-20 text-center"
                       min={0}
                       max={10}
@@ -260,8 +310,12 @@ export default function Admin() {
                   <Wrench className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="font-display text-lg font-semibold">Modalità Manutenzione</h2>
-                  <p className="text-sm text-muted-foreground">Mostra pagina manutenzione ai visitatori</p>
+                  <h2 className="font-display text-lg font-semibold">
+                    Modalità Manutenzione
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Mostra pagina manutenzione ai visitatori
+                  </p>
                 </div>
               </div>
 
@@ -273,11 +327,13 @@ export default function Admin() {
                       {maintenanceSettings.enabled && (
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--warm))] opacity-75" />
                       )}
-                      <span className={`relative inline-flex rounded-full h-3 w-3 ${
-                        maintenanceSettings.enabled 
-                          ? "bg-[hsl(var(--warm))] shadow-[0_0_10px_hsl(var(--warm))]" 
-                          : "bg-muted-foreground"
-                      }`} />
+                      <span
+                        className={`relative inline-flex rounded-full h-3 w-3 ${
+                          maintenanceSettings.enabled
+                            ? "bg-[hsl(var(--warm))] shadow-[0_0_10px_hsl(var(--warm))]"
+                            : "bg-muted-foreground"
+                        }`}
+                      />
                     </span>
                     <span className="font-medium">
                       {maintenanceSettings.enabled ? "Attiva" : "Disattiva"}
@@ -323,13 +379,18 @@ export default function Admin() {
                       onCheckedChange={handleCountdownToggle}
                     />
                   </div>
-                  
+
                   {maintenanceSettings.show_countdown && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
                           <Calendar className="mr-2 h-4 w-4" />
-                          {countdownDate ? format(countdownDate, "PPP", { locale: it }) : "Seleziona data"}
+                          {countdownDate
+                            ? format(countdownDate, "PPP", { locale: it })
+                            : "Seleziona data"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -371,8 +432,12 @@ export default function Admin() {
                   <Settings className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="font-display text-lg font-semibold">Info Account</h2>
-                  <p className="text-sm text-muted-foreground">Dettagli del tuo account</p>
+                  <h2 className="font-display text-lg font-semibold">
+                    Info Account
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Dettagli del tuo account
+                  </p>
                 </div>
               </div>
 
