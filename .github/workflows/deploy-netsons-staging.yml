@@ -1,8 +1,8 @@
-name: Deploy to Netsons (public_html)
+name: Deploy to Netsons (staging)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["staging"]
   workflow_dispatch:
 
 jobs:
@@ -26,12 +26,12 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
         run: npm run build
 
-      - name: FTP Deploy dist/ -> public_html
+      - name: FTP Deploy dist/ -> STAGING folder
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
-          server-dir: /public_html/
+          server-dir: /staging.dimensione4.it/
           dangerous-clean-slate: true
