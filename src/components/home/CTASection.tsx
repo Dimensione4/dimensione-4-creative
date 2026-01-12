@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/components/GoogleAnalytics";
 
 export function CTASection() {
   const ref = useRef(null);
@@ -39,13 +40,32 @@ export function CTASection() {
             Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="hero" size="xl" className="cta-glow" asChild>
+            <Button 
+              variant="hero" 
+              size="xl" 
+              className="cta-glow" 
+              asChild
+              onClick={() => trackEvent("cta_click", { 
+                cta_name: "footer_cta_primary", 
+                cta_text: "Prenota una call",
+                location: "cta_section"
+              })}
+            >
               <Link to="/contatti">
                 Prenota una call
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
-            <Button variant="outline" size="xl" asChild>
+            <Button 
+              variant="outline" 
+              size="xl" 
+              asChild
+              onClick={() => trackEvent("cta_click", { 
+                cta_name: "footer_cta_secondary", 
+                cta_text: "Scrivi via email",
+                location: "cta_section"
+              })}
+            >
               <a href="mailto:info@dimensione4.it">
                 Scrivi via email
               </a>
