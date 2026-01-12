@@ -1,0 +1,38 @@
+Copyright (c) 2026 Dimensione 4 di Dario Marco Bellini
+
+This repository contains both software source code and creative assets (visual design,
+branding, UI layout, copywriting, images, icons, and other media). Different licenses apply.
+
+------------------------------------------------------------
+1) SOURCE CODE LICENSE
+------------------------------------------------------------
+All source code files (TypeScript, JavaScript, React components, configuration files)
+are licensed under:
+Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+https://creativecommons.org/licenses/by-nc/4.0/
+
+You are allowed to:
+- View and study the source code
+- Copy and redistribute the material in any medium or format
+- Remix, transform, and build upon the material
+
+Under the following terms:
+- Attribution — You must give appropriate credit
+- NonCommercial — You may not use the material for commercial purposes
+
+------------------------------------------------------------
+2) DESIGN / BRAND / ASSETS LICENSE
+------------------------------------------------------------
+All creative assets (visual design, UI layout, typography choices, branding elements,
+logo, illustrations, animations, copywriting, images, icons, and any other media files)
+are licensed under:
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
+https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+You are allowed to:
+- Share the assets unmodified, for non-commercial purposes, with attribution
+
+You may NOT:
+- Modify, remix, transform, or build upon the assets
+- Use the assets in commercial projects
+- Republish the website design as a template (or near-identical derivative)
