@@ -28,7 +28,9 @@
     "bookCall": "Book call",
     "tagline": "Technical precision. Visual sensibility.",
     "description": "Creative studio by Dario Marco Bellini. I transform ideas into digital experiences with depth, structure, and vision.",
-    "copyright": "© {{year}} Dimensione 4 by Dario Marco Bellini. VAT 00000000000"
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
+    "termsConditions": "Terms & Conditions"
   },
   "hero": {
     "title": "I create digital experiences",
