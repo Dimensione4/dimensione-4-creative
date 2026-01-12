@@ -202,6 +202,12 @@ export function Footer() {
                 {t(link.labelKey)}
               </Link>
             ))}
+            <button
+              onClick={() => (window as any).openCookieConsent?.()}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('footer.manageCookies')}
+            </button>
           </div>
         </div>
 

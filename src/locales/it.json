@@ -30,6 +30,12 @@
     "description": "Studio creativo di Dario Marco Bellini. Trasformo idee in esperienze digitali con profondità, struttura e visione.",
     "privacyPolicy": "Privacy Policy",
     "cookiePolicy": "Cookie Policy",
+    "termsConditions": "Termini e Condizioni",
+    "manageCookies": "Gestisci Cookie"
+  },
+  "legal": {
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
     "termsConditions": "Termini e Condizioni"
   },
   "hero": {

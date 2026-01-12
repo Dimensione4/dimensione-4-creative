@@ -15,6 +15,9 @@ import Metodo from "./pages/Metodo";
 import Abbonamento from "./pages/Abbonamento";
 import ChiSono from "./pages/ChiSono";
 import Contatti from "./pages/Contatti";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CookiePolicy from "./pages/CookiePolicy";
+import TermsConditions from "./pages/TermsConditions";
 import Admin from "./pages/Admin";
 import AdminLogin from "./pages/AdminLogin";
 import Maintenance from "./pages/Maintenance";
@@ -58,6 +61,9 @@ const AppRoutes = () => (
         <Route path="/abbonamento" element={<Abbonamento />} />
         <Route path="/chi-sono" element={<ChiSono />} />
         <Route path="/contatti" element={<Contatti />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/termini-condizioni" element={<TermsConditions />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/manutenzione" element={<Maintenance />} />

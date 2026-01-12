@@ -5,16 +5,24 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { contactFormSchema, type ContactFormData } from "@/lib/validations/contact";
 import { CalendlyEmbed } from "@/components/CalendlyEmbed";
 import { SEO } from "@/components/SEO";
+import { useRecaptcha } from "@/hooks/useRecaptcha";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 export default function Contatti() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const { toast } = useToast();
+  const { executeRecaptcha, isConfigured: recaptchaConfigured } = useRecaptcha();
+  const { i18n } = useTranslation();
+  const isItalian = i18n.language === "it";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,6 +34,7 @@ export default function Contatti() {
       email: formData.get("email") as string,
       website: formData.get("website") as string || "",
       message: formData.get("message") as string,
+      privacyConsent: privacyConsent,
     };
 
     // Validate with zod
@@ -43,6 +52,15 @@ export default function Contatti() {
     setIsSubmitting(true);
 
     try {
+      // Execute reCAPTCHA if configured
+      let recaptchaToken: string | null = null;
+      if (recaptchaConfigured) {
+        recaptchaToken = await executeRecaptcha("contact_form");
+        if (!recaptchaToken) {
+          throw new Error("reCAPTCHA verification failed");
+        }
+      }
+
       // Insert into database
       const { error } = await supabase
         .from("contact_submissions")
@@ -64,22 +82,28 @@ export default function Contatti() {
           email: result.data.email,
           message: result.data.message,
           website: result.data.website,
+          recaptchaToken,
         },
       }).catch((err) => {
         console.error("Email notification error:", err);
       });
 
       toast({
-        title: "Messaggio inviato!",
-        description: "Ti risponderò entro 24 ore lavorative.",
+        title: isItalian ? "Messaggio inviato!" : "Message sent!",
+        description: isItalian 
+          ? "Ti risponderò entro 24 ore lavorative." 
+          : "I'll respond within 24 business hours.",
       });
       
       (e.target as HTMLFormElement).reset();
+      setPrivacyConsent(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
-        title: "Errore nell'invio",
-        description: "Si è verificato un problema. Riprova o scrivi direttamente a info@dimensione4.it",
+        title: isItalian ? "Errore nell'invio" : "Error sending",
+        description: isItalian 
+          ? "Si è verificato un problema. Riprova o scrivi direttamente a info@dimensione4.it"
+          : "An error occurred. Please try again or email info@dimensione4.it directly",
         variant: "destructive",
       });
     } finally {
@@ -90,8 +114,10 @@ export default function Contatti() {
   return (
     <Layout>
       <SEO 
-        title="Contatti"
-        description="Prenota una call di 15 minuti o invia un messaggio. Rispondo entro 24 ore lavorative."
+        title={isItalian ? "Contatti" : "Contact"}
+        description={isItalian 
+          ? "Prenota una call di 15 minuti o invia un messaggio. Rispondo entro 24 ore lavorative."
+          : "Book a 15-minute call or send a message. I respond within 24 business hours."}
         canonical="/contatti"
       />
       {/* Hero */}
@@ -108,13 +134,15 @@ export default function Contatti() {
               transition={{ duration: 0.5 }}
             >
               <span className="font-mono text-label text-primary mb-4 block">
-                Contatti
+                {isItalian ? "Contatti" : "Contact"}
               </span>
               <h1 className="font-display text-hero-mobile md:text-[3.5rem] font-bold mb-6">
-                Richiedi disponibilità
+                {isItalian ? "Richiedi disponibilità" : "Request availability"}
               </h1>
               <p className="text-body-lg text-muted-foreground mb-8">
-                Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile.
+                {isItalian 
+                  ? "Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile."
+                  : "A clear 15-minute call to understand if I can help you. No pressure, no unnecessary waiting."}
               </p>
 
               <div className="space-y-6">
@@ -124,29 +152,13 @@ export default function Contatti() {
                       <Mail className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-display font-semibold mb-1">Scrivi via email</h3>
+                      <h3 className="font-display font-semibold mb-1">
+                        {isItalian ? "Scrivi via email" : "Write via email"}
+                      </h3>
                       <p className="text-sm text-muted-foreground mb-3">
-                        Per richieste dettagliate o progetti specifici.
-                      </p>
-                      <a 
-                        href="mailto:info@dimensione4.it"
-                        className="text-sm text-primary hover:underline"
-                      >
-                        info@dimensione4.it
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="surface-card p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-display font-semibold mb-1">Scrivi via email</h3>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Per richieste dettagliate o progetti specifici.
+                        {isItalian 
+                          ? "Per richieste dettagliate o progetti specifici."
+                          : "For detailed requests or specific projects."}
                       </p>
                       <a 
                         href="mailto:info@dimensione4.it"
@@ -164,9 +176,13 @@ export default function Contatti() {
                       <MessageSquare className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-display font-semibold mb-1">Tempi di risposta</h3>
+                      <h3 className="font-display font-semibold mb-1">
+                        {isItalian ? "Tempi di risposta" : "Response times"}
+                      </h3>
                       <p className="text-sm text-muted-foreground">
-                        Rispondo entro 24 ore lavorative. Niente spam, niente follow-up aggressivi.
+                        {isItalian 
+                          ? "Rispondo entro 24 ore lavorative. Niente spam, niente follow-up aggressivi."
+                          : "I respond within 24 business hours. No spam, no aggressive follow-ups."}
                       </p>
                     </div>
                   </div>
@@ -182,18 +198,18 @@ export default function Contatti() {
             >
               <div className="surface-card p-8 md:p-10">
                 <h2 className="font-display text-xl font-semibold mb-6">
-                  Invia un messaggio
+                  {isItalian ? "Invia un messaggio" : "Send a message"}
                 </h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-medium">
-                      Nome *
+                      {isItalian ? "Nome *" : "Name *"}
                     </label>
                     <Input
                       id="name"
                       name="name"
-                      placeholder="Il tuo nome"
+                      placeholder={isItalian ? "Il tuo nome" : "Your name"}
                       className={`bg-surface-hover border-[hsl(var(--border))] ${errors.name ? "border-destructive" : ""}`}
                     />
                     {errors.name && (
@@ -209,7 +225,7 @@ export default function Contatti() {
                       id="email"
                       name="email"
                       type="email"
-                      placeholder="la@tua.email"
+                      placeholder={isItalian ? "la@tua.email" : "your@email.com"}
                       className={`bg-surface-hover border-[hsl(var(--border))] ${errors.email ? "border-destructive" : ""}`}
                     />
                     {errors.email && (
@@ -219,7 +235,10 @@ export default function Contatti() {
 
                   <div className="space-y-2">
                     <label htmlFor="website" className="text-sm font-medium">
-                      Sito web / Repository <span className="text-muted-foreground">(opzionale)</span>
+                      {isItalian ? "Sito web / Repository " : "Website / Repository "}
+                      <span className="text-muted-foreground">
+                        ({isItalian ? "opzionale" : "optional"})
+                      </span>
                     </label>
                     <Input
                       id="website"
@@ -234,16 +253,52 @@ export default function Contatti() {
 
                   <div className="space-y-2">
                     <label htmlFor="message" className="text-sm font-medium">
-                      Messaggio *
+                      {isItalian ? "Messaggio *" : "Message *"}
                     </label>
                     <Textarea
                       id="message"
                       name="message"
-                      placeholder="Descrivi brevemente il tuo progetto o la tua esigenza..."
+                      placeholder={isItalian 
+                        ? "Descrivi brevemente il tuo progetto o la tua esigenza..."
+                        : "Briefly describe your project or needs..."}
                       className={`min-h-[150px] bg-surface-hover border-[hsl(var(--border))] resize-none ${errors.message ? "border-destructive" : ""}`}
                     />
                     {errors.message && (
                       <p className="text-xs text-destructive">{errors.message}</p>
+                    )}
+                  </div>
+
+                  {/* Privacy Consent Checkbox */}
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        id="privacyConsent"
+                        checked={privacyConsent}
+                        onCheckedChange={(checked) => setPrivacyConsent(checked === true)}
+                        className={errors.privacyConsent ? "border-destructive" : ""}
+                      />
+                      <label htmlFor="privacyConsent" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                        {isItalian ? (
+                          <>
+                            Ho letto e accetto l'{" "}
+                            <Link to="/privacy-policy" className="text-primary hover:underline" target="_blank">
+                              informativa sulla privacy
+                            </Link>
+                            {" "}e acconsento al trattamento dei miei dati personali *
+                          </>
+                        ) : (
+                          <>
+                            I have read and accept the{" "}
+                            <Link to="/privacy-policy" className="text-primary hover:underline" target="_blank">
+                              privacy policy
+                            </Link>
+                            {" "}and consent to the processing of my personal data *
+                          </>
+                        )}
+                      </label>
+                    </div>
+                    {errors.privacyConsent && (
+                      <p className="text-xs text-destructive">{errors.privacyConsent}</p>
                     )}
                   </div>
 
@@ -257,18 +312,20 @@ export default function Contatti() {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Invio in corso...
+                        {isItalian ? "Invio in corso..." : "Sending..."}
                       </>
                     ) : (
                       <>
-                        Invia messaggio
+                        {isItalian ? "Invia messaggio" : "Send message"}
                         <Send className="w-4 h-4" />
                       </>
                     )}
                   </Button>
 
                   <p className="text-xs text-muted-foreground text-center">
-                    Nessun dato viene condiviso con terzi. Ti contatterò solo per rispondere alla tua richiesta.
+                    {isItalian 
+                      ? "Questo sito è protetto da reCAPTCHA. Nessun dato viene condiviso con terzi."
+                      : "This site is protected by reCAPTCHA. No data is shared with third parties."}
                   </p>
                 </form>
               </div>

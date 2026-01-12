@@ -30,6 +30,12 @@
     "description": "Creative studio by Dario Marco Bellini. I transform ideas into digital experiences with depth, structure, and vision.",
     "privacyPolicy": "Privacy Policy",
     "cookiePolicy": "Cookie Policy",
+    "termsConditions": "Terms & Conditions",
+    "manageCookies": "Manage Cookies"
+  },
+  "legal": {
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
     "termsConditions": "Terms & Conditions"
   },
   "hero": {
