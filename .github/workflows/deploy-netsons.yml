@@ -1,4 +1,4 @@
-name: Deploy to Netsons (public_html)
+name: Deploy to Netsons (production)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-prod:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
