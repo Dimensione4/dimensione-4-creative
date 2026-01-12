@@ -14,6 +14,7 @@ import { SEO } from "@/components/SEO";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { trackEvent } from "@/components/GoogleAnalytics";
 
 export default function Contatti() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,6 +87,19 @@ export default function Contatti() {
         },
       }).catch((err) => {
         console.error("Email notification error:", err);
+      });
+
+      // Track form conversion
+      trackEvent("form_submission", {
+        form_name: "contact_form",
+        form_type: "lead_generation",
+        has_website: !!result.data.website,
+      });
+
+      // Track as conversion event for Google Analytics
+      trackEvent("generate_lead", {
+        currency: "EUR",
+        value: 0,
       });
 
       toast({

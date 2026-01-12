@@ -5,6 +5,7 @@ import { ArrowRight, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAvailability } from "@/hooks/useAvailability";
+import { trackEvent } from "@/components/GoogleAnalytics";
 import heroImage from "@/assets/hero-4d.jpg";
 
 const Hero3DScene = lazy(() => 
@@ -128,13 +129,32 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button variant="hero" size="xl" className="cta-glow" asChild>
+            <Button 
+              variant="hero" 
+              size="xl" 
+              className="cta-glow" 
+              asChild
+              onClick={() => trackEvent("cta_click", { 
+                cta_name: "hero_primary", 
+                cta_text: t('hero.cta'),
+                location: "hero_section"
+              })}
+            >
               <Link to="/contatti">
                 {t('hero.cta')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
-            <Button variant="outline" size="xl" asChild>
+            <Button 
+              variant="outline" 
+              size="xl" 
+              asChild
+              onClick={() => trackEvent("cta_click", { 
+                cta_name: "hero_secondary", 
+                cta_text: t('hero.ctaSecondary'),
+                location: "hero_section"
+              })}
+            >
               <Link to="/servizi">
                 <Play className="w-4 h-4" />
                 {t('hero.ctaSecondary')}
