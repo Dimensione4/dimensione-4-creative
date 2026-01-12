@@ -41,9 +41,9 @@ export default function Admin() {
     settings: maintenanceSettings,
     loading: maintenanceLoading,
     updateSettings: updateMaintenance,
+    env,
   } = useMaintenance();
   const { toast } = useToast();
-  const { env } = useMaintenance();
   const [maintenanceTitle, setMaintenanceTitle] = useState("");
   const [maintenanceSubtitle, setMaintenanceSubtitle] = useState("");
   const [countdownDate, setCountdownDate] = useState<Date | undefined>(
