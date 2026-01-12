@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useMaintenance } from "@/hooks/useMaintenance";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import Index from "./pages/Index";
 import Servizi from "./pages/Servizi";
 import MVP from "./pages/MVP";
@@ -51,6 +52,7 @@ function MaintenanceGuard({ children }: { children: React.ReactNode }) {
 
 const AppRoutes = () => (
   <BrowserRouter>
+    <GoogleAnalytics />
     <MaintenanceGuard>
       <Routes>
         <Route path="/" element={<Index />} />
