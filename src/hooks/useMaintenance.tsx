@@ -11,22 +11,26 @@ export interface MaintenanceSettings {
 
 const DEFAULT_SETTINGS: MaintenanceSettings = {
   enabled: false,
-  title: "Sito in manutenzione",
-  subtitle: "Torneremo presto con novità!",
+  title: "Sto riallineando la Quarta Dimensione.",
+  subtitle:
+    "Un intervento tra prospettiva, struttura e tempo. Torno online a breve.",
   show_countdown: false,
-  countdown_date: null
+  countdown_date: null,
 };
 
+const APP_ENV = import.meta.env.VITE_APP_ENV ?? "prod";
+
 export function useMaintenance() {
-  const [settings, setSettings] = useState<MaintenanceSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] =
+    useState<MaintenanceSettings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
 
   const fetchSettings = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from("site_settings")
-        .select("value")
-        .eq("key", "maintenance_mode")
+        .from("maintenance_settings")
+        .select("enabled")
+        .eq("env", APP_ENV)
         .single();
 
       if (error) {
@@ -36,8 +40,11 @@ export function useMaintenance() {
         } else {
           console.error("Error fetching maintenance settings:", error);
         }
-      } else if (data?.value) {
-        setSettings(data.value as unknown as MaintenanceSettings);
+      } else if (data) {
+        setSettings((prev) => ({
+          ...prev,
+          enabled: data.enabled,
+        }));
       }
     } catch (err) {
       console.error("Error fetching maintenance settings:", err);
@@ -52,16 +59,16 @@ export function useMaintenance() {
 
   const updateSettings = async (newSettings: Partial<MaintenanceSettings>) => {
     const updatedSettings = { ...settings, ...newSettings };
-    
+
     try {
-      const { error } = await supabase
-        .from("site_settings")
-        .upsert({
-          key: "maintenance_mode",
-          value: updatedSettings
-        }, {
-          onConflict: "key"
-        });
+      const { error } = await supabase.from("maintenance_settings").upsert(
+        {
+          env: APP_ENV,
+          enabled: updatedSettings.enabled,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "env" }
+      );
 
       if (error) {
         console.error("Error updating maintenance settings:", error);
@@ -80,6 +87,7 @@ export function useMaintenance() {
     settings,
     loading,
     updateSettings,
-    refetch: fetchSettings
+    refetch: fetchSettings,
+    env: APP_ENV,
   };
 }
