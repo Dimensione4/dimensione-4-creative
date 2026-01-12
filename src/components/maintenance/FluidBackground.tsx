@@ -807,8 +807,18 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       updatePointer(e.clientX, e.clientY, pointerRef.current.down);
     };
 
-    // Touch events - only on canvas, no preventDefault to allow button clicks
+    // Helper to check if target is an interactive element
+    const isInteractiveElement = (target: EventTarget | null): boolean => {
+      if (!target || !(target instanceof Element)) return false;
+      const interactiveSelectors = 'a, button, input, textarea, select, [role="button"], [onclick]';
+      return target.closest(interactiveSelectors) !== null;
+    };
+
+    // Touch events with smart detection
     const onTouchStart = (e: TouchEvent) => {
+      // Skip if touching an interactive element
+      if (isInteractiveElement(e.target)) return;
+      
       pointerRef.current.down = true;
       pointerRef.current.color = getRandomColor();
       const touch = e.touches[0];
@@ -820,11 +830,42 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     };
 
     const onTouchMove = (e: TouchEvent) => {
+      // Skip if touching an interactive element
+      if (isInteractiveElement(e.target)) return;
+      
       const touch = e.touches[0];
       updatePointer(touch.clientX, touch.clientY, true);
     };
 
-    // Only canvas events - no document-level listeners to avoid blocking UI
+    // Document-level events to capture through overlay
+    const onMouseDownDoc = (e: MouseEvent) => {
+      if (isInteractiveElement(e.target)) return;
+      pointerRef.current.down = true;
+      pointerRef.current.color = getRandomColor();
+      updatePointer(e.clientX, e.clientY, true);
+    };
+
+    const onMouseMoveDoc = (e: MouseEvent) => {
+      updatePointer(e.clientX, e.clientY, pointerRef.current.down);
+    };
+
+    const onTouchStartDoc = (e: TouchEvent) => {
+      if (isInteractiveElement(e.target)) return;
+      
+      pointerRef.current.down = true;
+      pointerRef.current.color = getRandomColor();
+      const touch = e.touches[0];
+      updatePointer(touch.clientX, touch.clientY, true);
+    };
+
+    const onTouchMoveDoc = (e: TouchEvent) => {
+      if (isInteractiveElement(e.target)) return;
+      
+      const touch = e.touches[0];
+      updatePointer(touch.clientX, touch.clientY, true);
+    };
+
+    // Canvas events as fallback
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mouseup", onMouseUp);
     canvas.addEventListener("mouseleave", onMouseUp);
@@ -832,6 +873,14 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     canvas.addEventListener("touchstart", onTouchStart, { passive: true });
     canvas.addEventListener("touchend", onTouchEnd);
     canvas.addEventListener("touchmove", onTouchMove, { passive: true });
+
+    // Document-level events to capture through overlay
+    document.addEventListener("mousedown", onMouseDownDoc);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mousemove", onMouseMoveDoc);
+    document.addEventListener("touchstart", onTouchStartDoc, { passive: true });
+    document.addEventListener("touchend", onTouchEnd);
+    document.addEventListener("touchmove", onTouchMoveDoc, { passive: true });
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
@@ -842,6 +891,12 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       canvas.removeEventListener("touchstart", onTouchStart);
       canvas.removeEventListener("touchend", onTouchEnd);
       canvas.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("mousedown", onMouseDownDoc);
+      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mousemove", onMouseMoveDoc);
+      document.removeEventListener("touchstart", onTouchStartDoc);
+      document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchmove", onTouchMoveDoc);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
@@ -851,7 +906,8 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
   return (
     <canvas
       ref={canvasRef}
-      className={`fixed inset-0 w-full h-full pointer-events-none ${className}`}
+      className={`fixed inset-0 w-full h-full ${className}`}
+      style={{ touchAction: "none" }}
     />
   );
 }
