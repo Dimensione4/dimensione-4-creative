@@ -37,7 +37,7 @@ export default function Maintenance() {
       <FluidBackground className="z-0" />
       
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12 safe-area-inset select-none">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 safe-area-inset select-none overflow-y-auto">
         {/* Logo + Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -154,7 +154,7 @@ export default function Maintenance() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-auto pt-8 sm:pt-12 text-center"
+          className="mt-auto pt-8 sm:pt-12 pb-6 text-center"
         >
           <p className="text-xs mb-2">
             <span className="text-amber-400">Torno online a breve</span>
