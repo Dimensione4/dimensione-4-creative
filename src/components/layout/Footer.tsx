@@ -13,6 +13,12 @@ const navLinks = [
   { href: "/chi-sono", labelKey: "nav.about" },
 ];
 
+const legalLinks = [
+  { href: "/privacy-policy", labelKey: "footer.privacyPolicy" },
+  { href: "/cookie-policy", labelKey: "footer.cookiePolicy" },
+  { href: "/termini-condizioni", labelKey: "footer.termsConditions" },
+];
+
 // X (Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -184,11 +190,27 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Legal Links */}
+        <div className="py-6 border-t border-[hsl(var(--border))]">
+          <div className="flex flex-wrap justify-center gap-6">
+            {legalLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {t(link.labelKey)}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Bottom bar */}
         <div className="py-6 border-t border-[hsl(var(--border))] flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">
-            {t('footer.copyright', { year: currentYear })}
-          </p>
+          <div className="text-xs text-muted-foreground text-center md:text-left">
+            <p>© {currentYear} Dimensione 4 di Dario Marco Bellini</p>
+            <p className="mt-1">P.IVA 04678930167</p>
+          </div>
           
           {/* Back to top */}
           <motion.button

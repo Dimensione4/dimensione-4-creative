@@ -28,7 +28,9 @@
     "bookCall": "Prenota call",
     "tagline": "Precisione tecnica. Sensibilità visiva.",
     "description": "Studio creativo di Dario Marco Bellini. Trasformo idee in esperienze digitali con profondità, struttura e visione.",
-    "copyright": "© {{year}} Dimensione 4 di Dario Marco Bellini. P.IVA 00000000000"
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
+    "termsConditions": "Termini e Condizioni"
   },
   "hero": {
     "title": "Creo esperienze digitali",

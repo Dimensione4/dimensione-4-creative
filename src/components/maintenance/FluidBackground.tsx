@@ -478,9 +478,45 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
 
     glRef.current = gl;
 
-    // Enable extensions
-    gl.getExtension("OES_texture_float");
+    // Enable extensions with Safari fallback
+    const floatExt = gl.getExtension("OES_texture_float");
+    const halfFloatExt = gl.getExtension("OES_texture_half_float");
     gl.getExtension("OES_texture_float_linear");
+    gl.getExtension("OES_texture_half_float_linear");
+    
+    // Determine supported texture type (Safari needs HALF_FLOAT)
+    let texType: number;
+    let supportFloatLinear = false;
+    
+    if (floatExt) {
+      // Check if float textures are renderable by creating a test FBO
+      const testTexture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, testTexture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 4, 4, 0, gl.RGBA, gl.FLOAT, null);
+      
+      const testFBO = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, testFBO);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, testTexture, 0);
+      
+      if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) {
+        texType = gl.FLOAT;
+        supportFloatLinear = true;
+      } else if (halfFloatExt) {
+        texType = halfFloatExt.HALF_FLOAT_OES;
+      } else {
+        // Fallback to UNSIGNED_BYTE (very limited precision)
+        texType = gl.UNSIGNED_BYTE;
+      }
+      
+      // Cleanup test resources
+      gl.deleteTexture(testTexture);
+      gl.deleteFramebuffer(testFBO);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    } else if (halfFloatExt) {
+      texType = halfFloatExt.HALF_FLOAT_OES;
+    } else {
+      texType = gl.UNSIGNED_BYTE;
+    }
 
     const resizeCanvas = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -527,12 +563,13 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     const simRes = CONFIG.SIM_RESOLUTION;
     const dyeRes = CONFIG.DYE_RESOLUTION;
 
-    const texType = gl.FLOAT;
     const rgba = gl.RGBA;
+    // Use LINEAR filtering only if supported, otherwise NEAREST
+    const linearFilter = supportFloatLinear || texType === gl.UNSIGNED_BYTE ? gl.LINEAR : gl.NEAREST;
 
     fboRef.current = {
-      dye: createDoubleFBO(gl, dyeRes, dyeRes, rgba, rgba, texType, gl.LINEAR),
-      velocity: createDoubleFBO(gl, simRes, simRes, rgba, rgba, texType, gl.LINEAR),
+      dye: createDoubleFBO(gl, dyeRes, dyeRes, rgba, rgba, texType, linearFilter),
+      velocity: createDoubleFBO(gl, simRes, simRes, rgba, rgba, texType, linearFilter),
       divergence: createFBO(gl, simRes, simRes, rgba, rgba, texType, gl.NEAREST),
       curl: createFBO(gl, simRes, simRes, rgba, rgba, texType, gl.NEAREST),
       pressure: createDoubleFBO(gl, simRes, simRes, rgba, rgba, texType, gl.NEAREST),
