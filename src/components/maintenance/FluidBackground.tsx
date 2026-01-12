@@ -1,45 +1,122 @@
 import { useEffect, useRef, useCallback } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { DeviceType, useDeviceType, getAspectRatioCategory } from "@/hooks/use-device-type";
 
 interface FluidBackgroundProps {
   className?: string;
 }
 
-// Detect device capabilities for adaptive resolution
-const getDeviceConfig = (isMobile: boolean, isTouch: boolean) => {
-  if (isMobile) {
-    return {
-      SIM_RESOLUTION: 64,
-      DYE_RESOLUTION: 512,
-      SPLAT_RADIUS: 0.4,
-      SPLAT_FORCE: 4000,
-      AUTO_SPLAT_INTERVAL: 0.8,
-    };
+// Device-specific configuration for responsive fluid behavior
+interface DeviceConfig {
+  SIM_RESOLUTION: number;
+  DYE_RESOLUTION: number;
+  SPLAT_RADIUS: number;
+  SPLAT_FORCE: number;
+  CURL: number;
+  DENSITY_DISSIPATION: number;
+  VELOCITY_DISSIPATION: number;
+  AUTO_SPLATS_ENABLED: boolean;
+  AUTO_SPLAT_INTERVAL: number;
+  INITIAL_SPLAT_COUNT: number;
+}
+
+const getDeviceConfig = (deviceType: DeviceType): DeviceConfig => {
+  switch (deviceType) {
+    case 'mobile':
+      return {
+        SIM_RESOLUTION: 64,
+        DYE_RESOLUTION: 512,
+        SPLAT_RADIUS: 0.5,
+        SPLAT_FORCE: 3500,
+        CURL: 25,
+        DENSITY_DISSIPATION: 0.95,
+        VELOCITY_DISSIPATION: 0.96,
+        AUTO_SPLATS_ENABLED: true,
+        AUTO_SPLAT_INTERVAL: 2.5,
+        INITIAL_SPLAT_COUNT: 3,
+      };
+    case 'tablet':
+      return {
+        SIM_RESOLUTION: 96,
+        DYE_RESOLUTION: 768,
+        SPLAT_RADIUS: 0.38,
+        SPLAT_FORCE: 4500,
+        CURL: 30,
+        DENSITY_DISSIPATION: 0.96,
+        VELOCITY_DISSIPATION: 0.97,
+        AUTO_SPLATS_ENABLED: false,
+        AUTO_SPLAT_INTERVAL: 0,
+        INITIAL_SPLAT_COUNT: 4,
+      };
+    case 'desktop':
+    default:
+      return {
+        SIM_RESOLUTION: 128,
+        DYE_RESOLUTION: 1024,
+        SPLAT_RADIUS: 0.28,
+        SPLAT_FORCE: 6000,
+        CURL: 35,
+        DENSITY_DISSIPATION: 0.97,
+        VELOCITY_DISSIPATION: 0.98,
+        AUTO_SPLATS_ENABLED: false,
+        AUTO_SPLAT_INTERVAL: 0,
+        INITIAL_SPLAT_COUNT: 5,
+      };
   }
-  if (isTouch) {
-    return {
-      SIM_RESOLUTION: 96,
-      DYE_RESOLUTION: 768,
-      SPLAT_RADIUS: 0.35,
-      SPLAT_FORCE: 5000,
-      AUTO_SPLAT_INTERVAL: 0.6,
-    };
-  }
-  return {
-    SIM_RESOLUTION: 128,
-    DYE_RESOLUTION: 1024,
-    SPLAT_RADIUS: 0.25,
-    SPLAT_FORCE: 6000,
-    AUTO_SPLAT_INTERVAL: 0.5,
-  };
 };
 
-// Base configuration
+// Generate initial splat positions based on device type and aspect ratio
+const getInitialSplatPositions = (deviceType: DeviceType, aspectRatio: 'portrait' | 'landscape' | 'square'): Array<{ x: number; y: number }> => {
+  switch (deviceType) {
+    case 'mobile':
+      // Vertical pattern for mobile (portrait orientation typical)
+      if (aspectRatio === 'portrait') {
+        return [
+          { x: 0.5, y: 0.25 },
+          { x: 0.5, y: 0.5 },
+          { x: 0.5, y: 0.75 },
+        ];
+      }
+      // Landscape mobile
+      return [
+        { x: 0.25, y: 0.5 },
+        { x: 0.5, y: 0.5 },
+        { x: 0.75, y: 0.5 },
+      ];
+    
+    case 'tablet':
+      // Diagonal pattern for tablet
+      if (aspectRatio === 'portrait') {
+        return [
+          { x: 0.3, y: 0.25 },
+          { x: 0.5, y: 0.5 },
+          { x: 0.7, y: 0.75 },
+          { x: 0.4, y: 0.4 },
+        ];
+      }
+      // Landscape/square tablet
+      return [
+        { x: 0.25, y: 0.35 },
+        { x: 0.5, y: 0.5 },
+        { x: 0.75, y: 0.65 },
+        { x: 0.4, y: 0.6 },
+      ];
+    
+    case 'desktop':
+    default:
+      // Horizontal distributed pattern for desktop
+      return [
+        { x: 0.2, y: 0.5 },
+        { x: 0.4, y: 0.45 },
+        { x: 0.5, y: 0.55 },
+        { x: 0.6, y: 0.45 },
+        { x: 0.8, y: 0.5 },
+      ];
+  }
+};
+
+// Base configuration (shared across all devices)
 const BASE_CONFIG = {
-  DENSITY_DISSIPATION: 0.97,
-  VELOCITY_DISSIPATION: 0.98,
   PRESSURE_ITERATIONS: 20,
-  CURL: 30,
   SHADING: true,
   COLORFUL: true,
   BLOOM: true,
@@ -117,8 +194,9 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
   const glRef = useRef<WebGLRenderingContext | null>(null);
   const programsRef = useRef<any>({});
   const fboRef = useRef<any>({});
-  const configRef = useRef<any>(null);
-  const isMobile = useIsMobile();
+  const configRef = useRef<DeviceConfig | null>(null);
+  const autoSplatTimerRef = useRef<number>(0);
+  const deviceType = useDeviceType();
 
   // Vertex shader
   const baseVertexShader = `
@@ -380,11 +458,10 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Detect touch capability
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const deviceConfig = getDeviceConfig(isMobile, isTouch);
+    // Get device-specific configuration
+    const deviceConfig = getDeviceConfig(deviceType);
     const CONFIG = { ...BASE_CONFIG, ...deviceConfig };
-    configRef.current = CONFIG;
+    configRef.current = deviceConfig;
 
     const gl = canvas.getContext("webgl", {
       alpha: true,
@@ -464,7 +541,6 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
     // Store config for use in animation
     const SPLAT_FORCE = CONFIG.SPLAT_FORCE;
     const SPLAT_RADIUS = CONFIG.SPLAT_RADIUS;
-    const AUTO_SPLAT_INTERVAL = CONFIG.AUTO_SPLAT_INTERVAL;
 
     // Utility functions
     const blit = (target: any) => {
@@ -557,7 +633,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       gl.vertexAttribPointer(pressPosLoc, 2, gl.FLOAT, false, 0, 0);
       gl.uniform2f(gl.getUniformLocation(programs.pressure, "texelSize"), fbos.velocity.texelSizeX, fbos.velocity.texelSizeY);
       gl.uniform1i(gl.getUniformLocation(programs.pressure, "uDivergence"), fbos.divergence.attach(0));
-      for (let i = 0; i < CONFIG.PRESSURE_ITERATIONS; i++) {
+      for (let i = 0; i < BASE_CONFIG.PRESSURE_ITERATIONS; i++) {
         gl.uniform1i(gl.getUniformLocation(programs.pressure, "uPressure"), fbos.pressure.read.attach(1));
         blit(fbos.pressure.write);
         fbos.pressure.swap();
@@ -605,13 +681,14 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       gl.enableVertexAttribArray(posLoc);
       gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
       gl.uniform1i(gl.getUniformLocation(display, "uTexture"), fboRef.current.dye.read.attach(0));
-      gl.uniform1f(gl.getUniformLocation(display, "uBloom"), CONFIG.BLOOM_INTENSITY);
+      gl.uniform1f(gl.getUniformLocation(display, "uBloom"), BASE_CONFIG.BLOOM_INTENSITY);
       blit(null);
     };
 
-    // Animation loop - NO auto splats, only user-triggered
+    // Animation loop with device-specific auto-splats
     let lastTime = Date.now();
     let colorCycleTimer = 0;
+    autoSplatTimerRef.current = 0;
 
     const animate = () => {
       const now = Date.now();
@@ -624,6 +701,27 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       if (colorCycleTimer > 0.3) {
         colorCycleTimer = 0;
         pointerRef.current.color = getInterpolatedColor();
+      }
+
+      // Auto splats for mobile to show canvas is interactive
+      if (CONFIG.AUTO_SPLATS_ENABLED && CONFIG.AUTO_SPLAT_INTERVAL > 0) {
+        autoSplatTimerRef.current += dt;
+        if (autoSplatTimerRef.current >= CONFIG.AUTO_SPLAT_INTERVAL) {
+          autoSplatTimerRef.current = 0;
+          // Create a gentle random splat
+          const x = 0.2 + Math.random() * 0.6;
+          const y = 0.2 + Math.random() * 0.6;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 0.001;
+          splat(
+            x,
+            y,
+            Math.cos(angle) * speed * SPLAT_FORCE * 0.15,
+            Math.sin(angle) * speed * SPLAT_FORCE * 0.15,
+            getInterpolatedColor(),
+            0.4
+          );
+        }
       }
 
       // Handle pointer interaction - react to movement, stronger when clicking/touching
@@ -649,13 +747,11 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // Add subtle initial splats to show the canvas is interactive
+    // Add device-responsive initial splats
     setTimeout(() => {
-      const initialSplats = [
-        { x: 0.3, y: 0.5 },
-        { x: 0.7, y: 0.5 },
-        { x: 0.5, y: 0.3 },
-      ];
+      const aspectRatio = getAspectRatioCategory();
+      const initialSplats = getInitialSplatPositions(deviceType, aspectRatio);
+      
       initialSplats.forEach((pos, i) => {
         setTimeout(() => {
           const angle = Math.random() * Math.PI * 2;
@@ -668,7 +764,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
             getInterpolatedColor(),
             0.6
           );
-        }, i * 200);
+        }, i * 150);
       });
     }, 300);
 
@@ -802,7 +898,7 @@ export function FluidBackground({ className = "" }: FluidBackgroundProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [createProgram, createFBO, createDoubleFBO, isMobile]);
+  }, [createProgram, createFBO, createDoubleFBO, deviceType]);
 
   return (
     <canvas
