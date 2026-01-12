@@ -1,3 +1,18 @@
+# Env files (never commit)
+.env
+.env.*
+!.env.example
+
+# Coverage / test outputs
+coverage/
+.nyc_output/
+
+# Cache folders
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
+
 # Logs
 logs
 *.log
