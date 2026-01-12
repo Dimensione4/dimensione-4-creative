@@ -46,6 +46,9 @@ export function CookieConsent() {
     setPreferences(prefs);
     setShowBanner(false);
     setShowSettings(false);
+    
+    // Dispatch custom event for analytics to listen
+    window.dispatchEvent(new CustomEvent("cookie-consent-updated"));
   };
 
   const acceptAll = () => {
