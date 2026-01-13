@@ -6,12 +6,14 @@ const proofs = [
   {
     icon: Zap,
     title: "Performance-first",
-    description: "Ogni decisione tecnica tiene conto dell'impatto sulle prestazioni.",
+    description:
+      "Ogni decisione tecnica tiene conto dell'impatto sulle prestazioni.",
   },
   {
     icon: Shield,
     title: "Codice pulito",
-    description: "Leggibile, testato, documentato. Facile da mantenere e scalare.",
+    description:
+      "Leggibile, testato, documentato. Facile da mantenere e scalare.",
   },
   {
     icon: BarChart3,
@@ -35,7 +37,7 @@ export function ProofSection() {
 
   return (
     <section ref={ref} className="section-padding bg-surface/30">
-      <div className="container-tight">
+      <div className="container-wide">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left - Proof points */}
           <motion.div

@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Lightbulb, Target, Code2, Rocket, RefreshCw, Check, HelpCircle } from "lucide-react";
+import {
+  ArrowUpRight,
+  Lightbulb,
+  Target,
+  Code2,
+  Rocket,
+  RefreshCw,
+  Check,
+  HelpCircle,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -15,31 +24,36 @@ const processSteps = [
   {
     icon: Lightbulb,
     title: "Discovery",
-    description: "Analizziamo insieme la tua idea, il mercato target e definiamo obiettivi chiari e misurabili.",
+    description:
+      "Analizziamo insieme la tua idea, il mercato target e definiamo obiettivi chiari e misurabili.",
     duration: "1 settimana",
   },
   {
     icon: Target,
     title: "Scope & Planning",
-    description: "Definiamo le feature core del MVP, eliminiamo il superfluo e creiamo una roadmap realistica.",
+    description:
+      "Definiamo le feature core del MVP, eliminiamo il superfluo e creiamo una roadmap realistica.",
     duration: "1 settimana",
   },
   {
     icon: Code2,
     title: "Build",
-    description: "Sviluppo iterativo con aggiornamenti regolari. Vedi il tuo prodotto prendere forma.",
+    description:
+      "Sviluppo iterativo con aggiornamenti regolari. Vedi il tuo prodotto prendere forma.",
     duration: "2-8 settimane",
   },
   {
     icon: Rocket,
     title: "Launch",
-    description: "Deploy su infrastruttura cloud scalabile. Il tuo MVP è live e pronto per i primi utenti.",
+    description:
+      "Deploy su infrastruttura cloud scalabile. Il tuo MVP è live e pronto per i primi utenti.",
     duration: "1 settimana",
   },
   {
     icon: RefreshCw,
     title: "Iterate",
-    description: "Raccogli feedback, analizza i dati e pianifichiamo insieme le prossime iterazioni.",
+    description:
+      "Raccogli feedback, analizza i dati e pianifichiamo insieme le prossime iterazioni.",
     duration: "Ongoing",
   },
 ];
@@ -63,26 +77,30 @@ const idealClient = [
 const faqs = [
   {
     question: "Quanto costa un MVP?",
-    answer: "Il costo varia in base alla complessità. Un MVP tipico parte da €8.000-15.000. Durante la discovery call definiamo scope e budget insieme, senza sorprese.",
+    answer:
+      "Il costo varia in base alla complessità. Un MVP tipico parte da €8.000-15.000. Durante la discovery call definiamo scope e budget insieme, senza sorprese.",
   },
   {
     question: "Quali tecnologie usate?",
-    answer: "Stack moderno e battle-tested: Next.js o React per il frontend, Supabase o PostgreSQL per il backend, Tailwind CSS per lo styling, deploy su Vercel o AWS. Tutto TypeScript.",
+    answer:
+      "Stack moderno e battle-tested: Next.js o React per il frontend, Supabase o PostgreSQL per il backend, Tailwind CSS per lo styling, deploy su Vercel o AWS. Tutto TypeScript.",
   },
   {
     question: "E se il mio MVP deve scalare?",
-    answer: "Il codice che scrivo è pensato per crescere. Architettura modulare, best practices, e tecnologie che scalano da 0 a milioni di utenti senza riscrivere tutto.",
+    answer:
+      "Il codice che scrivo è pensato per crescere. Architettura modulare, best practices, e tecnologie che scalano da 0 a milioni di utenti senza riscrivere tutto.",
   },
   {
     question: "Offrite anche app mobile?",
-    answer: "Per il web, sempre. Per mobile, possiamo partire con una PWA (Progressive Web App) o sviluppare in Flutter per un'esperienza native. Discutiamone in base alle tue esigenze.",
+    answer:
+      "Per il web, sempre. Per mobile, possiamo partire con una PWA (Progressive Web App) o sviluppare in Flutter per un'esperienza native. Discutiamone in base alle tue esigenze.",
   },
 ];
 
 export default function MVP() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="MVP Custom"
         description="Dal concept al lancio in 4-12 settimane. Sviluppo MVP con Next.js, React e Supabase per startup e founder."
         canonical="/mvp"
@@ -91,8 +109,8 @@ export default function MVP() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -106,7 +124,9 @@ export default function MVP() {
               Dal concept al lancio in settimane, non mesi
             </h1>
             <p className="text-body-lg text-muted-foreground mb-8">
-              Trasformo la tua idea in un prodotto digitale funzionante. Niente feature creep, niente over-engineering. Solo ciò che serve per validare e lanciare.
+              Trasformo la tua idea in un prodotto digitale funzionante. Niente
+              feature creep, niente over-engineering. Solo ciò che serve per
+              validare e lanciare.
             </p>
             <Button variant="hero" size="xl" asChild>
               <Link to="/contatti">
@@ -120,7 +140,7 @@ export default function MVP() {
 
       {/* Ideal Client */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,9 +151,10 @@ export default function MVP() {
               Per chi è questo servizio
             </h2>
             <p className="text-body-lg text-muted-foreground mb-8 max-w-xl">
-              L'MVP Custom è ideale per founder e team che vogliono muoversi velocemente con un approccio strutturato.
+              L'MVP Custom è ideale per founder e team che vogliono muoversi
+              velocemente con un approccio strutturato.
             </p>
-            
+
             <div className="grid sm:grid-cols-2 gap-4">
               {idealClient.map((item, index) => (
                 <motion.div
@@ -155,7 +176,7 @@ export default function MVP() {
 
       {/* Process */}
       <section className="section-padding bg-surface/50">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -163,18 +184,17 @@ export default function MVP() {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h2 className="font-display text-h2 font-bold mb-4">
-              Il processo
-            </h2>
+            <h2 className="font-display text-h2 font-bold mb-4">Il processo</h2>
             <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-              Un percorso strutturato in 5 fasi per portarti dall'idea al prodotto live.
+              Un percorso strutturato in 5 fasi per portarti dall'idea al
+              prodotto live.
             </p>
           </motion.div>
 
           <div className="relative">
             {/* Timeline line */}
             <div className="absolute left-[27px] top-0 bottom-0 w-px bg-gradient-to-b from-primary via-primary/50 to-transparent hidden md:block" />
-            
+
             <div className="space-y-6">
               {processSteps.map((step, index) => (
                 <motion.div
@@ -190,8 +210,12 @@ export default function MVP() {
                   </div>
                   <div className="surface-card p-6 flex-1">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-display text-xl font-bold">{step.title}</h3>
-                      <span className="font-mono text-xs text-primary">{step.duration}</span>
+                      <h3 className="font-display text-xl font-bold">
+                        {step.title}
+                      </h3>
+                      <span className="font-mono text-xs text-primary">
+                        {step.duration}
+                      </span>
                     </div>
                     <p className="text-muted-foreground">{step.description}</p>
                   </div>
@@ -204,7 +228,7 @@ export default function MVP() {
 
       {/* Deliverables */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -216,9 +240,10 @@ export default function MVP() {
                 Cosa ricevi
               </h2>
               <p className="text-body-lg text-muted-foreground mb-8">
-                Non solo codice, ma un prodotto completo pronto per crescere con te.
+                Non solo codice, ma un prodotto completo pronto per crescere con
+                te.
               </p>
-              
+
               <div className="space-y-3">
                 {deliverables.map((item, index) => (
                   <motion.div
@@ -243,9 +268,21 @@ export default function MVP() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="surface-card p-8"
             >
-              <h3 className="font-display text-xl font-bold mb-4">Tech Stack</h3>
+              <h3 className="font-display text-xl font-bold mb-4">
+                Tech Stack
+              </h3>
               <div className="flex flex-wrap gap-2">
-                {["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "PostgreSQL", "Vercel", "AWS", "Flutter"].map((tech) => (
+                {[
+                  "Next.js",
+                  "React",
+                  "TypeScript",
+                  "Tailwind CSS",
+                  "Supabase",
+                  "PostgreSQL",
+                  "Vercel",
+                  "AWS",
+                  "Flutter",
+                ].map((tech) => (
                   <span
                     key={tech}
                     className="px-4 py-2 rounded-lg bg-surface text-sm font-mono text-muted-foreground"
@@ -255,8 +292,12 @@ export default function MVP() {
                 ))}
               </div>
               <div className="mt-6 pt-6 border-t border-[hsl(var(--border))]">
-                <p className="font-mono text-sm text-muted-foreground mb-2">Timeline tipica</p>
-                <p className="font-display text-2xl font-bold text-primary">4-12 settimane</p>
+                <p className="font-mono text-sm text-muted-foreground mb-2">
+                  Timeline tipica
+                </p>
+                <p className="font-display text-2xl font-bold text-primary">
+                  4-12 settimane
+                </p>
               </div>
             </motion.div>
           </div>
@@ -265,7 +306,7 @@ export default function MVP() {
 
       {/* FAQ */}
       <section className="section-padding bg-surface/50">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -308,7 +349,7 @@ export default function MVP() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -320,7 +361,8 @@ export default function MVP() {
               Pronto a trasformare la tua idea in realtà?
             </h2>
             <p className="text-body-lg text-muted-foreground mb-8 max-w-lg mx-auto">
-              Prenota una discovery call gratuita di 30 minuti. Analizziamo insieme la tua idea e vediamo se possiamo lavorare insieme.
+              Prenota una discovery call gratuita di 30 minuti. Analizziamo
+              insieme la tua idea e vediamo se possiamo lavorare insieme.
             </p>
             <Button variant="hero" size="xl" asChild>
               <Link to="/contatti">

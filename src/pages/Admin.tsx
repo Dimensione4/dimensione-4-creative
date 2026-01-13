@@ -182,7 +182,7 @@ export default function Admin() {
         noindex
       />
       <section className="section-padding min-h-[70vh]">
-        <div className="container-tight">
+        <div className="container-wide">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

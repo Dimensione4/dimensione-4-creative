@@ -302,8 +302,24 @@
     @apply py-16 md:py-24 lg:py-32;
   }
 
+  /* Global horizontal padding: identical for ALL sections */
+  .container-x {
+    @apply mx-auto w-full px-5 md:px-8 xl:px-10;
+  }
+
+  /* Text/content (readability) */
   .container-tight {
-    @apply max-w-[1120px] mx-auto px-6 lg:px-8;
+    @apply container-x max-w-[1120px];
+  }
+
+  /* Default layout */
+  .container-base {
+    @apply container-x max-w-[1320px];
+  }
+
+  /* Header / hero / wide sections */
+  .container-wide {
+    @apply container-x max-w-[1560px];
   }
 }
 

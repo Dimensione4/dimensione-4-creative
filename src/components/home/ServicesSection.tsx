@@ -8,25 +8,29 @@ const services = [
   {
     icon: Gauge,
     title: "WordPress Performance & SEO",
-    description: "Ottimizzazione velocità, Core Web Vitals, SEO tecnico. Trasformo siti lenti in esperienze fluide.",
+    description:
+      "Ottimizzazione velocità, Core Web Vitals, SEO tecnico. Trasformo siti lenti in esperienze fluide.",
     tags: ["Performance", "SEO", "WooCommerce"],
   },
   {
     icon: Code2,
     title: "MVP Custom",
-    description: "Applicazioni web su misura con Next.js o React. Dal concept al lancio in tempi definiti.",
+    description:
+      "Applicazioni web su misura con Next.js o React. Dal concept al lancio in tempi definiti.",
     tags: ["Next.js", "React", "TypeScript"],
   },
   {
     icon: Palette,
     title: "Frontend Optimization",
-    description: "Refactoring, accessibilità, design system. Miglioro codebase esistenti senza stravolgimenti.",
+    description:
+      "Refactoring, accessibilità, design system. Miglioro codebase esistenti senza stravolgimenti.",
     tags: ["Refactoring", "A11y", "Design System"],
   },
   {
     icon: Sparkles,
     title: "Esperienza Visiva",
-    description: "Motion design, microinterazioni, animazioni fluide. Il layer che trasforma buono in memorabile.",
+    description:
+      "Motion design, microinterazioni, animazioni fluide. Il layer che trasforma buono in memorabile.",
     tags: ["Motion", "Framer", "GSAP"],
     isAddon: true,
   },
@@ -38,7 +42,7 @@ export function ServicesSection() {
 
   return (
     <section ref={ref} className="section-padding bg-surface/30">
-      <div className="container-tight">
+      <div className="container-wide">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

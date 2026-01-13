@@ -112,7 +112,7 @@ serve(async (req: Request): Promise<Response> => {
     // Send notification to admin
     await resend.emails.send({
       from: "Dimensione 4 <noreply@yourdomain.com>",
-      to: ["info@dimensione4.it"], // Admin email
+      to: ["dariomarcobellini@dimensione4.it"], // Admin email
       subject: `Nuovo contatto: ${name}`,
       html: `
         <h2>Nuovo messaggio dal sito</h2>

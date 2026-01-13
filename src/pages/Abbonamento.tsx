@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, X, RefreshCcw, Code2, FileText, TestTube } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  X,
+  RefreshCcw,
+  Code2,
+  FileText,
+  TestTube,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ProcessDemo } from "@/components/abbonamento/ProcessDemo";
@@ -10,22 +18,26 @@ const rules = [
   {
     icon: RefreshCcw,
     title: "1 task attivo per volta",
-    description: "Lavoro su una richiesta alla volta, con focus totale. La coda è illimitata: aggiungi quante richieste vuoi.",
+    description:
+      "Lavoro su una richiesta alla volta, con focus totale. La coda è illimitata: aggiungi quante richieste vuoi.",
   },
   {
     icon: Code2,
     title: "Comunicazione async",
-    description: "Niente call obbligatorie, niente Slack urgente. Aggiornamenti scritti, documentati, entro 24h.",
+    description:
+      "Niente call obbligatorie, niente Slack urgente. Aggiornamenti scritti, documentati, entro 24h.",
   },
   {
     icon: FileText,
     title: "Consegna completa",
-    description: "Ogni task viene consegnato PR-ready con test e guida deploy. Niente work-in-progress indefinito.",
+    description:
+      "Ogni task viene consegnato PR-ready con test e guida deploy. Niente work-in-progress indefinito.",
   },
   {
     icon: TestTube,
     title: "Revisioni illimitate",
-    description: "Finché la richiesta originale non è perfetta. Entro 14-30 giorni dalla consegna.",
+    description:
+      "Finché la richiesta originale non è perfetta. Entro 14-30 giorni dalla consegna.",
   },
 ];
 
@@ -62,7 +74,7 @@ const examples = [
 export default function Abbonamento() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Abbonamento"
         description="Developer in abbonamento: richieste illimitate, comunicazione async, consegna PR-ready. Senza ore da contare."
         canonical="/abbonamento"
@@ -71,8 +83,8 @@ export default function Abbonamento() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +98,9 @@ export default function Abbonamento() {
               Non è un retainer. È un sistema di miglioramento continuo.
             </h1>
             <p className="text-body-lg text-muted-foreground">
-              Accesso diretto a un developer senior per task frontend, WordPress e ottimizzazione. Senza impegno a lungo termine, senza ore da contare.
+              Accesso diretto a un developer senior per task frontend, WordPress
+              e ottimizzazione. Senza impegno a lungo termine, senza ore da
+              contare.
             </p>
           </motion.div>
         </div>
@@ -94,7 +108,7 @@ export default function Abbonamento() {
 
       {/* Rules */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -102,7 +116,9 @@ export default function Abbonamento() {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <h2 className="font-display text-h2 font-bold mb-4">Come funziona</h2>
+            <h2 className="font-display text-h2 font-bold mb-4">
+              Come funziona
+            </h2>
             <p className="text-body-lg text-muted-foreground max-w-xl">
               Regole semplici, risultati prevedibili.
             </p>
@@ -138,7 +154,7 @@ export default function Abbonamento() {
 
       {/* Included / Excluded */}
       <section className="section-padding bg-surface/30">
-        <div className="container-tight">
+        <div className="container-wide">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Included */}
             <motion.div
@@ -182,7 +198,9 @@ export default function Abbonamento() {
                     <div className="w-5 h-5 rounded-full bg-destructive/20 flex items-center justify-center">
                       <X className="w-3 h-3 text-destructive" />
                     </div>
-                    <span className="text-sm text-muted-foreground">{item}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -196,7 +214,7 @@ export default function Abbonamento() {
 
       {/* Examples */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -204,7 +222,9 @@ export default function Abbonamento() {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h2 className="font-display text-h2 font-bold mb-4">Esempi di outcome</h2>
+            <h2 className="font-display text-h2 font-bold mb-4">
+              Esempi di outcome
+            </h2>
             <p className="text-body-lg text-muted-foreground">
               Task tipici che puoi richiedere.
             </p>
@@ -232,7 +252,7 @@ export default function Abbonamento() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Map, Hammer, TrendingUp, ArrowRight, MessageSquare, Clock, User } from "lucide-react";
+import {
+  Map,
+  Hammer,
+  TrendingUp,
+  ArrowRight,
+  MessageSquare,
+  Clock,
+  User,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -11,7 +19,8 @@ const steps = [
     step: "01",
     title: "Mappa",
     subtitle: "Discovery & Scope",
-    description: "Ogni progetto inizia con una comprensione profonda del contesto. Non scrivo codice prima di aver capito dove vuoi arrivare.",
+    description:
+      "Ogni progetto inizia con una comprensione profonda del contesto. Non scrivo codice prima di aver capito dove vuoi arrivare.",
     activities: [
       "Call iniziale per comprendere obiettivi e vincoli",
       "Analisi dello stato attuale (se esiste)",
@@ -27,7 +36,8 @@ const steps = [
     step: "02",
     title: "Costruisci",
     subtitle: "Development & Testing",
-    description: "Sviluppo iterativo con visibilità continua. Ogni consegna è testata, documentata e pronta per il deploy.",
+    description:
+      "Sviluppo iterativo con visibilità continua. Ogni consegna è testata, documentata e pronta per il deploy.",
     activities: [
       "Sviluppo incrementale con checkpoint regolari",
       "Test automatizzati su ogni feature",
@@ -43,7 +53,8 @@ const steps = [
     step: "03",
     title: "Evolvi",
     subtitle: "Iteration & Growth",
-    description: "Il lancio è l'inizio, non la fine. I progetti migliori crescono nel tempo con iterazioni basate sui dati.",
+    description:
+      "Il lancio è l'inizio, non la fine. I progetti migliori crescono nel tempo con iterazioni basate sui dati.",
     activities: [
       "Deploy guidato con checklist",
       "Monitoring iniziale e bug fixing",
@@ -60,24 +71,27 @@ const principles = [
   {
     icon: MessageSquare,
     title: "Async-first",
-    description: "Comunicazione scritta, documentata, senza riunioni inutili. Aggiornamenti regolari, risposte entro 24h.",
+    description:
+      "Comunicazione scritta, documentata, senza riunioni inutili. Aggiornamenti regolari, risposte entro 24h.",
   },
   {
     icon: User,
     title: "Accesso diretto",
-    description: "Lavori con me, non con un account manager. Un unico interlocutore responsabile dall'inizio alla fine.",
+    description:
+      "Lavori con me, non con un account manager. Un unico interlocutore responsabile dall'inizio alla fine.",
   },
   {
     icon: Clock,
     title: "Tempi chiari",
-    description: "Timeline realistiche, non promesse gonfiate. Se qualcosa cambia, lo saprai subito.",
+    description:
+      "Timeline realistiche, non promesse gonfiate. Se qualcosa cambia, lo saprai subito.",
   },
 ];
 
 export default function Metodo() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Metodo"
         description="Mappa, Costruisci, Itera. Il mio approccio: comunicazione async, accesso diretto, timeline chiare."
         canonical="/metodo"
@@ -86,8 +100,8 @@ export default function Metodo() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-50" />
         <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,7 +115,8 @@ export default function Metodo() {
               Mappa → Costruisci → Evolvi
             </h1>
             <p className="text-body-lg text-muted-foreground">
-              Un processo semplice e trasparente. Niente sorprese, niente zone grigie. Sai sempre dove siamo e dove stiamo andando.
+              Un processo semplice e trasparente. Niente sorprese, niente zone
+              grigie. Sai sempre dove siamo e dove stiamo andando.
             </p>
           </motion.div>
         </div>
@@ -109,7 +124,7 @@ export default function Metodo() {
 
       {/* Steps */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <div className="space-y-8">
             {steps.map((step, index) => (
               <motion.div
@@ -122,15 +137,21 @@ export default function Metodo() {
               >
                 {/* Step indicator */}
                 <div className="absolute -left-3 md:-left-5 top-8 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
-                  <span className="font-mono text-sm text-primary-foreground font-bold">{step.step}</span>
+                  <span className="font-mono text-sm text-primary-foreground font-bold">
+                    {step.step}
+                  </span>
                 </div>
 
                 <div className="grid lg:grid-cols-3 gap-8 ml-6 md:ml-8">
                   {/* Main content */}
                   <div className="lg:col-span-2">
                     <div className="flex items-center gap-3 mb-4">
-                      <h2 className="font-display text-2xl font-bold">{step.title}</h2>
-                      <span className="text-sm text-muted-foreground">— {step.subtitle}</span>
+                      <h2 className="font-display text-2xl font-bold">
+                        {step.title}
+                      </h2>
+                      <span className="text-sm text-muted-foreground">
+                        — {step.subtitle}
+                      </span>
                     </div>
                     <p className="text-body text-muted-foreground mb-6">
                       {step.description}
@@ -177,7 +198,7 @@ export default function Metodo() {
 
       {/* Principles */}
       <section className="section-padding bg-surface/30">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -220,7 +241,7 @@ export default function Metodo() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
