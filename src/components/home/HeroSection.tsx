@@ -8,8 +8,8 @@ import { useAvailability } from "@/hooks/useAvailability";
 import { trackEvent } from "@/components/GoogleAnalytics";
 import heroImage from "@/assets/hero-4d.jpg";
 
-const Hero3DScene = lazy(() => 
-  import("./Hero3DScene").then(mod => ({ default: mod.Hero3DScene }))
+const Hero3DScene = lazy(() =>
+  import("./Hero3DScene").then((mod) => ({ default: mod.Hero3DScene }))
 );
 
 export function HeroSection() {
@@ -18,7 +18,7 @@ export function HeroSection() {
   const { availability } = useAvailability();
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
@@ -28,12 +28,12 @@ export function HeroSection() {
   const isAvailable = availability.status === "available";
 
   return (
-    <section ref={ref} className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section
+      ref={ref}
+      className="relative min-h-[90vh] flex items-center overflow-hidden"
+    >
       {/* Background with parallax */}
-      <motion.div 
-        className="absolute inset-0"
-        style={{ y: backgroundY }}
-      >
+      <motion.div className="absolute inset-0" style={{ y: backgroundY }}>
         {/* Background image - temporarily commented out
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-40"
@@ -45,11 +45,11 @@ export function HeroSection() {
       </motion.div>
 
       {/* Geometric accent with breathing animation + parallax */}
-      <motion.div 
+      <motion.div
         className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl geo-breathing-slow"
         style={{ y: glow1Y }}
       />
-      <motion.div 
+      <motion.div
         className="absolute bottom-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl geo-breathing"
         style={{ y: glow2Y }}
       />
@@ -60,7 +60,7 @@ export function HeroSection() {
       </Suspense>
 
       {/* Content */}
-      <div className="container-tight relative z-10 py-20 md:py-32">
+      <div className="container-wide relative z-10 py-20 md:py-32">
         <div className="max-w-3xl">
           {/* Label */}
           <motion.div
@@ -72,7 +72,9 @@ export function HeroSection() {
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface border border-[hsl(var(--border))] text-label text-muted-foreground font-mono">
               <button
                 onClick={() => {
-                  document.getElementById('availability')?.scrollIntoView({ behavior: 'smooth' });
+                  document
+                    .getElementById("availability")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
                 className="relative flex items-center justify-center h-4 w-4 cursor-pointer group"
                 aria-label="View availability status"
@@ -91,11 +93,13 @@ export function HeroSection() {
                     }}
                   />
                 )}
-                <span className={`relative inline-flex rounded-full h-3 w-3 ${
-                  isAvailable 
-                    ? "bg-[hsl(var(--success))] shadow-[0_0_10px_hsl(var(--success)),0_0_20px_hsl(var(--success)/0.5)] group-hover:shadow-[0_0_15px_hsl(var(--success)),0_0_30px_hsl(var(--success)/0.6)]" 
-                    : "bg-muted-foreground"
-                }`} />
+                <span
+                  className={`relative inline-flex rounded-full h-3 w-3 ${
+                    isAvailable
+                      ? "bg-[hsl(var(--success))] shadow-[0_0_10px_hsl(var(--success)),0_0_20px_hsl(var(--success)/0.5)] group-hover:shadow-[0_0_15px_hsl(var(--success)),0_0_30px_hsl(var(--success)/0.6)]"
+                      : "bg-muted-foreground"
+                  }`}
+                />
               </button>
               Creative Technology Studio
             </span>
@@ -108,8 +112,8 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-display text-hero-mobile md:text-hero font-bold mb-6"
           >
-            {t('hero.title')}{" "}
-            <span className="text-gradient">{t('hero.titleHighlight')}</span>
+            {t("hero.title")}{" "}
+            <span className="text-gradient">{t("hero.titleHighlight")}</span>
           </motion.h1>
 
           {/* Description */}
@@ -119,7 +123,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-body-lg text-muted-foreground mb-8 max-w-2xl"
           >
-            {t('hero.subtitle')}
+            {t("hero.subtitle")}
           </motion.p>
 
           {/* CTAs */}
@@ -129,35 +133,39 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4"
           >
-            <Button 
-              variant="hero" 
-              size="xl" 
-              className="cta-glow" 
+            <Button
+              variant="hero"
+              size="xl"
+              className="cta-glow"
               asChild
-              onClick={() => trackEvent("cta_click", { 
-                cta_name: "hero_primary", 
-                cta_text: t('hero.cta'),
-                location: "hero_section"
-              })}
+              onClick={() =>
+                trackEvent("cta_click", {
+                  cta_name: "hero_primary",
+                  cta_text: t("hero.cta"),
+                  location: "hero_section",
+                })
+              }
             >
               <Link to="/contatti">
-                {t('hero.cta')}
+                {t("hero.cta")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
-            <Button 
-              variant="outline" 
-              size="xl" 
+            <Button
+              variant="outline"
+              size="xl"
               asChild
-              onClick={() => trackEvent("cta_click", { 
-                cta_name: "hero_secondary", 
-                cta_text: t('hero.ctaSecondary'),
-                location: "hero_section"
-              })}
+              onClick={() =>
+                trackEvent("cta_click", {
+                  cta_name: "hero_secondary",
+                  cta_text: t("hero.ctaSecondary"),
+                  location: "hero_section",
+                })
+              }
             >
               <Link to="/servizi">
                 <Play className="w-4 h-4" />
-                {t('hero.ctaSecondary')}
+                {t("hero.ctaSecondary")}
               </Link>
             </Button>
           </motion.div>

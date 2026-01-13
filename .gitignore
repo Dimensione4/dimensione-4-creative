@@ -27,6 +27,9 @@ dist
 dist-ssr
 *.local
 
+# Docs
+.qoder
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

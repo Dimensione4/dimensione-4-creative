@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Gauge, Code2, Palette, Sparkles, Check, ArrowUpRight } from "lucide-react";
+import {
+  ArrowRight,
+  Gauge,
+  Code2,
+  Palette,
+  Sparkles,
+  Check,
+  ArrowUpRight,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -9,7 +17,8 @@ const services = [
   {
     icon: Gauge,
     title: "WordPress Performance & SEO",
-    description: "Ottimizzazione velocità, Core Web Vitals, SEO tecnico per WordPress e WooCommerce. Trasformo siti lenti in esperienze fluide che convertono.",
+    description:
+      "Ottimizzazione velocità, Core Web Vitals, SEO tecnico per WordPress e WooCommerce. Trasformo siti lenti in esperienze fluide che convertono.",
     outputs: [
       "Audit performance completo",
       "Ottimizzazione Core Web Vitals",
@@ -28,7 +37,8 @@ const services = [
   {
     icon: Code2,
     title: "MVP Custom",
-    description: "Applicazioni web su misura per chi ha un'idea chiara da realizzare in tempo breve. Dal concept al lancio con tecnologie moderne.",
+    description:
+      "Applicazioni web su misura per chi ha un'idea chiara da realizzare in tempo breve. Dal concept al lancio con tecnologie moderne.",
     outputs: [
       "Web app funzionante",
       "Codebase scalabile",
@@ -47,7 +57,8 @@ const services = [
   {
     icon: Palette,
     title: "Frontend Optimization",
-    description: "Refactoring, accessibilità, design system. Miglioro codebase esistenti senza stravolgimenti, rendendole più mantenibili e performanti.",
+    description:
+      "Refactoring, accessibilità, design system. Miglioro codebase esistenti senza stravolgimenti, rendendole più mantenibili e performanti.",
     outputs: [
       "Code review dettagliata",
       "Refactoring componenti",
@@ -66,7 +77,8 @@ const services = [
   {
     icon: Sparkles,
     title: "Esperienza Visiva",
-    description: "Motion design, microinterazioni, animazioni fluide. Il layer che trasforma un buon prodotto in uno memorabile.",
+    description:
+      "Motion design, microinterazioni, animazioni fluide. Il layer che trasforma un buon prodotto in uno memorabile.",
     outputs: [
       "Animazioni custom",
       "Microinterazioni UI",
@@ -88,7 +100,7 @@ const services = [
 export default function Servizi() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Servizi"
         description="Performance WordPress, MVP custom, frontend optimization e motion design. Scopri come posso aiutarti."
         canonical="/servizi"
@@ -97,8 +109,8 @@ export default function Servizi() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -112,7 +124,8 @@ export default function Servizi() {
               Come posso aiutarti
             </h1>
             <p className="text-body-lg text-muted-foreground">
-              Ogni servizio è progettato per aggiungere prospettiva, struttura e tempo ai tuoi progetti digitali. Scegli in base alle tue esigenze.
+              Ogni servizio è progettato per aggiungere prospettiva, struttura e
+              tempo ai tuoi progetti digitali. Scegli in base alle tue esigenze.
             </p>
           </motion.div>
         </div>
@@ -120,7 +133,7 @@ export default function Servizi() {
 
       {/* Services */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <div className="space-y-12">
             {services.map((service, index) => (
               <motion.div
@@ -220,7 +233,7 @@ export default function Servizi() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -232,7 +245,8 @@ export default function Servizi() {
               Non sai quale servizio fa per te?
             </h2>
             <p className="text-body-lg text-muted-foreground mb-8 max-w-lg mx-auto">
-              Parliamone insieme. Una call di 15 minuti per capire le tue esigenze.
+              Parliamone insieme. Una call di 15 minuti per capire le tue
+              esigenze.
             </p>
             <Button variant="hero" size="xl" asChild>
               <Link to="/contatti">

@@ -11,7 +11,7 @@ export function CTASection() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const glowY = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
@@ -20,7 +20,7 @@ export function CTASection() {
     <section ref={ref} className="section-padding relative overflow-hidden">
       {/* Glow effect with parallax */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <motion.div 
+        <motion.div
           className="w-[600px] h-[400px] bg-primary/10 rounded-full blur-3xl animate-glow-pulse"
           style={{ y: glowY }}
         />
@@ -30,43 +30,48 @@ export function CTASection() {
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}
-        className="container-tight relative"
+        className="container-wide relative"
       >
         <div className="surface-card p-12 md:p-16 text-center max-w-3xl mx-auto">
           <h2 className="font-display text-h2 font-bold mb-4">
             Contattami per un confronto diretto, senza impegno.
           </h2>
           <p className="text-body-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile.
+            Una call chiara di 15 minuti per capire se posso aiutarti. Niente
+            pressioni, niente attesa inutile.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="hero" 
-              size="xl" 
-              className="cta-glow" 
+            <Button
+              variant="hero"
+              size="xl"
+              className="cta-glow"
               asChild
-              onClick={() => trackEvent("cta_click", { 
-                cta_name: "footer_cta_primary", 
-                cta_text: "Prenota una call",
-                location: "cta_section"
-              })}
+              onClick={() =>
+                trackEvent("cta_click", {
+                  cta_name: "footer_cta_primary",
+                  cta_text: "Prenota una call",
+                  location: "cta_section",
+                })
+              }
             >
               <Link to="/contatti">
                 Prenota una call
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
-            <Button 
-              variant="outline" 
-              size="xl" 
+            <Button
+              variant="outline"
+              size="xl"
               asChild
-              onClick={() => trackEvent("cta_click", { 
-                cta_name: "footer_cta_secondary", 
-                cta_text: "Scrivi via email",
-                location: "cta_section"
-              })}
+              onClick={() =>
+                trackEvent("cta_click", {
+                  cta_name: "footer_cta_secondary",
+                  cta_text: "Scrivi via email",
+                  location: "cta_section",
+                })
+              }
             >
-              <a href="mailto:info@dimensione4.it">
+              <a href="mailto:dariomarcobellini@dimensione4.it">
                 Scrivi via email
               </a>
             </Button>

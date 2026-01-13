@@ -8,11 +8,24 @@ import { SEO } from "@/components/SEO";
 const skills = [
   {
     category: "Frontend",
-    items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP"],
+    items: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "Tailwind CSS",
+      "Framer Motion",
+      "GSAP",
+    ],
   },
   {
     category: "WordPress",
-    items: ["Theme Development", "WooCommerce", "Performance", "SEO Tecnico", "Gutenberg"],
+    items: [
+      "Theme Development",
+      "WooCommerce",
+      "Performance",
+      "SEO Tecnico",
+      "Gutenberg",
+    ],
   },
   {
     category: "Tools",
@@ -24,7 +37,8 @@ const values = [
   {
     icon: Lightbulb,
     title: "Chiarezza",
-    description: "Comunicazione diretta, senza giri di parole. Sai sempre cosa sta succedendo.",
+    description:
+      "Comunicazione diretta, senza giri di parole. Sai sempre cosa sta succedendo.",
   },
   {
     icon: Zap,
@@ -34,19 +48,21 @@ const values = [
   {
     icon: Code2,
     title: "Qualità",
-    description: "Codice pulito, testato, documentato. Niente scorciatoie che creano debito tecnico.",
+    description:
+      "Codice pulito, testato, documentato. Niente scorciatoie che creano debito tecnico.",
   },
   {
     icon: Palette,
     title: "Cura",
-    description: "I dettagli contano. Ogni pixel, ogni transizione, ogni interazione.",
+    description:
+      "I dettagli contano. Ogni pixel, ogni transizione, ogni interazione.",
   },
 ];
 
 export default function ChiSono() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Chi sono"
         description="Dario Marco Bellini, developer senior specializzato in frontend, WordPress e ottimizzazione performance."
         canonical="/chi-sono"
@@ -55,8 +71,8 @@ export default function ChiSono() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
         <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -70,10 +86,16 @@ export default function ChiSono() {
                 Dario Marco Bellini
               </h1>
               <p className="text-body-lg text-muted-foreground mb-6">
-                Dimensione 4 è la mia ditta individuale. <strong className="text-foreground">Lavori con me, direttamente.</strong>
+                Dimensione 4 è la mia ditta individuale.{" "}
+                <strong className="text-foreground">
+                  Lavori con me, direttamente.
+                </strong>
               </p>
               <p className="text-body text-muted-foreground mb-8">
-                Un mix raro di precisione tecnica e sensibilità visiva. Ho passato anni a perfezionare entrambi gli aspetti, perché credo che il codice migliore sia quello che si sente nella user experience finale.
+                Un mix raro di precisione tecnica e sensibilità visiva. Ho
+                passato anni a perfezionare entrambi gli aspetti, perché credo
+                che il codice migliore sia quello che si sente nella user
+                experience finale.
               </p>
               <Button variant="hero" size="lg" asChild>
                 <Link to="/contatti">
@@ -97,7 +119,9 @@ export default function ChiSono() {
                 <div className="absolute inset-4 rounded-2xl bg-surface border border-[hsl(var(--border))] flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-glow mx-auto mb-4 flex items-center justify-center">
-                      <span className="font-display text-4xl font-bold text-primary-foreground">D</span>
+                      <span className="font-display text-4xl font-bold text-primary-foreground">
+                        D
+                      </span>
                     </div>
                     <p className="font-mono text-sm text-muted-foreground">
                       Creative Engineer
@@ -112,7 +136,7 @@ export default function ChiSono() {
 
       {/* Values */}
       <section className="section-padding bg-surface/30">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -120,9 +144,7 @@ export default function ChiSono() {
             transition={{ duration: 0.5 }}
             className="text-center mb-12"
           >
-            <h2 className="font-display text-h2 font-bold mb-4">
-              Valori
-            </h2>
+            <h2 className="font-display text-h2 font-bold mb-4">Valori</h2>
             <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
               Quello in cui credo e come mi guida nel lavoro.
             </p>
@@ -155,7 +177,7 @@ export default function ChiSono() {
 
       {/* Stack */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -202,7 +224,7 @@ export default function ChiSono() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

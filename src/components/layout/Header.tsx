@@ -1,36 +1,44 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence, useMotionValue, useSpring, useScroll } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useScroll,
+} from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
   { href: "/", labelKey: "nav.home" },
+  { href: "/chi-sono", labelKey: "nav.about" },
   { href: "/servizi", labelKey: "nav.services" },
   { href: "/mvp", labelKey: "nav.mvp" },
   { href: "/progetti", labelKey: "nav.projects" },
   { href: "/metodo", labelKey: "nav.method" },
   { href: "/abbonamento", labelKey: "nav.subscription" },
-  { href: "/chi-sono", labelKey: "nav.about" },
 ];
 
 // Magnetic link component
-function MagneticLink({ 
-  href, 
-  isActive, 
-  children 
-}: { 
-  href: string; 
-  isActive: boolean; 
+function MagneticLink({
+  href,
+  isActive,
+  children,
+}: {
+  href: string;
+  isActive: boolean;
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLAnchorElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+  const { scrollToTop } = useScrollToTop();
+
   const springConfig = { damping: 15, stiffness: 150 };
   const springX = useSpring(x, springConfig);
   const springY = useSpring(y, springConfig);
@@ -40,7 +48,7 @@ function MagneticLink({
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     // Magnetic pull strength
     const pullStrength = 0.3;
     x.set((e.clientX - centerX) * pullStrength);
@@ -52,13 +60,19 @@ function MagneticLink({
     y.set(0);
   };
 
+  const handleClick = (e: React.MouseEvent) => {
+    // Scroll to top when clicking navigation links
+    scrollToTop();
+  };
+
   return (
     <Link
       ref={ref}
       to={href}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative px-4 py-2 text-sm font-medium transition-colors duration-300"
+      onClick={handleClick}
+      className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 whitespace-nowrap"
     >
       {isActive && (
         <motion.div
@@ -86,7 +100,8 @@ export function Header() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const location = useLocation();
   const { t } = useTranslation();
-  
+  const { scrollToTop } = useScrollToTop();
+
   // Page scroll progress for the indicator
   const { scrollYProgress } = useScroll();
 
@@ -108,26 +123,26 @@ export function Header() {
   // Lock body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
       document.body.style.top = `-${window.scrollY}px`;
     } else {
       const scrollY = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
       if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
       }
     }
-    
+
     return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-      document.body.style.top = '';
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.top = "";
     };
   }, [isMenuOpen]);
 
@@ -136,9 +151,7 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        hasScrolled
-          ? "bg-background/60 backdrop-blur-2xl"
-          : "bg-transparent"
+        hasScrolled ? "bg-background/60 backdrop-blur-2xl" : "bg-transparent"
       }`}
     >
       {/* Scroll Progress Indicator */}
@@ -146,13 +159,19 @@ export function Header() {
         className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-accent to-primary origin-left"
         style={{ scaleX: scrollYProgress }}
       />
-      
-      <div className="container-tight">
-        <motion.div 
+
+      <div className="container-wide">
+        {/* <motion.div 
           className="flex items-center justify-between"
           animate={{ 
             height: hasScrolled ? 64 : 80,
           }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        > */}
+        <motion.div
+          className="grid items-center"
+          style={{ gridTemplateColumns: "auto minmax(0,1fr) auto" }}
+          animate={{ height: hasScrolled ? 64 : 80 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           {/* Logo */}
@@ -168,9 +187,9 @@ export function Header() {
                 className="w-10 h-10 object-contain"
               />
             </motion.div>
-            <motion.div 
-              className="overflow-hidden"
-              animate={{ 
+            <motion.div
+              className="overflow-hidden flex flex-col items-start"
+              animate={{
                 opacity: hasScrolled ? 0 : 1,
                 width: hasScrolled ? 0 : "auto",
               }}
@@ -179,15 +198,20 @@ export function Header() {
               <span className="font-display font-semibold text-lg tracking-tight whitespace-nowrap">
                 Dimensione 4
               </span>
+              <span className="text-xs bg-gradient-to-r from-[hsl(179,80%,36%)] to-[hsl(180,78%,52%)] bg-clip-text text-transparent whitespace-nowrap mt-0">
+                di Dario Marco Bellini
+              </span>
             </motion.div>
           </Link>
 
           {/* Desktop Navigation - Center with shrinking pill */}
-          <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2">
-            <motion.div 
+          {/* <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2"> */}
+          <nav className="hidden lg:flex justify-center min-w-0">
+            <motion.div
+              style={{ maxWidth: 860, width: "fit-content" }}
               className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
               animate={{
-                gap: hasScrolled ? 0 : 4,
+                gap: hasScrolled ? 0 : 2,
                 paddingLeft: hasScrolled ? 6 : 8,
                 paddingRight: hasScrolled ? 6 : 8,
                 paddingTop: hasScrolled ? 4 : 6,
@@ -215,7 +239,12 @@ export function Header() {
               animate={{ scale: hasScrolled ? 0.95 : 1 }}
               transition={{ duration: 0.3 }}
             >
-              <Button variant="hero" size={hasScrolled ? "sm" : "default"} className="group" asChild>
+              <Button
+                variant="hero"
+                size={hasScrolled ? "sm" : "default"}
+                className="group"
+                asChild
+              >
                 <Link to="/contatti">
                   <span>Prenota una call</span>
                   <motion.span
@@ -281,7 +310,7 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="container-tight pt-24 pb-12 flex flex-col min-h-full"
+              className="container-wide pt-24 pb-12 flex flex-col min-h-full"
             >
               <div className="flex-1 flex flex-col justify-center gap-2">
                 {navLinks.map((link, index) => (
@@ -293,6 +322,7 @@ export function Header() {
                   >
                     <Link
                       to={link.href}
+                      onClick={scrollToTop}
                       className={`block py-4 text-3xl font-display font-semibold transition-colors duration-300 ${
                         location.pathname === link.href
                           ? "text-primary"
@@ -325,7 +355,12 @@ export function Header() {
                   <span className="text-sm text-muted-foreground">Tema</span>
                   <ThemeToggle />
                 </div>
-                <Button variant="hero" size="lg" className="w-full text-lg" asChild>
+                <Button
+                  variant="hero"
+                  size="lg"
+                  className="w-full text-lg"
+                  asChild
+                >
                   <Link to="/contatti">
                     Prenota una call
                     <span className="ml-2">→</span>

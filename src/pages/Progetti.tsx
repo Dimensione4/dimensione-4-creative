@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, TrendingUp, Clock, Zap, ExternalLink, Sparkles, Factory } from "lucide-react";
+import {
+  ArrowUpRight,
+  TrendingUp,
+  Clock,
+  Zap,
+  ExternalLink,
+  Sparkles,
+  Factory,
+} from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
@@ -47,7 +55,8 @@ const caseStudies: CaseStudy[] = [
     id: "1",
     slug: "ecommerce-performance",
     title: "E-commerce Performance Boost",
-    subtitle: "Ottimizzazione Core Web Vitals per un negozio WooCommerce con 10k+ prodotti",
+    subtitle:
+      "Ottimizzazione Core Web Vitals per un negozio WooCommerce con 10k+ prodotti",
     clientType: "E-commerce",
     stack: ["WordPress", "WooCommerce", "PHP", "Performance Audit"],
     results: [
@@ -62,7 +71,8 @@ const caseStudies: CaseStudy[] = [
     id: "2",
     slug: "saas-mvp-launch",
     title: "SaaS MVP Launch",
-    subtitle: "Dalla validazione al lancio di una piattaforma B2B per la gestione documentale",
+    subtitle:
+      "Dalla validazione al lancio di una piattaforma B2B per la gestione documentale",
     clientType: "Startup B2B",
     stack: ["Next.js", "Supabase", "Tailwind CSS", "TypeScript"],
     results: [
@@ -77,7 +87,8 @@ const caseStudies: CaseStudy[] = [
     id: "3",
     slug: "design-system",
     title: "Design System Implementation",
-    subtitle: "Creazione di un design system scalabile per un'agenzia tech con 15+ sviluppatori",
+    subtitle:
+      "Creazione di un design system scalabile per un'agenzia tech con 15+ sviluppatori",
     clientType: "Tech Agency",
     stack: ["React", "TypeScript", "Storybook", "Tailwind CSS"],
     results: [
@@ -94,7 +105,8 @@ const creativeExperiences: CreativeExperience[] = [
   {
     id: "ce-1",
     title: "3D Web Design Experience",
-    description: "Esplorazione di design 3D immersivo con navigazione spaziale e interazioni profonde.",
+    description:
+      "Esplorazione di design 3D immersivo con navigazione spaziale e interazioni profonde.",
     url: "https://cute-a5aysg13ic.peachworlds.com/",
     tags: ["3D", "WebGL", "Immersive"],
     gradient: "from-violet-500/20 via-fuchsia-500/20 to-pink-500/20",
@@ -102,7 +114,8 @@ const creativeExperiences: CreativeExperience[] = [
   {
     id: "ce-2",
     title: "Motion & Interaction Lab",
-    description: "Esperimenti con animazioni avanzate, micro-interazioni e transizioni fluide.",
+    description:
+      "Esperimenti con animazioni avanzate, micro-interazioni e transizioni fluide.",
     url: "https://lusion.co/",
     tags: ["Motion", "Creative", "WebGL"],
     gradient: "from-cyan-500/20 via-teal-500/20 to-emerald-500/20",
@@ -110,7 +123,8 @@ const creativeExperiences: CreativeExperience[] = [
   {
     id: "ce-3",
     title: "Digital Art Portfolio",
-    description: "Portfolio artistico con esperienze visive uniche e storytelling digitale.",
+    description:
+      "Portfolio artistico con esperienze visive uniche e storytelling digitale.",
     url: "https://www.aristidebenoist.com/",
     tags: ["Art", "Portfolio", "Experimental"],
     gradient: "from-orange-500/20 via-amber-500/20 to-yellow-500/20",
@@ -118,7 +132,8 @@ const creativeExperiences: CreativeExperience[] = [
   {
     id: "ce-4",
     title: "Interactive Brand Experience",
-    description: "Brand experience interattiva con animazioni cinematografiche e design immersivo.",
+    description:
+      "Brand experience interattiva con animazioni cinematografiche e design immersivo.",
     url: "https://bruno-simon.com/",
     tags: ["Brand", "3D", "Interactive"],
     gradient: "from-blue-500/20 via-indigo-500/20 to-purple-500/20",
@@ -129,7 +144,8 @@ const industrialProjects: IndustrialProject[] = [
   {
     id: "ind-1",
     title: "Meccanica di Precisione Srl",
-    description: "Sito corporate per azienda specializzata in lavorazioni CNC di alta precisione per il settore automotive.",
+    description:
+      "Sito corporate per azienda specializzata in lavorazioni CNC di alta precisione per il settore automotive.",
     url: "#",
     sector: "Automotive",
     features: ["Catalogo Prodotti", "Richiesta Preventivo", "Area Riservata"],
@@ -138,7 +154,8 @@ const industrialProjects: IndustrialProject[] = [
   {
     id: "ind-2",
     title: "Bergamo Steel Works",
-    description: "Piattaforma B2B per la gestione ordini e tracciamento spedizioni di componenti in acciaio.",
+    description:
+      "Piattaforma B2B per la gestione ordini e tracciamento spedizioni di componenti in acciaio.",
     url: "#",
     sector: "Siderurgia",
     features: ["Ordini Online", "Tracking", "Dashboard Cliente"],
@@ -147,7 +164,8 @@ const industrialProjects: IndustrialProject[] = [
   {
     id: "ind-3",
     title: "Automazioni Industriali Orobiche",
-    description: "Sito vetrina con configuratore prodotti per sistemi di automazione industriale.",
+    description:
+      "Sito vetrina con configuratore prodotti per sistemi di automazione industriale.",
     url: "#",
     sector: "Automazione",
     features: ["Configuratore 3D", "Schede Tecniche", "Assistenza Remota"],
@@ -156,7 +174,8 @@ const industrialProjects: IndustrialProject[] = [
   {
     id: "ind-4",
     title: "Fonderia Valle Seriana",
-    description: "Presenza digitale moderna per storica fonderia con focus su sostenibilità e innovazione.",
+    description:
+      "Presenza digitale moderna per storica fonderia con focus su sostenibilità e innovazione.",
     url: "#",
     sector: "Fonderia",
     features: ["Storytelling", "Certificazioni", "Virtual Tour"],
@@ -167,7 +186,7 @@ const industrialProjects: IndustrialProject[] = [
 export default function Progetti() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="Progetti"
         description="Case studies e risultati concreti: performance, MVP e design system. Scopri i progetti realizzati."
         canonical="/progetti"
@@ -176,8 +195,8 @@ export default function Progetti() {
       <section className="section-padding pt-32 relative overflow-hidden">
         <div className="absolute inset-0 pattern-dots" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -191,7 +210,8 @@ export default function Progetti() {
               Risultati, non promesse
             </h1>
             <p className="text-body-lg text-muted-foreground">
-              Una selezione di progetti che mostrano il mio approccio: focus sui risultati, attenzione ai dettagli, e tecnologie moderne.
+              Una selezione di progetti che mostrano il mio approccio: focus sui
+              risultati, attenzione ai dettagli, e tecnologie moderne.
             </p>
           </motion.div>
         </div>
@@ -199,7 +219,7 @@ export default function Progetti() {
 
       {/* Projects Grid */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <div className="grid gap-8">
             {caseStudies.map((project, index) => (
               <motion.article
@@ -246,10 +266,17 @@ export default function Progetti() {
                       {/* Results */}
                       <div className="grid grid-cols-3 gap-4 mb-6">
                         {project.results.map((result) => (
-                          <div key={result.label} className="text-center p-3 rounded-lg bg-surface/50">
+                          <div
+                            key={result.label}
+                            className="text-center p-3 rounded-lg bg-surface/50"
+                          >
                             <result.icon className="w-5 h-5 text-primary mx-auto mb-2" />
-                            <p className="font-display font-bold text-lg">{result.value}</p>
-                            <p className="text-xs text-muted-foreground">{result.label}</p>
+                            <p className="font-display font-bold text-lg">
+                              {result.value}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {result.label}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -278,8 +305,8 @@ export default function Progetti() {
       <section className="section-padding relative overflow-hidden">
         <div className="absolute inset-0 pattern-grid opacity-30" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-3xl geo-breathing" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -295,7 +322,8 @@ export default function Progetti() {
               Web come esperienza
             </h2>
             <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-              Una raccolta di esperienze web creative che ridefiniscono i confini del design digitale.
+              Una raccolta di esperienze web creative che ridefiniscono i
+              confini del design digitale.
             </p>
           </motion.div>
 
@@ -313,8 +341,10 @@ export default function Progetti() {
                 className="group relative block surface-card overflow-hidden"
               >
                 {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${experience.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${experience.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                />
+
                 {/* Animated Border */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
@@ -358,8 +388,8 @@ export default function Progetti() {
       <section className="section-padding relative overflow-hidden bg-surface/30">
         <div className="absolute inset-0 pattern-dots opacity-20" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl geo-breathing-slow" />
-        
-        <div className="container-tight relative">
+
+        <div className="container-wide relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -375,7 +405,8 @@ export default function Progetti() {
               Soluzioni per l'industria
             </h2>
             <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-              Siti web professionali per aziende manifatturiere e meccaniche della provincia di Bergamo.
+              Siti web professionali per aziende manifatturiere e meccaniche
+              della provincia di Bergamo.
             </p>
           </motion.div>
 
@@ -391,13 +422,13 @@ export default function Progetti() {
               >
                 {/* Mockup Image */}
                 <div className="relative aspect-video overflow-hidden">
-                  <img 
-                    src={project.mockup} 
+                  <img
+                    src={project.mockup}
                     alt={`${project.title} mockup`}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                  
+
                   {/* Sector Badge Overlay */}
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 rounded-lg bg-primary/90 text-primary-foreground text-xs font-mono font-medium backdrop-blur-sm">
@@ -435,7 +466,7 @@ export default function Progetti() {
 
       {/* CTA */}
       <section className="section-padding">
-        <div className="container-tight">
+        <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -447,7 +478,8 @@ export default function Progetti() {
               Hai un progetto simile?
             </h2>
             <p className="text-body-lg text-muted-foreground mb-8 max-w-lg mx-auto">
-              Raccontami la tua sfida. Vediamo insieme come posso aiutarti a raggiungere risultati concreti.
+              Raccontami la tua sfida. Vediamo insieme come posso aiutarti a
+              raggiungere risultati concreti.
             </p>
             <Button variant="hero" size="xl" asChild>
               <Link to="/contatti">

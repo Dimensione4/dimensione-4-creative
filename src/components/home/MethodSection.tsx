@@ -7,21 +7,24 @@ const steps = [
     icon: Map,
     step: "01",
     title: "Mappa",
-    description: "Breve discovery per definire obiettivi chiari. Capisco il contesto, analizzo i problemi, propongo soluzioni concrete.",
+    description:
+      "Breve discovery per definire obiettivi chiari. Capisco il contesto, analizzo i problemi, propongo soluzioni concrete.",
     outputs: ["Scope definito", "Priorità chiare", "Timeline realistica"],
   },
   {
     icon: Hammer,
     step: "02",
     title: "Costruisci",
-    description: "Sviluppo iterativo con visibilità continua. Codice testato, documentato e pronto per il deploy.",
+    description:
+      "Sviluppo iterativo con visibilità continua. Codice testato, documentato e pronto per il deploy.",
     outputs: ["Codice PR-ready", "Test inclusi", "Guida deploy"],
   },
   {
     icon: TrendingUp,
     step: "03",
     title: "Evolvi",
-    description: "Il lancio è l'inizio, non la fine. Iterazione basata sui dati, supporto continuo, crescita misurabile.",
+    description:
+      "Il lancio è l'inizio, non la fine. Iterazione basata sui dati, supporto continuo, crescita misurabile.",
     outputs: ["Metriche tracking", "Miglioramenti continui", "Supporto attivo"],
   },
 ];
@@ -32,7 +35,7 @@ export function MethodSection() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
@@ -40,12 +43,12 @@ export function MethodSection() {
   return (
     <section ref={ref} className="section-padding relative overflow-hidden">
       {/* Background pattern with parallax */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 pattern-grid opacity-50"
         style={{ y: patternY }}
       />
-      
-      <div className="container-tight relative">
+
+      <div className="container-wide relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,7 +63,8 @@ export function MethodSection() {
             Mappa → Costruisci → Evolvi
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Un processo semplice, async-first, con accesso diretto e un unico responsabile.
+            Un processo semplice, async-first, con accesso diretto e un unico
+            responsabile.
           </p>
         </motion.div>
 

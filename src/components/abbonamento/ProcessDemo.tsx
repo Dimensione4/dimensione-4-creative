@@ -147,7 +147,7 @@ const steps = [
 export function ProcessDemo() {
   return (
     <section className="section-padding bg-surface/30">
-      <div className="container-tight">
+      <div className="container-wide">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

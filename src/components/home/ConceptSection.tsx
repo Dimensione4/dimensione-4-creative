@@ -6,19 +6,22 @@ const dimensions = [
   {
     icon: Eye,
     title: "Prospettiva",
-    description: "Ogni progetto viene osservato da angolazioni diverse. Analizzo obiettivi, utenti e contesto prima di scrivere una riga di codice.",
+    description:
+      "Ogni progetto viene osservato da angolazioni diverse. Analizzo obiettivi, utenti e contesto prima di scrivere una riga di codice.",
     dimension: "1D",
   },
   {
     icon: Layers,
     title: "Struttura",
-    description: "Architettura solida, componenti riutilizzabili, codice leggibile. Costruisco fondamenta che reggono la crescita.",
+    description:
+      "Architettura solida, componenti riutilizzabili, codice leggibile. Costruisco fondamenta che reggono la crescita.",
     dimension: "2D",
   },
   {
     icon: Clock,
     title: "Tempo",
-    description: "I progetti migliori evolvono. Iterazione continua, miglioramenti misurabili, supporto a lungo termine.",
+    description:
+      "I progetti migliori evolvono. Iterazione continua, miglioramenti misurabili, supporto a lungo termine.",
     dimension: "3D → 4D",
   },
 ];
@@ -26,10 +29,10 @@ const dimensions = [
 export function ConceptSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
@@ -37,12 +40,12 @@ export function ConceptSection() {
   return (
     <section ref={ref} className="section-padding relative overflow-hidden">
       {/* Background accent with parallax */}
-      <motion.div 
+      <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/3 rounded-full blur-3xl geo-breathing"
         style={{ y: glowY }}
       />
-      
-      <div className="container-tight relative">
+
+      <div className="container-wide relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +60,8 @@ export function ConceptSection() {
             Cos'è la "quarta dimensione"?
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Non è magia. È un approccio che aggiunge profondità ai progetti digitali attraverso tre principi fondamentali.
+            Non è magia. È un approccio che aggiunge profondità ai progetti
+            digitali attraverso tre principi fondamentali.
           </p>
         </motion.div>
 
