@@ -14,8 +14,8 @@ const DEFAULT_SETTINGS: MaintenanceSettings = {
   title: "Sto riallineando la Quarta Dimensione.",
   subtitle:
     "Un intervento tra prospettiva, struttura e tempo. Torno online a breve.",
-  show_countdown: true,
-  countdown_date: "2026-01-20T18:00:00.000Z",
+  show_countdown: false,
+  countdown_date: null,
 };
 
 const APP_ENV =

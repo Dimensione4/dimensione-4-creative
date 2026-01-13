@@ -26,6 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAvailability } from "@/hooks/useAvailability";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useToast } from "@/hooks/use-toast";
+import { useBuildInfo } from "@/hooks/useBuildInfo";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -44,6 +45,7 @@ export default function Admin() {
     env,
   } = useMaintenance();
   const { toast } = useToast();
+  const buildInfo = useBuildInfo();
   const [maintenanceTitle, setMaintenanceTitle] = useState("");
   const [maintenanceSubtitle, setMaintenanceSubtitle] = useState("");
   const [countdownDate, setCountdownDate] = useState<Date | undefined>(
@@ -195,8 +197,28 @@ export default function Admin() {
               <p className="text-muted-foreground">
                 Gestisci le impostazioni del sito
               </p>
-              <div className="mt-2 text-xs opacity-70">
-                Environment: <b>{env}</b>
+
+              <div className="mt-2 text-xs opacity-70 space-y-1">
+                <div>
+                  Environment: <b>{env}</b>
+                </div>
+                {buildInfo && (
+                  <>
+                    <div>
+                      Build env: <b>{buildInfo.env}</b>
+                    </div>
+                    <div>
+                      Branch: <b>{buildInfo.branch}</b>
+                    </div>
+                    <div>
+                      Commit: <b>{buildInfo.commitShort}</b>
+                    </div>
+                    <div>
+                      Build time:{" "}
+                      <b>{new Date(buildInfo.buildTime).toLocaleString()}</b>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             <Button variant="outline" onClick={handleSignOut}>
