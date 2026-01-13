@@ -46,18 +46,30 @@ export type Database = {
       }
       maintenance_settings: {
         Row: {
+          countdown_date: string | null
           enabled: boolean
           env: string
+          show_countdown: boolean | null
+          subtitle: string | null
+          title: string | null
           updated_at: string
         }
         Insert: {
+          countdown_date?: string | null
           enabled?: boolean
           env: string
+          show_countdown?: boolean | null
+          subtitle?: string | null
+          title?: string | null
           updated_at?: string
         }
         Update: {
+          countdown_date?: string | null
           enabled?: boolean
           env?: string
+          show_countdown?: boolean | null
+          subtitle?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: []
