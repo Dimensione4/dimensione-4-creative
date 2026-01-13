@@ -44,6 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_settings: {
+        Row: {
+          countdown_date: string | null
+          enabled: boolean
+          env: string
+          show_countdown: boolean | null
+          subtitle: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          countdown_date?: string | null
+          enabled?: boolean
+          env: string
+          show_countdown?: boolean | null
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          countdown_date?: string | null
+          enabled?: boolean
+          env?: string
+          show_countdown?: boolean | null
+          subtitle?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           id: string
@@ -65,36 +95,6 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           value?: Json
-        }
-        Relationships: []
-      }
-      maintenance_settings: {
-        Row: {
-          env: string
-          enabled: boolean
-          title: string
-          subtitle: string
-          show_countdown: boolean
-          countdown_date: string | null
-          updated_at: string
-        }
-        Insert: {
-          env: string
-          enabled?: boolean
-          title?: string
-          subtitle?: string
-          show_countdown?: boolean
-          countdown_date?: string | null
-          updated_at?: string
-        }
-        Update: {
-          env?: string
-          enabled?: boolean
-          title?: string
-          subtitle?: string
-          show_countdown?: boolean
-          countdown_date?: string | null
-          updated_at?: string
         }
         Relationships: []
       }
