@@ -30,7 +30,7 @@ export function useMaintenance() {
     try {
       const { data, error } = await supabase
         .from("maintenance_settings")
-        .select("enabled")
+        .select("enabled,show_countdown,countdown_date")
         .eq("env", APP_ENV)
         .single();
 
@@ -45,6 +45,8 @@ export function useMaintenance() {
         setSettings((prev) => ({
           ...prev,
           enabled: data.enabled,
+          show_countdown: data.show_countdown ?? prev.show_countdown,
+          countdown_date: data.countdown_date ?? prev.countdown_date,
         }));
       }
     } catch (err) {
@@ -66,6 +68,8 @@ export function useMaintenance() {
         {
           env: APP_ENV,
           enabled: updatedSettings.enabled,
+          show_countdown: updatedSettings.show_countdown,
+          countdown_date: updatedSettings.countdown_date,
           updated_at: new Date().toISOString(),
         },
         { onConflict: "env" }
