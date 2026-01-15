@@ -22,6 +22,7 @@ const navLinks = [
   { href: "/progetti", labelKey: "nav.projects" },
   { href: "/metodo", labelKey: "nav.method" },
   { href: "/abbonamento", labelKey: "nav.subscription" },
+  { href: "/contatti", labelKey: "nav.contacts" },
 ];
 
 // Magnetic link component
@@ -169,129 +170,137 @@ export function Header() {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         > */}
         <motion.div
-          className="grid items-center"
-          style={{ gridTemplateColumns: "auto minmax(0,1fr) auto" }}
+          className="flex items-center justify-between w-full"
           animate={{ height: hasScrolled ? 64 : 80 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group relative z-10">
-            <motion.div
-              whileHover={{ rotate: 180 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              animate={{ scale: hasScrolled ? 0.9 : 1 }}
+          {/* Left side - Logo */}
+          <div className="flex items-center">
+            <Link
+              to="/"
+              className="flex items-center gap-3 group relative z-10"
             >
-              <img
-                src={logoSymbol}
-                alt="Dimensione 4"
-                className="w-10 h-10 object-contain"
-              />
-            </motion.div>
-            <motion.div
-              className="overflow-hidden flex flex-col items-start"
-              animate={{
-                opacity: hasScrolled ? 0 : 1,
-                width: hasScrolled ? 0 : "auto",
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              <span className="font-display font-semibold text-lg tracking-tight whitespace-nowrap">
-                Dimensione 4
-              </span>
-              <span className="text-xs bg-gradient-to-r from-[hsl(179,80%,36%)] to-[hsl(180,78%,52%)] bg-clip-text text-transparent whitespace-nowrap mt-0">
-                di Dario Marco Bellini
-              </span>
-            </motion.div>
-          </Link>
-
-          {/* Desktop Navigation - Center with shrinking pill */}
-          {/* <nav className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2"> */}
-          <nav className="hidden lg:flex justify-center min-w-0">
-            <motion.div
-              style={{ maxWidth: 860, width: "fit-content" }}
-              className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
-              animate={{
-                gap: hasScrolled ? 0 : 2,
-                paddingLeft: hasScrolled ? 6 : 8,
-                paddingRight: hasScrolled ? 6 : 8,
-                paddingTop: hasScrolled ? 4 : 6,
-                paddingBottom: hasScrolled ? 4 : 6,
-              }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {navLinks.map((link) => (
-                <MagneticLink
-                  key={link.href}
-                  href={link.href}
-                  isActive={location.pathname === link.href}
-                >
-                  {t(link.labelKey)}
-                </MagneticLink>
-              ))}
-            </motion.div>
-          </nav>
-
-          {/* Right side - Language, Theme Toggle + CTA */}
-          <div className="hidden lg:flex items-center gap-3 relative z-10">
-            <LanguageSwitch />
-            <ThemeToggle />
-            <motion.div
-              animate={{ scale: hasScrolled ? 0.95 : 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Button
-                variant="hero"
-                size={hasScrolled ? "sm" : "default"}
-                className="group"
-                asChild
+              <motion.div
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ scale: hasScrolled ? 0.9 : 1 }}
               >
-                <Link to="/contatti">
-                  <span>Prenota una call</span>
-                  <motion.span
-                    className="inline-block ml-2"
-                    whileHover={{ x: 4 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    →
-                  </motion.span>
-                </Link>
-              </Button>
-            </motion.div>
+                <img
+                  src={logoSymbol}
+                  alt="Dimensione 4"
+                  className="w-10 h-10 object-contain"
+                />
+              </motion.div>
+              <motion.div
+                className="overflow-hidden flex flex-col items-start"
+                animate={{
+                  opacity: hasScrolled ? 0 : 1,
+                  width: hasScrolled ? 0 : "auto",
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <span className="font-display font-semibold text-lg tracking-tight whitespace-nowrap">
+                  Dimensione 4
+                </span>
+                <span className="text-xs bg-gradient-to-r from-[hsl(179,80%,36%)] to-[hsl(180,78%,52%)] bg-clip-text text-transparent whitespace-nowrap mt-0">
+                  di Dario Marco Bellini
+                </span>
+              </motion.div>
+            </Link>
           </div>
 
-          {/* Mobile Menu Button - Animated Hamburger */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
-            aria-label="Toggle menu"
-          >
-            <div className="w-5 h-4 flex flex-col justify-between">
-              <motion.span
-                className="block h-0.5 bg-foreground origin-center"
+          {/* Center - Desktop Navigation (hidden on mobile/tablet) */}
+          <div className="hidden lg:block absolute left-1/2 -translate-x-1/2">
+            <nav className="flex justify-center min-w-0">
+              <motion.div
+                style={{ maxWidth: 860, width: "fit-content" }}
+                className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
                 animate={{
-                  rotate: isMenuOpen ? 45 : 0,
-                  y: isMenuOpen ? 7 : 0,
+                  gap: hasScrolled ? 0 : 2,
+                  paddingLeft: hasScrolled ? 6 : 8,
+                  paddingRight: hasScrolled ? 6 : 8,
+                  paddingTop: hasScrolled ? 4 : 6,
+                  paddingBottom: hasScrolled ? 4 : 6,
                 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {navLinks.map((link) => (
+                  <MagneticLink
+                    key={link.href}
+                    href={link.href}
+                    isActive={location.pathname === link.href}
+                  >
+                    {t(link.labelKey)}
+                  </MagneticLink>
+                ))}
+              </motion.div>
+            </nav>
+          </div>
+
+          {/* Right side - Controls and Hamburger Menu */}
+          <div className="flex items-center gap-3">
+            {/* Desktop controls - hidden on mobile/tablet */}
+            <div className="hidden lg:flex items-center gap-3 relative z-10">
+              <LanguageSwitch />
+              <ThemeToggle />
+              <motion.div
+                animate={{ scale: hasScrolled ? 0.95 : 1 }}
                 transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="block h-0.5 bg-foreground"
-                animate={{
-                  opacity: isMenuOpen ? 0 : 1,
-                  scaleX: isMenuOpen ? 0 : 1,
-                }}
-                transition={{ duration: 0.2 }}
-              />
-              <motion.span
-                className="block h-0.5 bg-foreground origin-center"
-                animate={{
-                  rotate: isMenuOpen ? -45 : 0,
-                  y: isMenuOpen ? -7 : 0,
-                }}
-                transition={{ duration: 0.3 }}
-              />
+              >
+                <Button
+                  variant="hero"
+                  size={hasScrolled ? "sm" : "default"}
+                  className="group"
+                  asChild
+                >
+                  <Link to="/contatti">
+                    <span>Prenota una call</span>
+                    <motion.span
+                      className="inline-block ml-2"
+                      whileHover={{ x: 4 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      →
+                    </motion.span>
+                  </Link>
+                </Button>
+              </motion.div>
             </div>
-          </button>
+
+            {/* Mobile Hamburger Menu */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
+              aria-label="Toggle menu"
+            >
+              <div className="w-5 h-4 flex flex-col justify-between">
+                <motion.span
+                  className="block h-0.5 bg-foreground origin-center"
+                  animate={{
+                    rotate: isMenuOpen ? 45 : 0,
+                    y: isMenuOpen ? 7 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="block h-0.5 bg-foreground"
+                  animate={{
+                    opacity: isMenuOpen ? 0 : 1,
+                    scaleX: isMenuOpen ? 0 : 1,
+                  }}
+                  transition={{ duration: 0.2 }}
+                />
+                <motion.span
+                  className="block h-0.5 bg-foreground origin-center"
+                  animate={{
+                    rotate: isMenuOpen ? -45 : 0,
+                    y: isMenuOpen ? -7 : 0,
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
+            </button>
+          </div>
         </motion.div>
       </div>
 
