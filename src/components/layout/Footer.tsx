@@ -6,12 +6,13 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const navLinks = [
+  { href: "/chi-sono", labelKey: "nav.about" },
   { href: "/servizi", labelKey: "nav.services" },
   { href: "/mvp", labelKey: "nav.mvp" },
   { href: "/progetti", labelKey: "nav.projects" },
   { href: "/metodo", labelKey: "nav.method" },
   { href: "/abbonamento", labelKey: "nav.subscription" },
-  { href: "/chi-sono", labelKey: "nav.about" },
+  { href: "/contatti", labelKey: "nav.contacts" },
 ];
 
 const legalLinks = [
@@ -263,7 +264,11 @@ export function Footer() {
               </Link>
             ))}
             <button
-              onClick={() => (window as unknown as { openCookieConsent?: () => void }).openCookieConsent?.()}
+              onClick={() =>
+                (
+                  window as unknown as { openCookieConsent?: () => void }
+                ).openCookieConsent?.()
+              }
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               {t("footer.manageCookies")}
