@@ -106,7 +106,7 @@ export default function Metodo() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-2xl"
+            className="max-w-3xl"
           >
             <span className="font-mono text-label text-primary mb-4 block">
               Il metodo
@@ -136,7 +136,7 @@ export default function Metodo() {
                 className="surface-card p-8 md:p-10 relative"
               >
                 {/* Step indicator */}
-                <div className="absolute -left-3 md:-left-5 top-8 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
+                <div className="absolute -left-3 md:left-5 top-9 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
                   <span className="font-mono text-sm text-primary-foreground font-bold">
                     {step.step}
                   </span>
@@ -227,7 +227,7 @@ export default function Metodo() {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
                   <principle.icon className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-display text-xl font-semibold mb-2">
+                <h3 className="font-display text-xl text-gradient font-semibold mb-2">
                   {principle.title}
                 </h3>
                 <p className="text-sm text-muted-foreground">

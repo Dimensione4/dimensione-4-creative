@@ -7,22 +7,22 @@ const dimensions = [
     icon: Eye,
     title: "Prospettiva",
     description:
-      "Ogni progetto viene osservato da angolazioni diverse. Analizzo obiettivi, utenti e contesto prima di scrivere una riga di codice.",
-    dimension: "1D",
+      "Ogni progetto inizia da uno sguardo profondo. Analizzo obiettivi, utenti e contesto prima di scrivere una riga di codice.",
+    highlight: "Capire prima di costruire.",
   },
   {
     icon: Layers,
     title: "Struttura",
     description:
-      "Architettura solida, componenti riutilizzabili, codice leggibile. Costruisco fondamenta che reggono la crescita.",
-    dimension: "2D",
+      "Costruisco su basi solide e riusabili. Progetto architetture chiare, strutture modulari e codice leggibile che resiste al tempo e al cambiamento.",
+    highlight: "Stabilità che regge la crescita.",
   },
   {
     icon: Clock,
     title: "Tempo",
     description:
-      "I progetti migliori evolvono. Iterazione continua, miglioramenti misurabili, supporto a lungo termine.",
-    dimension: "3D → 4D",
+      "I progetti migliori evolvono nel tempo. Iterazione continua, miglioramenti misurabili, supporto a lungo termine.",
+    highlight: "Crescita costante nel tempo.",
   },
 ];
 
@@ -57,11 +57,11 @@ export function ConceptSection() {
             Il concetto
           </span>
           <h2 className="font-display text-h2 font-bold mb-4">
-            Cos'è la "quarta dimensione"?
+            Cos'è la <span className="text-gradient">"quarta dimensione"</span>?
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Non è magia. È un approccio che aggiunge profondità ai progetti
-            digitali attraverso tre principi fondamentali.
+            È l’elemento che dà profondità ai progetti digitali: un approccio
+            fondato su visione chiara, basi solide e crescita costante.
           </p>
         </motion.div>
 
@@ -75,26 +75,46 @@ export function ConceptSection() {
               transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
               className="group surface-card p-8 relative"
             >
-              {/* Dimension badge */}
-              <div className="absolute top-6 right-6 font-mono text-label text-muted-foreground">
-                {dim.dimension}
+              {/* Icon + Title Row */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <dim.icon className="w-5 h-5 text-primary" />
+                </div>
+                <h3 className="font-display text-h3 font-semibold">
+                  {dim.title}
+                </h3>
               </div>
 
-              {/* Icon */}
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <dim.icon className="w-6 h-6 text-primary" />
-              </div>
-
-              {/* Content */}
-              <h3 className="font-display text-h3 font-semibold mb-3">
-                {dim.title}
-              </h3>
-              <p className="text-body text-muted-foreground leading-relaxed">
+              {/* Description */}
+              <p className="text-body text-muted-foreground leading-relaxed mb-3">
                 {dim.description}
               </p>
+
+              {/* Highlight phrase */}
+              <p className="text-gradient font-medium">{dim.highlight}</p>
             </motion.div>
           ))}
         </div>
+
+        {/* Closing Narrative */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="text-center mt-16"
+        >
+          <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
+            Solo quando un progetto ha{" "}
+            <span className="font-semibold">visione</span>,{" "}
+            <span className="font-semibold">fondamenta</span> e{" "}
+            <span className="font-semibold">tempo per evolversi</span>, entra
+            nella sua vera profondità:{" "}
+            <span className="text-primary font-semibold">
+              la quarta dimensione
+            </span>
+            .
+          </p>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import {
   ArrowRight,
   Gauge,
@@ -145,11 +146,25 @@ export default function Servizi() {
                 className="surface-card p-8 md:p-10 relative"
               >
                 {service.isAddon && (
-                  <div className="absolute top-6 right-6">
-                    <span className="px-3 py-1.5 rounded-lg bg-warm/10 text-warm text-xs font-mono font-medium">
-                      Add-on
-                    </span>
-                  </div>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <div className="absolute top-6 right-6 cursor-help">
+                        <span className="px-3 py-1.5 rounded-lg bg-warm/10 text-warm text-xs font-mono font-medium">
+                          Add-on
+                        </span>
+                      </div>
+                    </Tooltip.Trigger>
+                    <Tooltip.Portal>
+                      <Tooltip.Content
+                        side="top"
+                        sideOffset={8}
+                        className="px-3 py-2 rounded-md bg-muted text-xs text-yellow-500 shadow-lg"
+                      >
+                        Modulo extra abbinabile ad altri servizi.
+                        <Tooltip.Arrow className="fill-muted" />
+                      </Tooltip.Content>
+                    </Tooltip.Portal>
+                  </Tooltip.Root>
                 )}
 
                 <div className="grid lg:grid-cols-3 gap-8">
