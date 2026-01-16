@@ -18,26 +18,27 @@ const rules = [
   {
     icon: RefreshCcw,
     title: "1 task attivo per volta",
-    description:
-      "Lavoro su una richiesta alla volta, con focus totale. La coda è illimitata: aggiungi quante richieste vuoi.",
+    descriptionTop: "Lavoro su una richiesta alla volta, con focus totale.",
+    descriptionBottom: "La coda è illimitata: aggiungi quante richieste vuoi.",
   },
   {
     icon: Code2,
     title: "Comunicazione async",
-    description:
-      "Niente call obbligatorie, niente Slack urgente. Aggiornamenti scritti, documentati, entro 24h.",
+    descriptionTop: "Niente call obbligatorie, niente Slack urgente.",
+    descriptionBottom: "Aggiornamenti scritti, documentati, entro 24h.",
   },
   {
     icon: FileText,
     title: "Consegna completa",
-    description:
-      "Ogni task viene consegnato PR-ready con test e guida deploy. Niente work-in-progress indefinito.",
+    descriptionTop:
+      "Ogni task viene consegnato PR-ready con test e guida deploy.",
+    descriptionBottom: "Niente work-in-progress indefinito.",
   },
   {
     icon: TestTube,
     title: "Revisioni illimitate",
-    description:
-      "Finché la richiesta originale non è perfetta. Entro 14-30 giorni dalla consegna.",
+    descriptionTop: "Finché la richiesta originale non è perfetta.",
+    descriptionBottom: "Entro 14-30 giorni dalla consegna.",
   },
 ];
 
@@ -62,12 +63,12 @@ const excluded = [
 
 const examples = [
   { title: "Fix performance mobile", type: "Performance" },
-  { title: "Landing Page Next.js", type: "Frontend" },
+  { title: "Risoluzione bug frontend", type: "Frontend" },
+  { title: "Bug fixing backend", type: "Backend" },
   { title: "Refactor componenti React", type: "Code Quality" },
   { title: "Audit SEO tecnico", type: "SEO" },
   { title: "Implementazione design system", type: "Design" },
   { title: "Ottimizzazione Core Web Vitals", type: "Performance" },
-  { title: "Fix accessibilità WCAG", type: "A11y" },
   { title: "Animazioni Framer Motion", type: "Motion" },
 ];
 
@@ -134,14 +135,18 @@ export default function Abbonamento() {
                 transition={{ duration: 0.5, delay: 0.1 * index }}
                 className="surface-card p-8"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-                  <rule.icon className="w-6 h-6 text-primary" />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <rule.icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="font-display text-gradient text-lg font-semibold">
+                    {rule.title}
+                  </h3>
                 </div>
-                <h3 className="font-display text-xl font-semibold mb-2">
-                  {rule.title}
-                </h3>
                 <p className="text-body text-muted-foreground">
-                  {rule.description}
+                  {rule.descriptionTop}
+                  <br />
+                  {rule.descriptionBottom}
                 </p>
               </motion.div>
             ))}
@@ -205,7 +210,14 @@ export default function Abbonamento() {
                 ))}
               </ul>
               <p className="mt-6 text-xs text-muted-foreground">
-                Per progetti complessi, considera il servizio MVP Custom.
+                Per progetti complessi, considera il servizio{" "}
+                <Link
+                  to="/mvp"
+                  className="underline hover:text-primary transition-colors"
+                >
+                  MVP Custom
+                </Link>
+                .
               </p>
             </motion.div>
           </div>

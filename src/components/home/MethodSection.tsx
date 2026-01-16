@@ -1,6 +1,7 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Map, Hammer, TrendingUp, ArrowRight } from "lucide-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 const steps = [
   {
@@ -63,8 +64,29 @@ export function MethodSection() {
             Mappa → Costruisci → Evolvi
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            Un processo semplice, async-first, con accesso diretto e un unico
-            responsabile.
+            Un processo semplice,{" "}
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <span className="underline decoration-dotted cursor-help text-foreground">
+                  async-first
+                </span>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  side="top"
+                  sideOffset={8}
+                  className="px-3 py-2 rounded-md bg-muted text-xs text-muted-foreground shadow-lg max-w-[220px]"
+                >
+                  <span className="text-yellow-500">
+                    Collaborazione asincrona
+                  </span>
+                  : comunicazione senza bisogno di essere online nello stesso
+                  momento.
+                  <Tooltip.Arrow className="fill-muted" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+            , con accesso diretto e un unico responsabile.
           </p>
         </motion.div>
 
