@@ -772,16 +772,24 @@ function SymbolGroup({
   scrollY: React.MutableRefObject<number>;
   viewSize: number;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
+  const tiltRef = useRef<THREE.Group>(null);
+  const spinRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
-    if (!groupRef.current) return;
+    if (!tiltRef.current || !spinRef.current) return;
 
-    // Front face, centered
-    groupRef.current.rotation.set(0.1, 5.8, 0);
+    const t = state.clock.elapsedTime;
 
-    // Keep centered
-    groupRef.current.position.set(0, -6, 0);
+    // Fixed tilt/position (as you set it)
+    tiltRef.current.rotation.set(0.1, 5.8, 0);
+    const orbitRadius = 0.6;
+    const orbitSpeed = 0.08;
+    tiltRef.current.position.x = Math.cos(t * orbitSpeed) * orbitRadius;
+    tiltRef.current.position.z = Math.sin(t * orbitSpeed) * orbitRadius;
+    tiltRef.current.position.y = -6;
+
+    // Slow clockwise spin around its own Y axis (symmetry axis stays fixed)
+    spinRef.current.rotation.y = -t * 0.12;
   });
 
   // useFrame((state) => {
@@ -803,8 +811,10 @@ function SymbolGroup({
   // });
 
   return (
-    <group ref={groupRef}>
-      <BlenderLogo viewSize={viewSize} />
+    <group ref={tiltRef}>
+      <group ref={spinRef}>
+        <BlenderLogo viewSize={viewSize} />
+      </group>
     </group>
   );
 }
