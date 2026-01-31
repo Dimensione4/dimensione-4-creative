@@ -355,4 +355,15 @@
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
+
+  /* Tagline slider */
+  .animate-tagline-slider {
+    animation: tagline-slider 8s ease-in-out infinite;
+  }
+
+  @keyframes tagline-slider {
+    0%, 40% { transform: translateX(0%); }
+    50%, 90% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+  }
 }

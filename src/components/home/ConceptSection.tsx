@@ -51,7 +51,7 @@ export function ConceptSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-left md:text-center mb-12 md:mb-16"
         >
           <span className="font-mono text-label text-primary mb-4 block">
             Il concetto
@@ -60,7 +60,7 @@ export function ConceptSection() {
             La <span className="text-gradient">quarta dimensione</span> del
             digitale
           </h2>
-          <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-body-lg text-muted-foreground max-w-2xl md:mx-auto">
             è l'approccio che aggiunge{" "}
             <strong className="text-gradient">profondità</strong> ai progetti
             digitali: una combinazione di{" "}
@@ -83,7 +83,7 @@ export function ConceptSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-              className="group surface-card p-8 relative"
+              className="group surface-card p-6 md:p-8 relative"
             >
               {/* Icon + Title Row */}
               <div className="flex items-center gap-3 mb-4">
@@ -111,9 +111,9 @@ export function ConceptSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-center mt-16"
+          className="text-left md:text-center mt-12 md:mt-16"
         >
-          <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-body-lg text-muted-foreground max-w-2xl md:mx-auto">
             Solo quando un progetto ha{" "}
             <span className="font-semibold">visione</span>,{" "}
             <span className="font-semibold">fondamenta</span> e{" "}
