@@ -9,7 +9,7 @@ import { trackEvent } from "@/components/GoogleAnalytics";
 import heroImage from "@/assets/hero-4d.jpg";
 
 const Hero3DScene = lazy(() =>
-  import("./Hero3DScene").then((mod) => ({ default: mod.Hero3DScene }))
+  import("./Hero3DScene").then((mod) => ({ default: mod.Hero3DScene })),
 );
 
 export function HeroSection() {
@@ -136,7 +136,7 @@ export function HeroSection() {
             <Button
               variant="hero"
               size="xl"
-              className="cta-glow"
+              className="cta-glow cursor-pointer hover:brightness-110"
               asChild
               onClick={() =>
                 trackEvent("cta_click", {
@@ -146,7 +146,7 @@ export function HeroSection() {
                 })
               }
             >
-              <Link to="/contatti">
+              <Link to="/contatti" className="cursor-pointer">
                 {t("hero.cta")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -154,6 +154,7 @@ export function HeroSection() {
             <Button
               variant="outline"
               size="xl"
+              className="cursor-pointer hover:border-primary/70 hover:text-foreground"
               asChild
               onClick={() =>
                 trackEvent("cta_click", {
@@ -163,7 +164,7 @@ export function HeroSection() {
                 })
               }
             >
-              <Link to="/servizi">
+              <Link to="/servizi" className="cursor-pointer">
                 <Play className="w-4 h-4" />
                 {t("hero.ctaSecondary")}
               </Link>

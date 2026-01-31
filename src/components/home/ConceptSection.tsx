@@ -57,11 +57,21 @@ export function ConceptSection() {
             Il concetto
           </span>
           <h2 className="font-display text-h2 font-bold mb-4">
-            Cos'è la <span className="text-gradient">"quarta dimensione"</span>?
+            La <span className="text-gradient">quarta dimensione</span> del
+            digitale
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
-            È l’elemento che dà profondità ai progetti digitali: un approccio
-            fondato su visione chiara, basi solide e crescita costante.
+            è l'approccio che aggiunge{" "}
+            <strong className="text-gradient">profondità</strong> ai progetti
+            digitali: una combinazione di{" "}
+            <strong className="text-gradient">visione</strong>,{" "}
+            <strong className="text-gradient">struttura</strong> e{" "}
+            <strong className="text-gradient">continuità</strong>. Non solo
+            estetica, ma architettura solida, metodo e miglioramento costante{" "}
+            <strong className="text-gradient">
+              per risultati che restano nel tempo
+            </strong>
+            .
           </p>
         </motion.div>
 

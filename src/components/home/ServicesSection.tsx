@@ -8,30 +8,31 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 const services = [
   {
     icon: Gauge,
-    title: "WordPress Performance & SEO",
+    title: "Siti WordPress veloci con una vera identità",
     description:
       "Siti più veloci, ottimizzati per Core Web Vitals e SEO tecnico.",
-    tags: ["Performance", "SEO", "WooCommerce"],
+    tags: ["Performance", "SEO", "Temi custom", "WooCommerce"],
   },
   {
     icon: Code2,
-    title: "MVP Custom",
-    description: "App web su misura con Next.js o React, rapide da lanciare.",
-    tags: ["Next.js", "React", "TypeScript"],
+    title: "MVP su Misura",
+    description:
+      "Da idea a prodotto funzionante in tempi brevi. Perfetto per startup e test di mercato.",
+    tags: ["Validazione", "Prototipo Reale", "Time-to-Market", "Scalabilità"],
   },
   {
     icon: Palette,
-    title: "Frontend Optimization",
+    title: "UX & Frontend",
     description:
-      "Refactoring, accessibilità e design system senza stravolgimenti.",
-    tags: ["Refactoring", "A11y", "Design System"],
+      "Interfacce chiare, fluide, accessibili. Coerenza visiva con il brand.",
+    tags: ["Usabilità", "Accessibilità", "Manutenibilità", "Design System"],
   },
   {
     icon: Sparkles,
     title: "Esperienza Visiva",
     description:
-      "Animazioni fluide, microinterazioni, motion design memorabile.",
-    tags: ["Motion", "Framer", "GSAP"],
+      "Animazioni e micro‑interazioni eleganti che rendono il brand memorabile.",
+    tags: ["Motion", "Framer", "Brand Impact", "Storytelling"],
     isAddon: true,
   },
 ];
@@ -174,7 +175,7 @@ export function ServicesSection() {
                         >
                           {tag}
                         </span>
-                      )
+                      ),
                     )}
                   </div>
                 </div>

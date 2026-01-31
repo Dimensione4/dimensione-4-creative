@@ -6,7 +6,8 @@ interface CalendlyEmbedProps {
 }
 
 // Placeholder URL - replace with actual Calendly link
-const CALENDLY_URL = "https://calendly.com/dimensione4/15min";
+const CALENDLY_URL =
+  "https://calendly.com/dimensione4-di-dariomarcobellini/30min";
 
 export function CalendlyEmbed({ url = CALENDLY_URL }: CalendlyEmbedProps) {
   useEffect(() => {
@@ -35,7 +36,7 @@ export function CalendlyEmbed({ url = CALENDLY_URL }: CalendlyEmbedProps) {
         </div>
         <div>
           <h3 className="font-display text-xl font-semibold">
-            Prenota una call di 15 minuti
+            Prenota una call di 30 minuti
           </h3>
           <p className="text-sm text-muted-foreground">
             Scegli il giorno e l'orario che preferisci

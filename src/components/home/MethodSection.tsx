@@ -58,10 +58,12 @@ export function MethodSection() {
           className="text-center mb-16"
         >
           <span className="font-mono text-label text-primary mb-4 block">
-            Il metodo
+            Metodo MCE
           </span>
           <h2 className="font-display text-h2 font-bold mb-4">
-            Mappa → Costruisci → Evolvi
+            <span className="text-primary">M</span>appa &rarr;{" "}
+            <span className="text-primary">C</span>ostruisci &rarr;{" "}
+            <span className="text-primary">E</span>volvi
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
             Un processo semplice,{" "}
@@ -150,3 +152,4 @@ export function MethodSection() {
     </section>
   );
 }
+
