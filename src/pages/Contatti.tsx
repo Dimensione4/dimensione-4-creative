@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Mail, MessageSquare, Loader2 } from "lucide-react";
+import { Send, Mail, MessageSquare, Loader2, ArrowDown } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,8 +137,8 @@ export default function Contatti() {
         title={isItalian ? "Contatti" : "Contact"}
         description={
           isItalian
-            ? "Prenota una call di 15 minuti o invia un messaggio. Rispondo entro 24 ore lavorative."
-            : "Book a 15-minute call or send a message. I respond within 24 business hours."
+            ? "Prenota una call di 30 minuti o invia un messaggio. Rispondo entro 24 ore lavorative."
+            : "Book a 30-minute call or send a message. I respond within 24 business hours."
         }
         canonical="/contatti"
       />
@@ -163,8 +163,8 @@ export default function Contatti() {
               </h1>
               <p className="text-body-lg text-muted-foreground mb-8">
                 {isItalian
-                  ? "Una call chiara di 15 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile."
-                  : "A clear 15-minute call to understand if I can help you. No pressure, no unnecessary waiting."}
+                  ? "Una call chiara di 30 minuti per capire se posso aiutarti. Niente pressioni, niente attesa inutile."
+                  : "A clear 30-minute call to understand if I can help you. No pressure, no unnecessary waiting."}
               </p>
 
               <div className="space-y-6">
@@ -208,6 +208,48 @@ export default function Contatti() {
                       </p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="mt-8">
+                <div className="relative inline-flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      document
+                        .getElementById("calendly")
+                        ?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                    }}
+                    className="inline-flex items-center gap-4 text-2xl font-medium text-primary hover:text-primary/80 transition-colors"
+                    aria-label={
+                      isItalian
+                        ? "Vai alla sezione per prenotare una call"
+                        : "Jump to the call booking section"
+                    }
+                  >
+                    <motion.span
+                      animate={{ y: [0, 6, 0] }}
+                      transition={{ duration: 1.4, repeat: Infinity }}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10"
+                    >
+                      <ArrowDown className="w-4 h-4" />
+                    </motion.span>
+                    {isItalian
+                      ? "Prenota una call veloce con Calendly"
+                      : "Book a quick call with Calendly"}
+                  </button>
+                  <motion.span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-4 top-9 h-28 w-px bg-gradient-to-b from-primary/70 via-primary/30 to-transparent"
+                    animate={{ y: [0, 18, 0], opacity: [0.9, 0.3, 0.9] }}
+                    transition={{
+                      duration: 2.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
                 </div>
               </div>
             </motion.div>
@@ -391,7 +433,7 @@ export default function Contatti() {
       </section>
 
       {/* Calendly Booking Section */}
-      <section className="section-padding pt-0">
+      <section id="calendly" className="section-padding pt-0">
         <div className="container-wide">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
