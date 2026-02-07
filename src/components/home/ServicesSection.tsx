@@ -42,7 +42,7 @@ export function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-surface/30">
+    <section id="services" ref={ref} className="section-padding bg-surface/30">
       <div className="container-wide">
         {/* Header */}
         <motion.div
@@ -75,7 +75,7 @@ export function ServicesSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
-              className="group surface-card p-8 relative"
+              className="group surface-card p-6 md:p-8 relative"
               // className={`group surface-card p-8 relative ${
               //   service.isAddon ? "md:col-span-2" : ""
               // }`}
@@ -84,8 +84,8 @@ export function ServicesSection() {
               {service.isAddon && (
                 <Tooltip.Root>
                   <Tooltip.Trigger asChild>
-                    <div className="absolute top-6 right-6 cursor-help">
-                      <span className="px-2 py-1 rounded-md bg-warm/10 text-warm text-xs font-mono">
+                    <div className="absolute top-4 right-4 md:top-6 md:right-6 cursor-help">
+                      <span className="px-2 py-1 rounded-md bg-warm/10 text-warm text-[10px] md:text-xs font-mono">
                         Add-on
                       </span>
                     </div>
@@ -103,10 +103,10 @@ export function ServicesSection() {
                 </Tooltip.Root>
               )}
 
-              <div className="flex gap-6">
+              <div className="flex gap-6 pr-12 md:pr-0">
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <service.icon className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                  <service.icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
 
                 {/* Content */}
@@ -114,7 +114,7 @@ export function ServicesSection() {
                   {service.title === "MVP Custom" ? (
                     <Tooltip.Root>
                       <Tooltip.Trigger asChild>
-                        <h3 className="font-display text-xl font-semibold mb-2 cursor-help">
+                        <h3 className="font-display text-lg md:text-xl font-semibold mb-2 cursor-help">
                           {service.title}
                         </h3>
                       </Tooltip.Trigger>
@@ -135,12 +135,12 @@ export function ServicesSection() {
                       </Tooltip.Portal>
                     </Tooltip.Root>
                   ) : (
-                    <h3 className="font-display text-xl font-semibold mb-2">
+                    <h3 className="font-display text-lg md:text-xl font-semibold mb-2">
                       {service.title}
                     </h3>
                   )}
 
-                  <p className="text-body text-muted-foreground mb-4">
+                  <p className="text-sm md:text-body text-muted-foreground mb-4">
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -148,7 +148,7 @@ export function ServicesSection() {
                       tag === "A11y" ? (
                         <Tooltip.Root key={tag}>
                           <Tooltip.Trigger asChild>
-                            <span className="px-2 py-1 rounded-md bg-surface text-xs font-mono text-muted-foreground cursor-help">
+                            <span className="px-2 py-1 rounded-md bg-surface/70 border border-[hsl(var(--border))] text-[11px] md:text-xs font-mono text-muted-foreground cursor-help">
                               {tag}
                             </span>
                           </Tooltip.Trigger>
@@ -171,7 +171,7 @@ export function ServicesSection() {
                       ) : (
                         <span
                           key={tag}
-                          className="px-2 py-1 rounded-md bg-surface text-xs font-mono text-muted-foreground"
+                          className="px-2 py-1 rounded-md bg-surface/70 border border-[hsl(var(--border))] text-[11px] md:text-xs font-mono text-muted-foreground"
                         >
                           {tag}
                         </span>

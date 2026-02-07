@@ -293,7 +293,13 @@ function LightRig() {
   );
 }
 
-export function Hero3DScene() {
+export function Hero3DScene({
+  className = "absolute inset-0 z-20 flex items-center justify-end pr-[2%] md:pr-[6%] pointer-events-none",
+  canvasClassName = "w-[380px] h-[380px] md:w-[500px] md:h-[500px] lg:w-[620px] lg:h-[620px] pointer-events-auto",
+}: {
+  className?: string;
+  canvasClassName?: string;
+}) {
   const isMobile = useIsMobile();
   const scrollY = useScrollPosition();
 
@@ -301,9 +307,9 @@ export function Hero3DScene() {
   const viewSize = frustumSize * 2;
 
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-end pr-[2%] md:pr-[6%] pointer-events-none">
+    <div className={className}>
       <div
-        className="w-[380px] h-[380px] md:w-[500px] md:h-[500px] lg:w-[620px] lg:h-[620px] pointer-events-auto"
+        className={canvasClassName}
         style={{ aspectRatio: "1 / 1" }}
       >
         <Canvas
@@ -318,8 +324,8 @@ export function Hero3DScene() {
             near: 0.1,
             far: 100,
           }}
-          dpr={isMobile ? 1 : [1, 2]}
-          gl={{ antialias: true, alpha: true }}
+          dpr={isMobile ? 1.5 : [1, 2]}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
           style={{ background: "transparent" }}
         >
           <Suspense fallback={null}>

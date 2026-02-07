@@ -215,12 +215,10 @@ export default function Contatti() {
                   <button
                     type="button"
                     onClick={() => {
-                      document
-                        .getElementById("calendly")
-                        ?.scrollIntoView({
-                          behavior: "smooth",
-                          block: "start",
-                        });
+                      document.getElementById("calendly")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                      });
                     }}
                     className="inline-flex items-center gap-4 text-2xl font-medium text-primary hover:text-primary/80 transition-colors"
                     aria-label={

@@ -51,6 +51,12 @@
     --ring: 179 80% 36%;
 
     --radius: 0.75rem;
+    --site-inline-pad-base: clamp(1rem, 1.4vw, 2.5rem);
+    --snap-rail-right: clamp(8px, 1.2vw, 18px);
+    --snap-rail-track-width: 54px;
+    --snap-rail-buffer: 14px;
+    --snap-rail-footprint: 0px;
+    --site-inline-pad: var(--site-inline-pad-base);
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(179 80% 36%), hsl(180 78% 52%));
@@ -120,6 +126,15 @@
     --shadow-lg: 0 16px 48px hsl(216 55% 9% / 0.1);
     --shadow-glow: 0 0 40px hsl(180 76% 50% / 0.15);
   }
+
+  @media (min-width: 1024px) {
+    :root {
+      --snap-rail-footprint: calc(
+        var(--snap-rail-right) + var(--snap-rail-track-width) + var(--snap-rail-buffer)
+      );
+      --site-inline-pad: max(var(--site-inline-pad-base), var(--snap-rail-footprint));
+    }
+  }
 }
 
 @layer base {
@@ -130,6 +145,7 @@
   html {
     scroll-behavior: smooth;
     transition: background-color 200ms ease, color 200ms ease;
+    font-size: clamp(16px, 0.28vw + 15px, 18px);
   }
 
   html.no-transitions * {
@@ -161,6 +177,225 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Hide native scrollbars globally: only custom SnapRail remains visible */
+  html,
+  body,
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none;
+    background: transparent;
+  }
+
+  /* Global scroll-snap system */
+  html.has-site-snap,
+  body.has-site-snap {
+    --snap-header-offset: 4.5rem;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: var(--snap-header-offset);
+    overscroll-behavior-y: auto;
+  }
+
+  /* Desktop wheel-snap uses JS logic; disable native CSS snap to avoid double snapping */
+  html.has-js-wheel-snap.has-site-snap,
+  body.has-js-wheel-snap.has-site-snap {
+    scroll-snap-type: none;
+  }
+
+  html.has-site-snap main > section,
+  body.has-site-snap main > section {
+    min-height: calc(100svh - var(--snap-header-offset));
+    min-height: calc(100dvh - var(--snap-header-offset));
+    padding-top: clamp(0.9rem, 2.2vh, 1.75rem) !important;
+    padding-bottom: clamp(0.9rem, 2.2vh, 1.75rem) !important;
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    scroll-snap-align: center;
+    scroll-snap-stop: normal;
+    scroll-margin-top: var(--snap-header-offset);
+    scroll-margin-bottom: 0;
+  }
+
+  html.has-site-snap main > section > :is(.container-wide, .container-base, .container-tight),
+  body.has-site-snap main > section > :is(.container-wide, .container-base, .container-tight) {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+
+  html.has-site-snap footer,
+  body.has-site-snap footer {
+    position: relative;
+    z-index: 2;
+  }
+
+  html.has-site-snap footer,
+  body.has-site-snap footer {
+    scroll-snap-align: center;
+    scroll-snap-stop: normal;
+    scroll-margin-top: var(--snap-header-offset);
+  }
+
+  @media (min-width: 768px) {
+    html.has-site-snap,
+    body.has-site-snap {
+      --snap-header-offset: 5.5rem;
+      scroll-snap-type: y proximity;
+    }
+  }
+
+  @media (max-width: 767px) {
+    html.has-site-snap,
+    body.has-site-snap {
+      --snap-header-offset: 4.5rem;
+      scroll-snap-type: y proximity;
+    }
+
+    html.has-site-snap main > section,
+    body.has-site-snap main > section {
+      min-height: auto;
+      padding-top: 1rem !important;
+      padding-bottom: 1rem !important;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+      scroll-margin-top: var(--snap-header-offset);
+    }
+  }
+
+  /* Creative vertical snap rail (Awwwards-inspired) */
+  .snap-rail {
+    position: fixed;
+    right: var(--snap-rail-right);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 45;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 8px;
+    border: 1px solid hsl(var(--primary) / 0.28);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, hsl(var(--accent) / 0.06), transparent 24%),
+      radial-gradient(circle at 50% 0%, hsl(var(--primary) / 0.16), transparent 42%),
+      hsl(var(--surface) / 0.72);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--accent) / 0.08),
+      0 0 18px hsl(var(--accent) / 0.12);
+    backdrop-filter: blur(12px);
+  }
+
+  .snap-rail::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--accent) / 0.32),
+      hsl(var(--primary) / 0.16) 40%,
+      hsl(var(--accent) / 0.08)
+    );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    padding: 1px;
+    opacity: 0.55;
+  }
+
+  .snap-rail-item {
+    position: relative;
+    width: 36px;
+    height: 14px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .snap-rail-bar {
+    width: 18px;
+    height: 2px;
+    border-radius: 999px;
+    background: hsl(var(--foreground) / 0.42);
+    transition: width 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
+  }
+
+  .snap-rail-item:hover .snap-rail-bar {
+    width: 24px;
+    background: hsl(var(--accent));
+  }
+
+  .snap-rail-item.is-active .snap-rail-bar {
+    width: 30px;
+    height: 3px;
+    background: linear-gradient(90deg, hsl(var(--accent)), hsl(var(--primary)));
+    box-shadow:
+      0 0 12px hsl(var(--accent) / 0.35),
+      0 0 24px hsl(var(--accent) / 0.22);
+  }
+
+  .snap-rail-label {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%) translateX(8px);
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    line-height: 1;
+    color: hsl(var(--foreground) / 0.9);
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--surface) / 0.92);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+
+  .snap-rail-item:hover .snap-rail-label,
+  .snap-rail-item.is-active .snap-rail-label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  .snap-rail-item.is-active .snap-rail-label {
+    border-color: hsl(var(--accent) / 0.35);
+    box-shadow: 0 0 14px hsl(var(--accent) / 0.16);
+  }
+
+  @media (min-width: 1024px) {
+    .snap-rail {
+      display: flex;
+    }
+  }
+
+  /* Remove section glow effects */
+  main section [class*="blur-3xl"],
+  main section .geo-breathing,
+  main section .geo-breathing-slow,
+  main section .animate-glow-pulse {
+    display: none !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -254,7 +489,8 @@
 
   /* CTA micro glow pulse */
   .cta-glow {
-    animation: cta-pulse 3s ease-in-out infinite;
+    animation: none;
+    box-shadow: none;
   }
 
   @keyframes cta-pulse {
@@ -321,6 +557,22 @@
   .container-wide {
     @apply container-x max-w-[1560px];
   }
+
+  /* Edge-to-edge wrapper with responsive side breathing room */
+  .container-fluid {
+    @apply mx-auto w-full px-4 sm:px-6 md:px-8 xl:px-10 2xl:px-12;
+  }
+
+  /* Symmetric safe gutter: protects content from SnapRail overlap on the right
+     and mirrors the same spacing on the left for balance. */
+  .container-x,
+  .container-tight,
+  .container-base,
+  .container-wide,
+  .container-fluid {
+    padding-left: var(--site-inline-pad) !important;
+    padding-right: var(--site-inline-pad) !important;
+  }
 }
 
 @layer utilities {
@@ -355,4 +607,15 @@
   .delay-300 { animation-delay: 300ms; }
   .delay-400 { animation-delay: 400ms; }
   .delay-500 { animation-delay: 500ms; }
+
+  /* Tagline slider */
+  .animate-tagline-slider {
+    animation: tagline-slider 8s ease-in-out infinite;
+  }
+
+  @keyframes tagline-slider {
+    0%, 40% { transform: translateX(0%); }
+    50%, 90% { transform: translateX(-100%); }
+    100% { transform: translateX(0%); }
+  }
 }

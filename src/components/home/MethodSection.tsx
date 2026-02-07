@@ -42,7 +42,7 @@ export function MethodSection() {
   const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
 
   return (
-    <section ref={ref} className="section-padding relative overflow-hidden">
+    <section id="method" ref={ref} className="section-padding relative overflow-hidden">
       {/* Background pattern with parallax */}
       <motion.div
         className="absolute inset-0 pattern-grid opacity-50"
@@ -60,10 +60,25 @@ export function MethodSection() {
           <span className="font-mono text-label text-primary mb-4 block">
             Metodo MCE
           </span>
-          <h2 className="font-display text-h2 font-bold mb-4">
-            <span className="text-primary">M</span>appa &rarr;{" "}
-            <span className="text-primary">C</span>ostruisci &rarr;{" "}
-            <span className="text-primary">E</span>volvi
+          <h2 className="font-display text-2xl sm:text-3xl md:text-h2 font-bold mb-4 leading-tight md:leading-none">
+            <span className="flex flex-col gap-1 md:hidden">
+              <span>
+                <span className="text-primary">M</span>appa
+              </span>
+              <span className="text-primary">↓</span>
+              <span>
+                <span className="text-primary">C</span>ostruisci
+              </span>
+              <span className="text-primary">↓</span>
+              <span>
+                <span className="text-primary">E</span>volvi
+              </span>
+            </span>
+            <span className="hidden md:inline">
+              <span className="text-primary">M</span>appa &rarr;{" "}
+              <span className="text-primary">C</span>ostruisci &rarr;{" "}
+              <span className="text-primary">E</span>volvi
+            </span>
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-2xl mx-auto">
             Un processo semplice,{" "}

@@ -18,23 +18,6 @@ export function AvailabilitySection() {
     >
       {/* Background effects */}
       <div className="absolute inset-0 pattern-grid opacity-30" />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
-        style={{
-          background: isAvailable
-            ? "radial-gradient(circle, hsl(var(--success) / 0.15) 0%, transparent 70%)"
-            : "radial-gradient(circle, hsl(var(--muted-foreground) / 0.1) 0%, transparent 70%)",
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
 
       <div className="container-wide relative z-10">
         <div className="max-w-2xl mx-auto text-center">
@@ -55,13 +38,13 @@ export function AvailabilitySection() {
               </div>
             ) : (
               <div
-                className={`inline-flex items-center gap-3 px-6 py-3 rounded-full bg-background shadow-lg ${
+                className={`inline-flex items-center gap-3 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-background shadow-lg ${
                   isAvailable
                     ? "border border-[hsl(var(--success)/0.3)]"
                     : "border border-[hsl(var(--border))]"
                 }`}
               >
-                <span className="relative flex items-center justify-center h-5 w-5">
+                <span className="relative flex items-center justify-center h-4 w-4 sm:h-5 sm:w-5">
                   {isAvailable && (
                     <motion.span
                       className="absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--success)/0.4)]"
@@ -77,7 +60,7 @@ export function AvailabilitySection() {
                     />
                   )}
                   <span
-                    className={`relative inline-flex rounded-full h-4 w-4 ${
+                    className={`relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 ${
                       isAvailable
                         ? "bg-[hsl(var(--success))] shadow-[0_0_15px_hsl(var(--success)),0_0_25px_hsl(var(--success)/0.5)]"
                         : "bg-muted-foreground"
@@ -85,7 +68,7 @@ export function AvailabilitySection() {
                   />
                 </span>
                 <span
-                  className={`font-mono text-sm font-semibold ${
+                  className={`font-mono text-[12px] sm:text-sm font-semibold whitespace-nowrap ${
                     isAvailable
                       ? "text-[hsl(var(--success))]"
                       : "text-muted-foreground"
@@ -160,8 +143,8 @@ export function AvailabilitySection() {
           >
             <Button
               variant={isAvailable ? "hero" : "outline"}
-              size="xl"
-              className={isAvailable ? "cta-glow" : ""}
+              size="lg"
+              className="w-auto px-6 sm:px-8"
               asChild
             >
               <Link to="/contatti">

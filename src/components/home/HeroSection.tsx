@@ -29,6 +29,7 @@ export function HeroSection() {
 
   return (
     <section
+      id="hero"
       ref={ref}
       className="relative min-h-[90vh] flex items-center overflow-hidden"
     >
@@ -53,11 +54,6 @@ export function HeroSection() {
         className="absolute bottom-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl geo-breathing"
         style={{ y: glow2Y }}
       />
-
-      {/* 3D Scene */}
-      <Suspense fallback={null}>
-        <Hero3DScene />
-      </Suspense>
 
       {/* Content */}
       <div className="container-wide relative z-10 py-20 md:py-32">
@@ -170,6 +166,15 @@ export function HeroSection() {
               </Link>
             </Button>
           </motion.div>
+          {/* 3D Scene (inline on mobile, absolute on desktop) */}
+          <div className="mt-10 md:mt-0">
+            <Suspense fallback={null}>
+              <Hero3DScene
+                className="relative z-10 flex items-center justify-center md:absolute md:inset-0 md:z-20 md:justify-end md:pr-[6%] pointer-events-none"
+                canvasClassName="w-[240px] h-[240px] sm:w-[300px] sm:h-[300px] md:w-[500px] md:h-[500px] lg:w-[620px] lg:h-[620px] pointer-events-auto"
+              />
+            </Suspense>
+          </div>
         </div>
       </div>
 

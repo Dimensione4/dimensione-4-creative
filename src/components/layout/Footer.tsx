@@ -1,6 +1,13 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Linkedin, Github, Instagram } from "lucide-react";
+import {
+  ArrowUpRight,
+  Linkedin,
+  Github,
+  Instagram,
+  Phone,
+  Mail,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import logoSymbol from "@/assets/logo-symbol.png";
@@ -90,7 +97,7 @@ function MagneticLink({
           rel="noopener noreferrer"
           className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300"
         >
-          <span className="text-sm">{children}</span>
+          <span className="text-[15px] md:text-sm">{children}</span>
           <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" />
         </a>
       </motion.div>
@@ -107,7 +114,7 @@ function MagneticLink({
         onClick={handleClick}
         className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-300"
       >
-        <span className="text-sm">{children}</span>
+        <span className="text-[15px] md:text-sm">{children}</span>
         <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-300" />
       </Link>
     </motion.div>
@@ -117,63 +124,18 @@ function MagneticLink({
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { i18n, t } = useTranslation();
-  const location = useLocation();
   const currentLang = i18n.language;
-  const lang = localizedRoutes[currentLang] ? currentLang : "it";
-  const isContactsPage =
-    location.pathname === "/contatti" || location.pathname === "/contacts";
+  const lang = localizedRoutes[currentLang as keyof typeof localizedRoutes]
+    ? (currentLang as keyof typeof localizedRoutes)
+    : "it";
 
   return (
-    <footer className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-
+    <footer
+      id="site-footer"
+      className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden"
+    >
       {/* Main Footer Content */}
-      <div className="container-wide relative">
-        {/* Top section - Big CTA */}
-        {/* {!isContactsPage && (
-          <div className="py-16 md:py-24 border-b border-[hsl(var(--border))]">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="max-w-3xl"
-            >
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6">
-                {t("common.readyToStart").split(" ").slice(0, 3).join(" ")}{" "}
-                <span className="text-gradient">
-                  {t("common.readyToStart").split(" ").slice(3, 4).join(" ")}
-                </span>
-                <br />
-                {t("common.readyToStart").split(" ").slice(4).join(" ")}
-              </h2>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link
-                  to="/contatti"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-medium text-lg group hover:shadow-[0_0_40px_hsl(var(--primary)/0.4)] transition-shadow duration-500"
-                >
-                  <span>{t("common.letsStart")}</span>
-                  <motion.span
-                    className="inline-block"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    →
-                  </motion.span>
-                </Link>
-              </motion.div>
-            </motion.div>
-          </div>
-        )} */}
-
+      <div className="container-fluid relative">
         {/* Middle section - Links Grid */}
         <div className="py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
           {/* Brand Column */}
@@ -193,14 +155,23 @@ export function Footer() {
             <p className="text-muted-foreground text-base leading-relaxed max-w-sm mb-8">
               {t("footer.description")}
             </p>
-            <p className="text-xs text-primary font-mono tracking-wide">
-              {t("footer.tagline")}
-            </p>
+            <div className="text-primary font-mono tracking-wide">
+              <div className="relative overflow-hidden h-6 md:h-7 w-full">
+                <div className="flex animate-tagline-slider">
+                  <span className="min-w-full text-base md:text-lg whitespace-nowrap">
+                    Precisione tecnica.
+                  </span>
+                  <span className="min-w-full text-base md:text-lg whitespace-nowrap">
+                    Sensibilità visiva.
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Navigation Column */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.navigation")}
             </h4>
             <ul className="space-y-3">
@@ -216,7 +187,7 @@ export function Footer() {
 
           {/* Social Column */}
           <div className="md:col-span-2">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.social")}
             </h4>
             <div className="flex flex-wrap gap-5">
@@ -242,20 +213,25 @@ export function Footer() {
 
           {/* Contact Column */}
           <div className="md:col-span-3">
-            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-6">
+            <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.contacts")}
             </h4>
             <ul className="space-y-3">
               <li>
-                <Link to={localizedRoutes[currentLang].contacts}>
+                <Link
+                  to={localizedRoutes[lang].contacts}
+                  className="inline-flex items-center gap-2 text-[15px] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Phone className="w-4 h-4 text-primary/80" />
                   {t("footer.bookCall")}
                 </Link>
               </li>
               <li>
                 <a
                   href="mailto:dariomarcobellini@dimensione4.it"
-                  className="text-sm text-muted-foreground text-cyan-400 hover:text-foreground transition-colors break-all"
+                  className="inline-flex items-center gap-2 text-[15px] text-muted-foreground text-cyan-400 hover:text-foreground transition-colors break-all"
                 >
+                  <Mail className="w-4 h-4 text-primary/80" />
                   dariomarcobellini@dimensione4.it
                 </a>
               </li>
@@ -265,12 +241,12 @@ export function Footer() {
 
         {/* Legal Links */}
         <div className="py-6 border-t border-[hsl(var(--border))]">
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-start md:justify-center gap-4 sm:gap-6 text-left md:text-center">
             {legalLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left md:text-center"
               >
                 {t(link.labelKey)}
               </Link>
@@ -281,7 +257,7 @@ export function Footer() {
                   window as unknown as { openCookieConsent?: () => void }
                 ).openCookieConsent?.()
               }
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left md:text-center"
             >
               {t("footer.manageCookies")}
             </button>
@@ -289,22 +265,21 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="py-6 border-t border-[hsl(var(--border))] flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-xs text-muted-foreground text-center md:text-left">
+        <div className="py-6 border-t border-[hsl(var(--border))] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="text-xs text-muted-foreground text-left">
             <p>
               © {currentYear}{" "}
               <strong className="font-semibold text-cyan-400">
                 Dimensione 4 di Dario Marco Bellini{" "}
               </strong>{" "}
-              - P.IVA 04678930167
+              <span className="block md:inline"> - P.IVA 04678930167</span>
             </p>
-            {/* <p className="mt-1">P.IVA 04678930167</p> */}
           </div>
 
           {/* Back to top */}
           <motion.button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group"
+            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group self-start md:self-auto"
             whileHover={{ y: -2 }}
           >
             <span>{t("common.backToTop")}</span>
