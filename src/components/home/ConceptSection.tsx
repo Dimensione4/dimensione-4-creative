@@ -38,7 +38,7 @@ export function ConceptSection() {
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
 
   return (
-    <section ref={ref} className="section-padding relative overflow-hidden">
+    <section id="concept" ref={ref} className="section-padding relative overflow-hidden">
       {/* Background accent with parallax */}
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/3 rounded-full blur-3xl geo-breathing"

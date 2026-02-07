@@ -42,7 +42,7 @@ export function MethodSection() {
   const patternY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
 
   return (
-    <section ref={ref} className="section-padding relative overflow-hidden">
+    <section id="method" ref={ref} className="section-padding relative overflow-hidden">
       {/* Background pattern with parallax */}
       <motion.div
         className="absolute inset-0 pattern-grid opacity-50"

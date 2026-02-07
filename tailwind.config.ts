@@ -21,10 +21,12 @@ export default {
       fontSize: {
         'hero': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
         'hero-mobile': ['2.75rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        'section-mobile': ['clamp(1.85rem, 5vw, 2.45rem)', { lineHeight: '1.15', letterSpacing: '-0.01em' }],
+        'section': ['clamp(2.25rem, 3.2vw, 3rem)', { lineHeight: '1.12', letterSpacing: '-0.01em' }],
         'h2': ['2.75rem', { lineHeight: '1.15', letterSpacing: '-0.01em' }],
         'h3': ['1.75rem', { lineHeight: '1.25', letterSpacing: '-0.01em' }],
-        'body-lg': ['1.125rem', { lineHeight: '1.7' }],
-        'body': ['1rem', { lineHeight: '1.6' }],
+        'body-lg': ['clamp(1.06rem, 0.35vw + 0.98rem, 1.22rem)', { lineHeight: '1.7' }],
+        'body': ['clamp(1rem, 0.2vw + 0.95rem, 1.1rem)', { lineHeight: '1.6' }],
         'label': ['0.8125rem', { lineHeight: '1.4', letterSpacing: '0.02em' }],
       },
       colors: {

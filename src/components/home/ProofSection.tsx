@@ -36,7 +36,7 @@ export function ProofSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-surface/30">
+    <section id="proof" ref={ref} className="section-padding bg-surface/30">
       <div className="container-wide">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left - Proof points */}

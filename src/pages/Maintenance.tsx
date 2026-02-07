@@ -7,7 +7,8 @@ import { useMaintenance } from "@/hooks/useMaintenance";
 import logoSymbol from "@/assets/logo-symbol.png";
 
 const WHATSAPP_NUMBER = "+393334404903";
-const WHATSAPP_MESSAGE = "Ciao! Ho visitato il sito durante la manutenzione e volevo contattarti.";
+const WHATSAPP_MESSAGE =
+  "Ciao! Ho visitato il sito durante la manutenzione e volevo contattarti.";
 
 export default function Maintenance() {
   const { settings, loading } = useMaintenance();
@@ -27,17 +28,16 @@ export default function Maintenance() {
 
   return (
     <>
-      <SEO
-        title={settings.title}
-        description={settings.subtitle}
-        noindex
-      />
-      
+      <SEO title={settings.title} description={settings.subtitle} noindex />
+
       {/* Fluid Background */}
       <FluidBackground className="z-0" />
-      
+
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 safe-area-inset select-none overflow-y-auto">
+      <div
+        data-fluid-foreground
+        className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 safe-area-inset select-none overflow-y-auto"
+      >
         {/* Logo + Brand */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -73,7 +73,9 @@ export default function Maintenance() {
           {settings.title.split("Quarta Dimensione").map((part, i, arr) => (
             <span key={i}>
               {part}
-              {i < arr.length - 1 && <span className="text-primary">Quarta Dimensione</span>}
+              {i < arr.length - 1 && (
+                <span className="text-primary">Quarta Dimensione</span>
+              )}
             </span>
           ))}
         </motion.h1>
@@ -86,15 +88,19 @@ export default function Maintenance() {
           className="text-sm sm:text-base md:text-lg text-muted-foreground text-center whitespace-nowrap mt-6 sm:mt-8 mb-10 sm:mb-14 px-2"
         >
           {settings.subtitle
-            .replace(/Torno online a breve\.?/gi, '')
+            .replace(/Torno online a breve\.?/gi, "")
             .trim()
-            .replace(/prospettiva/gi, '{{CYAN}}prospettiva{{/CYAN}}')
-            .replace(/struttura/gi, '{{CYAN}}struttura{{/CYAN}}')
-            .replace(/tempo/gi, '{{CYAN}}tempo{{/CYAN}}')
+            .replace(/prospettiva/gi, "{{CYAN}}prospettiva{{/CYAN}}")
+            .replace(/struttura/gi, "{{CYAN}}struttura{{/CYAN}}")
+            .replace(/tempo/gi, "{{CYAN}}tempo{{/CYAN}}")
             .split(/(\{\{CYAN\}\}.*?\{\{\/CYAN\}\})/g)
             .map((part, i) => {
-              if (part.startsWith('{{CYAN}}')) {
-                return <span key={i} className="text-primary">{part.replace(/\{\{CYAN\}\}|\{\{\/CYAN\}\}/g, '')}</span>;
+              if (part.startsWith("{{CYAN}}")) {
+                return (
+                  <span key={i} className="text-primary">
+                    {part.replace(/\{\{CYAN\}\}|\{\{\/CYAN\}\}/g, "")}
+                  </span>
+                );
               }
               return part;
             })}
@@ -158,7 +164,10 @@ export default function Maintenance() {
         >
           <p className="text-xs mb-2">
             <span className="text-amber-400">Torno online a breve</span>
-            <span className="text-muted-foreground">, se hai bisogno di un fullstack developer per il tuo progetto contattami</span>
+            <span className="text-muted-foreground">
+              , se hai bisogno di un fullstack developer per il tuo progetto
+              contattami
+            </span>
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground mb-3">
             Email:{" "}

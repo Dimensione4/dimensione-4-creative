@@ -18,23 +18,6 @@ export function AvailabilitySection() {
     >
       {/* Background effects */}
       <div className="absolute inset-0 pattern-grid opacity-30" />
-      <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
-        style={{
-          background: isAvailable
-            ? "radial-gradient(circle, hsl(var(--success) / 0.15) 0%, transparent 70%)"
-            : "radial-gradient(circle, hsl(var(--muted-foreground) / 0.1) 0%, transparent 70%)",
-        }}
-        animate={{
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 0.8, 0.5],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
 
       <div className="container-wide relative z-10">
         <div className="max-w-2xl mx-auto text-center">
@@ -161,7 +144,7 @@ export function AvailabilitySection() {
             <Button
               variant={isAvailable ? "hero" : "outline"}
               size="lg"
-              className={`${isAvailable ? "cta-glow" : ""} w-auto px-6 sm:px-8`}
+              className="w-auto px-6 sm:px-8"
               asChild
             >
               <Link to="/contatti">

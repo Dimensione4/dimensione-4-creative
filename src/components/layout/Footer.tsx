@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
@@ -124,63 +124,18 @@ function MagneticLink({
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { i18n, t } = useTranslation();
-  const location = useLocation();
   const currentLang = i18n.language;
-  const lang = localizedRoutes[currentLang] ? currentLang : "it";
-  const isContactsPage =
-    location.pathname === "/contatti" || location.pathname === "/contacts";
+  const lang = localizedRoutes[currentLang as keyof typeof localizedRoutes]
+    ? (currentLang as keyof typeof localizedRoutes)
+    : "it";
 
   return (
-    <footer className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-
+    <footer
+      id="site-footer"
+      className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden"
+    >
       {/* Main Footer Content */}
-      <div className="container-wide relative">
-        {/* Top section - Big CTA */}
-        {/* {!isContactsPage && (
-          <div className="py-16 md:py-24 border-b border-[hsl(var(--border))]">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="max-w-3xl"
-            >
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-semibold tracking-tight mb-6">
-                {t("common.readyToStart").split(" ").slice(0, 3).join(" ")}{" "}
-                <span className="text-gradient">
-                  {t("common.readyToStart").split(" ").slice(3, 4).join(" ")}
-                </span>
-                <br />
-                {t("common.readyToStart").split(" ").slice(4).join(" ")}
-              </h2>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link
-                  to="/contatti"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-medium text-lg group hover:shadow-[0_0_40px_hsl(var(--primary)/0.4)] transition-shadow duration-500"
-                >
-                  <span>{t("common.letsStart")}</span>
-                  <motion.span
-                    className="inline-block"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    →
-                  </motion.span>
-                </Link>
-              </motion.div>
-            </motion.div>
-          </div>
-        )} */}
-
+      <div className="container-fluid relative">
         {/* Middle section - Links Grid */}
         <div className="py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
           {/* Brand Column */}
@@ -264,7 +219,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to={localizedRoutes[currentLang].contacts}
+                  to={localizedRoutes[lang].contacts}
                   className="inline-flex items-center gap-2 text-[15px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Phone className="w-4 h-4 text-primary/80" />

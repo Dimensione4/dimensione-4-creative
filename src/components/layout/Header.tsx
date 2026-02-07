@@ -73,7 +73,7 @@ function MagneticLink({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      className="relative px-4 py-2 text-sm font-medium transition-colors duration-300 whitespace-nowrap"
+      className="relative px-2.5 min-[1400px]:px-3 min-[1650px]:px-4 py-2 text-[0.92rem] min-[1650px]:text-sm font-medium transition-colors duration-300 whitespace-nowrap"
     >
       {isActive && (
         <motion.div
@@ -161,7 +161,7 @@ export function Header() {
         style={{ scaleX: scrollYProgress }}
       />
 
-      <div className="container-wide">
+      <div className="container-fluid">
         {/* <motion.div 
           className="flex items-center justify-between"
           animate={{ 
@@ -170,7 +170,7 @@ export function Header() {
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         > */}
         <motion.div
-          className="flex items-center justify-between w-full"
+          className="flex items-center w-full"
           animate={{ height: hasScrolled ? 64 : 80 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
@@ -191,29 +191,24 @@ export function Header() {
                   className="w-10 h-10 object-contain"
                 />
               </motion.div>
-              <motion.div
-                className="overflow-hidden flex flex-col items-start"
-                animate={{
-                  opacity: hasScrolled ? 0 : 1,
-                  width: hasScrolled ? 0 : "auto",
-                }}
-                transition={{ duration: 0.3 }}
-              >
+              <div className="overflow-hidden flex flex-col items-start">
                 <span className="font-display font-semibold text-lg tracking-tight whitespace-nowrap">
                   Dimensione 4
                 </span>
-                <span className="text-xs bg-gradient-to-r from-[hsl(179,80%,36%)] to-[hsl(180,78%,52%)] bg-clip-text text-transparent whitespace-nowrap mt-0">
-                  di Dario Marco Bellini
-                </span>
-              </motion.div>
+                {!hasScrolled && (
+                  <span className="hidden min-[1650px]:inline text-xs bg-gradient-to-r from-[hsl(179,80%,36%)] to-[hsl(180,78%,52%)] bg-clip-text text-transparent whitespace-nowrap mt-0">
+                    di Dario Marco Bellini
+                  </span>
+                )}
+              </div>
             </Link>
           </div>
 
           {/* Center - Desktop Navigation (hidden on mobile/tablet) */}
-          <div className="hidden lg:block absolute left-1/2 -translate-x-1/2">
+          <div className="hidden xl:flex flex-1 justify-center min-w-0 px-3 min-[1650px]:px-5">
             <nav className="flex justify-center min-w-0">
               <motion.div
-                style={{ maxWidth: 860, width: "fit-content" }}
+                style={{ maxWidth: "100%", width: "fit-content" }}
                 className="flex items-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))]"
                 animate={{
                   gap: hasScrolled ? 0 : 2,
@@ -238,11 +233,13 @@ export function Header() {
           </div>
 
           {/* Right side - Controls and Hamburger Menu */}
-          <div className="flex items-center gap-3">
+          <div className="ml-auto flex items-center gap-2 min-[1400px]:gap-3">
             {/* Desktop controls - hidden on mobile/tablet */}
-            <div className="hidden lg:flex items-center gap-3 relative z-10">
+            <div className="hidden xl:flex items-center gap-2 min-[1400px]:gap-3 relative z-10">
               <LanguageSwitch />
-              <ThemeToggle />
+              <div className="hidden min-[1240px]:block">
+                <ThemeToggle />
+              </div>
               <motion.div
                 animate={{ scale: hasScrolled ? 0.95 : 1 }}
                 transition={{ duration: 0.3 }}
@@ -250,11 +247,12 @@ export function Header() {
                 <Button
                   variant="hero"
                   size={hasScrolled ? "sm" : "default"}
-                  className="group"
+                  className="group max-[1450px]:px-4"
                   asChild
                 >
                   <Link to="/contatti">
-                    <span>Prenota una call</span>
+                    <span className="hidden min-[1400px]:inline">Prenota una call</span>
+                    <span className="inline min-[1400px]:hidden">Prenota</span>
                     <motion.span
                       className="inline-block ml-2"
                       whileHover={{ x: 4 }}
@@ -270,7 +268,7 @@ export function Header() {
             {/* Mobile Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
+              className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
               aria-label="Toggle menu"
             >
               <div className="w-5 h-4 flex flex-col justify-between">
@@ -312,14 +310,14 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
+            className="xl:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
           >
             <motion.nav
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="container-wide pt-24 pb-12 flex flex-col min-h-full"
+              className="container-fluid pt-24 pb-12 flex flex-col min-h-full"
             >
               <div className="flex-1 flex flex-col justify-center gap-2">
                 {navLinks.map((link, index) => (

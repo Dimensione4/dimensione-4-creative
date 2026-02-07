@@ -42,7 +42,7 @@ export function ServicesSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="section-padding bg-surface/30">
+    <section id="services" ref={ref} className="section-padding bg-surface/30">
       <div className="container-wide">
         {/* Header */}
         <motion.div

@@ -29,6 +29,7 @@ export function HeroSection() {
 
   return (
     <section
+      id="hero"
       ref={ref}
       className="relative min-h-[90vh] flex items-center overflow-hidden"
     >
