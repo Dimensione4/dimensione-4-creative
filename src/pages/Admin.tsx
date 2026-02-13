@@ -9,6 +9,7 @@ import {
   Users,
   Wrench,
   Calendar,
+  Monitor,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -25,6 +26,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useAvailability } from "@/hooks/useAvailability";
 import { useMaintenance } from "@/hooks/useMaintenance";
+import { useHomepageVariant } from "@/hooks/useHomepageVariant";
 import { useToast } from "@/hooks/use-toast";
 import { useBuildInfo } from "@/hooks/useBuildInfo";
 import { format } from "date-fns";
@@ -44,6 +46,11 @@ export default function Admin() {
     updateSettings: updateMaintenance,
     env,
   } = useMaintenance();
+  const {
+    variant: homepageVariant,
+    loading: homepageLoading,
+    updateVariant: updateHomepageVariant,
+  } = useHomepageVariant();
   const { toast } = useToast();
   const buildInfo = useBuildInfo();
   const [maintenanceTitle, setMaintenanceTitle] = useState("");
@@ -160,7 +167,26 @@ export default function Admin() {
     });
   };
 
-  if (authLoading || availLoading || maintenanceLoading) {
+  const handleHomepageVariantToggle = async (checked: boolean) => {
+    const nextVariant = checked ? "v2" : "v1";
+    const { error } = await updateHomepageVariant(nextVariant);
+
+    if (error) {
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare la homepage",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Homepage aggiornata",
+      description: `Ora e attiva la versione ${nextVariant === "v2" ? "2" : "1"}`,
+    });
+  };
+
+  if (authLoading || availLoading || maintenanceLoading || homepageLoading) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -447,6 +473,48 @@ export default function Admin() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
+              className="surface-card p-6 rounded-2xl border border-[hsl(var(--border))]"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Monitor className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="font-display text-lg font-semibold">
+                    Homepage
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Scegli quale versione mostrare su /
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-background rounded-lg border border-[hsl(var(--border))]">
+                  <div>
+                    <p className="font-medium">Usa Homepage V2</p>
+                    <p className="text-xs text-muted-foreground">
+                      V1 attuale o nuova versione con copy rework + recensioni
+                    </p>
+                  </div>
+                  <Switch
+                    checked={homepageVariant === "v2"}
+                    onCheckedChange={handleHomepageVariantToggle}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Versione attiva:{" "}
+                  <span className="text-foreground font-medium">
+                    {homepageVariant === "v2" ? "Homepage V2" : "Homepage V1"}
+                  </span>
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.25 }}
               className="surface-card p-6 rounded-2xl border border-[hsl(var(--border))]"
             >
               <div className="flex items-center gap-3 mb-6">

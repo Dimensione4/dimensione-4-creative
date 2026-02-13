@@ -13,8 +13,10 @@ import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useMaintenance } from "@/hooks/useMaintenance";
+import { useHomepageVariant } from "@/hooks/useHomepageVariant";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import Index from "./pages/Index";
+import IndexV2 from "./pages/IndexV2";
 import Servizi from "./pages/Servizi";
 import MVP from "./pages/MVP";
 import Progetti from "./pages/Progetti";
@@ -56,12 +58,22 @@ function MaintenanceGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function HomePageRoute() {
+  const { variant, loading } = useHomepageVariant();
+
+  if (loading) {
+    return <Index />;
+  }
+
+  return variant === "v2" ? <IndexV2 /> : <Index />;
+}
+
 const AppRoutes = () => (
   <BrowserRouter>
     <GoogleAnalytics />
     <MaintenanceGuard>
       <Routes>
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={<HomePageRoute />} />
         <Route path="/servizi" element={<Servizi />} />
         <Route path="/mvp" element={<MVP />} />
         <Route path="/progetti" element={<Progetti />} />
