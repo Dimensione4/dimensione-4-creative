@@ -3,16 +3,16 @@ import { useEffect } from "react";
 interface UseSectionSnapScrollOptions {
   mobileBreakpoint?: number;
   scrollThreshold?: number;
-  debounceMs?: number;
+  animationDurationMs?: number;
   animationLockMs?: number;
   enabled?: boolean;
 }
 
 const DEFAULT_OPTIONS: Required<UseSectionSnapScrollOptions> = {
   mobileBreakpoint: 768,
-  scrollThreshold: 50,
-  debounceMs: 50,
-  animationLockMs: 600,
+  scrollThreshold: 24,
+  animationDurationMs: 360,
+  animationLockMs: 420,
   enabled: true,
 };
 
@@ -23,7 +23,7 @@ export function useSectionSnapScroll(
   const {
     mobileBreakpoint,
     scrollThreshold,
-    debounceMs,
+    animationDurationMs,
     animationLockMs,
     enabled,
   } = { ...DEFAULT_OPTIONS, ...options };
@@ -39,7 +39,7 @@ export function useSectionSnapScroll(
 
     let isAnimating = false;
     let accumulatedDelta = 0;
-    let scrollTimeout: number | undefined;
+    let animationFrameId = 0;
 
     const getHeaderHeight = () => {
       const header = document.querySelector("header");
@@ -48,9 +48,27 @@ export function useSectionSnapScroll(
       return rect.height > 0 ? rect.height : 0;
     };
 
+    const getMaxScrollTop = () => {
+      return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    };
+
     const getViewportCenterLine = () => {
       const headerHeight = getHeaderHeight();
       return headerHeight + (window.innerHeight - headerHeight) / 2;
+    };
+
+    const getSnapAnchor = (section: HTMLElement) => {
+      const explicitAnchor = section.querySelector(
+        "[data-snap-anchor], .snap-anchor"
+      ) as HTMLElement | null;
+      if (explicitAnchor) return explicitAnchor;
+
+      const primaryContainer = section.querySelector(
+        ":scope > .container-wide, :scope > .container-base, :scope > .container-tight, :scope > .container-fluid"
+      ) as HTMLElement | null;
+      if (primaryContainer) return primaryContainer;
+
+      return section;
     };
 
     const getCurrentSectionIndex = () => {
@@ -60,13 +78,15 @@ export function useSectionSnapScroll(
       let nearestDistance = Number.POSITIVE_INFINITY;
 
       for (let i = 0; i < sections.length; i++) {
-        const rect = sections[i].getBoundingClientRect();
+        const anchor = getSnapAnchor(sections[i]);
+        const rect = anchor.getBoundingClientRect();
+        const anchorCenter = rect.top + rect.height / 2;
+
         if (rect.top <= viewportCenter && rect.bottom > viewportCenter) {
           return i;
         }
 
-        const sectionCenter = rect.top + rect.height / 2;
-        const distance = Math.abs(sectionCenter - viewportCenter);
+        const distance = Math.abs(anchorCenter - viewportCenter);
         if (distance < nearestDistance) {
           nearestDistance = distance;
           nearestIndex = i;
@@ -83,12 +103,30 @@ export function useSectionSnapScroll(
       if (!targetSection || isAnimating) return;
 
       isAnimating = true;
-      const rect = targetSection.getBoundingClientRect();
-      const sectionCenterY = window.scrollY + rect.top + rect.height / 2;
-      const viewportCenterY =
-        getHeaderHeight() + (window.innerHeight - getHeaderHeight()) / 2;
-      const targetTop = Math.max(0, sectionCenterY - viewportCenterY);
-      window.scrollTo({ top: targetTop, behavior: "smooth" });
+      const anchor = getSnapAnchor(targetSection);
+      const rect = anchor.getBoundingClientRect();
+      const anchorCenterY = window.scrollY + rect.top + rect.height / 2;
+      const targetTop = Math.max(
+        0,
+        Math.min(getMaxScrollTop(), anchorCenterY - getViewportCenterLine())
+      );
+
+      const startTop = window.scrollY;
+      const delta = targetTop - startTop;
+      const startTime = performance.now();
+
+      const animateScroll = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / animationDurationMs);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        window.scrollTo(0, startTop + delta * eased);
+
+        if (progress < 1) {
+          animationFrameId = window.requestAnimationFrame(animateScroll);
+        }
+      };
+
+      animationFrameId = window.requestAnimationFrame(animateScroll);
 
       window.setTimeout(() => {
         isAnimating = false;
@@ -104,40 +142,40 @@ export function useSectionSnapScroll(
 
       accumulatedDelta += e.deltaY;
 
-      if (scrollTimeout) {
-        window.clearTimeout(scrollTimeout);
-      }
+      if (Math.abs(accumulatedDelta) > scrollThreshold) {
+        const direction = accumulatedDelta > 0 ? 1 : -1;
+        const currentIndex = getCurrentSectionIndex();
+        const nextIndex = Math.max(
+          0,
+          Math.min(sectionIds.length - 1, currentIndex + direction)
+        );
 
-      scrollTimeout = window.setTimeout(() => {
-        if (Math.abs(accumulatedDelta) > scrollThreshold) {
-          const direction = accumulatedDelta > 0 ? 1 : -1;
-          const currentIndex = getCurrentSectionIndex();
-          const nextIndex = Math.max(
-            0,
-            Math.min(sectionIds.length - 1, currentIndex + direction)
-          );
-
-          if (nextIndex !== currentIndex) {
-            scrollToSection(nextIndex);
-          }
+        if (nextIndex !== currentIndex) {
+          scrollToSection(nextIndex);
         }
+
         accumulatedDelta = 0;
-      }, debounceMs);
+      }
     };
+
+    if (!isMobile()) {
+      document.documentElement.classList.add("has-js-wheel-snap");
+      document.body.classList.add("has-js-wheel-snap");
+    }
 
     window.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
-      if (scrollTimeout) {
-        window.clearTimeout(scrollTimeout);
-      }
+      window.cancelAnimationFrame(animationFrameId);
+      document.documentElement.classList.remove("has-js-wheel-snap");
+      document.body.classList.remove("has-js-wheel-snap");
     };
   }, [
     sectionIds,
     mobileBreakpoint,
     scrollThreshold,
-    debounceMs,
+    animationDurationMs,
     animationLockMs,
     enabled,
   ]);
