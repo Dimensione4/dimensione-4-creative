@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Mail, MessageSquare, Loader2, ArrowDown } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
@@ -16,10 +16,11 @@ import { CalendlyEmbed } from "@/components/CalendlyEmbed";
 import { SEO } from "@/components/SEO";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { trackEvent } from "@/components/GoogleAnalytics";
 
 export default function Contatti() {
+  const location = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [errors, setErrors] = useState<
@@ -30,6 +31,36 @@ export default function Contatti() {
     useRecaptcha();
   const { i18n } = useTranslation();
   const isItalian = i18n.language === "it";
+
+  useEffect(() => {
+    if (location.hash !== "#calendly") {
+      return;
+    }
+
+    const scrollToCalendly = () => {
+      const target = document.getElementById("calendly");
+      if (!target) {
+        return false;
+      }
+
+      const headerOffset = window.innerWidth >= 768 ? 96 : 84;
+      const top =
+        target.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: "smooth",
+      });
+      return true;
+    };
+
+    if (scrollToCalendly()) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(scrollToCalendly, 180);
+    return () => window.clearTimeout(timeoutId);
+  }, [location.hash]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

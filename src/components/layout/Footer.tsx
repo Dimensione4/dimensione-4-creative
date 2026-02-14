@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
+  ArrowUp,
   Linkedin,
   Github,
   Instagram,
@@ -13,30 +14,12 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import logoSymbol from "@/assets/logo-symbol.png";
 import { localizedRoutes } from "@/lib/routes/routes";
 
-const navLinks = [
-  { href: "/chi-sono", labelKey: "nav.about" },
-  { href: "/servizi", labelKey: "nav.services" },
-  { href: "/mvp", labelKey: "nav.mvp" },
-  { href: "/progetti", labelKey: "nav.projects" },
-  { href: "/metodo", labelKey: "nav.method" },
-  { href: "/abbonamento", labelKey: "nav.subscription" },
-  { href: "/contatti", labelKey: "nav.contacts" },
-];
-
-const legalLinks = [
-  { href: "/privacy-policy", labelKey: "footer.privacyPolicy" },
-  { href: "/cookie-policy", labelKey: "footer.cookiePolicy" },
-  { href: "/termini-condizioni", labelKey: "footer.termsConditions" },
-];
-
-// X (Twitter) icon component
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
-// TikTok icon component
 const TikTokIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
@@ -80,7 +63,6 @@ function MagneticLink({
 
   const handleClick = () => {
     if (!external) {
-      // Scroll to top for internal links
       scrollToTop();
     }
   };
@@ -128,19 +110,48 @@ export function Footer() {
   const lang = localizedRoutes[currentLang as keyof typeof localizedRoutes]
     ? (currentLang as keyof typeof localizedRoutes)
     : "it";
+  const routes = localizedRoutes[lang];
+  const navLinks = [
+    { href: routes.about, labelKey: "nav.about" },
+    { href: routes.services, labelKey: "nav.services" },
+    { href: routes.mvp, labelKey: "nav.mvp" },
+    { href: routes.projects, labelKey: "nav.projects" },
+    { href: routes.method, labelKey: "nav.method" },
+    { href: routes.subscription, labelKey: "nav.subscription" },
+    { href: routes.contacts, labelKey: "nav.contacts" },
+  ];
+  const legalLinks = [
+    { href: routes.privacy, labelKey: "footer.privacyPolicy" },
+    { href: routes.cookies, labelKey: "footer.cookiePolicy" },
+    { href: routes.terms, labelKey: "footer.termsConditions" },
+  ];
+
+  const handleHyperBackToTop = () => {
+    if (typeof window === "undefined") return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!prefersReducedMotion) {
+      document.body.classList.add("hyperspace-jump");
+      window.setTimeout(() => {
+        document.body.classList.remove("hyperspace-jump");
+      }, 360);
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <footer
       id="site-footer"
       className="relative border-t border-[hsl(var(--border))] bg-background overflow-hidden"
     >
-      {/* Main Footer Content */}
       <div className="container-fluid relative">
-        {/* Middle section - Links Grid */}
         <div className="py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
-          {/* Brand Column */}
           <div className="md:col-span-5">
-            <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
+            <Link to={routes.home} className="inline-flex items-center gap-3 mb-6 group">
               <motion.img
                 src={logoSymbol}
                 alt="Dimensione 4"
@@ -153,23 +164,39 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-muted-foreground text-base leading-relaxed max-w-sm mb-8">
-              {t("footer.description")}
+              {lang === "it" ? "Studio creativo di " : "Creative studio by "}
+              <Link
+                to={routes.about}
+                className="underline-offset-4 hover:underline hover:text-primary transition-colors"
+              >
+                Dario Marco Bellini
+              </Link>
+              .{" "}
+              {lang === "it"
+                ? "Trasformo idee in esperienze digitali con profondita, struttura e visione."
+                : "I transform ideas into digital experiences with depth, structure, and vision."}
             </p>
             <div className="text-primary font-mono tracking-wide">
               <div className="relative overflow-hidden h-6 md:h-7 w-full">
                 <div className="flex animate-tagline-slider">
                   <span className="min-w-full text-base md:text-lg whitespace-nowrap">
-                    Precisione tecnica.
+                    {lang === "it" ? "Precisione tecnica." : "Technical precision."}
+                  </span>
+                  <span className="min-w-full text-base md:text-lg whitespace-nowrap text-foreground">
+                    {lang === "it"
+                      ? "Trasforma il tuo sito web piatto in uno 4D."
+                      : "Turn your flat website into a 4D one."}
                   </span>
                   <span className="min-w-full text-base md:text-lg whitespace-nowrap">
-                    Sensibilità visiva.
+                    {lang === "it"
+                      ? "Dalla prima impressione alla conversione."
+                      : "From first impression to conversion."}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Navigation Column */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.navigation")}
@@ -185,7 +212,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Social Column */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.social")}
@@ -211,7 +237,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Contact Column */}
           <div className="md:col-span-3">
             <h4 className="text-xs font-mono uppercase tracking-widest text-primary mb-4">
               {t("footer.contacts")}
@@ -219,7 +244,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to={localizedRoutes[lang].contacts}
+                  to={routes.contacts}
                   className="inline-flex items-center gap-2 text-[15px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Phone className="w-4 h-4 text-primary/80" />
@@ -239,62 +264,93 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Legal Links */}
         <div className="py-6 border-t border-[hsl(var(--border))]">
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-start md:justify-center gap-4 sm:gap-6 text-left md:text-center">
-            {legalLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
+          <div className="md:hidden mb-4">
+            <motion.button
+              onClick={handleHyperBackToTop}
+              className="inline-flex items-center gap-2 text-primary hover:text-foreground transition-colors group"
+              whileHover={{ y: -1 }}
+            >
+              <span className="leading-tight">
+                <span className="block text-[13px] font-mono uppercase tracking-wider">
+                  TORNA SU
+                </span>
+                <span className="block text-[10px] font-mono uppercase tracking-wider text-primary/75">
+                  ALLA VELOCITA DELLA LUCE
+                </span>
+              </span>
+              <span className="w-7 h-7 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center">
+                <ArrowUp className="w-3.5 h-3.5" />
+              </span>
+            </motion.button>
+          </div>
+
+          <div className="relative md:grid md:grid-cols-[auto_1fr_auto] md:items-center">
+            <motion.button
+              onClick={handleHyperBackToTop}
+              className="hidden md:inline-flex items-center gap-2 text-primary hover:text-foreground transition-colors group justify-self-start"
+              whileHover={{ y: -1 }}
+            >
+              <span className="leading-tight text-left">
+                <span className="block text-[13px] font-mono uppercase tracking-wider">
+                  TORNA SU
+                </span>
+                <span className="block text-[10px] font-mono uppercase tracking-wider text-primary/75">
+                  ALLA VELOCITA DELLA LUCE
+                </span>
+              </span>
+              <span className="w-7 h-7 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center">
+                <ArrowUp className="w-3.5 h-3.5" />
+              </span>
+            </motion.button>
+
+            <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-start md:justify-center gap-5 sm:gap-8 md:gap-10 text-left md:text-center">
+              {legalLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left md:text-center"
+                >
+                  {t(link.labelKey)}
+                </Link>
+              ))}
+              <button
+                onClick={() =>
+                  (
+                    window as unknown as { openCookieConsent?: () => void }
+                  ).openCookieConsent?.()
+                }
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left md:text-center"
               >
-                {t(link.labelKey)}
-              </Link>
-            ))}
-            <button
-              onClick={() =>
-                (
-                  window as unknown as { openCookieConsent?: () => void }
-                ).openCookieConsent?.()
-              }
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left md:text-center"
-            >
-              {t("footer.manageCookies")}
-            </button>
+                {t("footer.manageCookies")}
+              </button>
+            </div>
+
+            <span className="hidden md:block justify-self-end w-[170px]" />
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="py-6 border-t border-[hsl(var(--border))] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="text-xs text-muted-foreground text-left">
-            <p>
-              © {currentYear}{" "}
-              <strong className="font-semibold text-cyan-400">
-                Dimensione 4 di Dario Marco Bellini{" "}
-              </strong>{" "}
-              <span className="block md:inline"> - P.IVA 04678930167</span>
+        <div className="py-6 border-t border-[hsl(var(--border))]">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div className="text-xs text-muted-foreground text-left">
+              <p>
+                © {currentYear}{" "}
+                <strong className="font-semibold text-cyan-400">
+                  Dimensione 4 di{" "}
+                  <Link
+                    to={routes.about}
+                    className="underline-offset-4 hover:underline hover:text-primary transition-colors"
+                  >
+                    Dario Marco Bellini
+                  </Link>{" "}
+                </strong>
+                <span className="block md:inline"> - P.IVA 04678930167</span>
+              </p>
+            </div>
+            <p className="text-[11px] md:text-xs text-primary/80 font-mono tracking-wide uppercase text-left md:text-right">
+              Fueled by caffeine, shipping pixels clean.
             </p>
           </div>
-
-          {/* Back to top */}
-          <motion.button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors group self-start md:self-auto"
-            whileHover={{ y: -2 }}
-          >
-            <span>{t("common.backToTop")}</span>
-            <motion.span
-              className="inline-block"
-              animate={{ y: [0, -3, 0] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              ↑
-            </motion.span>
-          </motion.button>
         </div>
       </div>
     </footer>

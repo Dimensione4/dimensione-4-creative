@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "bookCall": "Book a call",
     "learnMore": "Learn more",
@@ -139,12 +139,13 @@
   "availability": {
     "status": "Available for new projects",
     "statusBusy": "Currently busy",
-    "title": "Ready to collaborate",
+    "title": "Open for new projects",
     "titleBusy": "I'm currently busy",
-    "description": "I'm actively looking for exciting new projects. If you have an idea to bring to life, let's talk!",
+    "description": "If you want to move now, let's talk: clear priorities, fast execution, concrete outcomes.",
     "descriptionBusy": "I'm working on other projects, but you can still contact me to plan a future collaboration.",
     "responseTime": "24h response",
     "slotsLabel": "slots available",
+    "slotsUrgency": "{{count}} slots still open",
     "noSlots": "Waitlist",
     "projects": "Quality projects",
     "cta": "Start a conversation",

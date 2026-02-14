@@ -74,16 +74,27 @@ const AppRoutes = () => (
     <MaintenanceGuard>
       <Routes>
         <Route path="/" element={<HomePageRoute />} />
+        <Route path="/en" element={<HomePageRoute />} />
         <Route path="/servizi" element={<Servizi />} />
+        <Route path="/en/services" element={<Servizi />} />
         <Route path="/mvp" element={<MVP />} />
+        <Route path="/en/mvp" element={<MVP />} />
         <Route path="/progetti" element={<Progetti />} />
+        <Route path="/en/projects" element={<Progetti />} />
         <Route path="/metodo" element={<Metodo />} />
+        <Route path="/en/method" element={<Metodo />} />
         <Route path="/abbonamento" element={<Abbonamento />} />
+        <Route path="/en/subscription" element={<Abbonamento />} />
         <Route path="/chi-sono" element={<ChiSono />} />
+        <Route path="/en/about" element={<ChiSono />} />
         <Route path="/contatti" element={<Contatti />} />
+        <Route path="/en/contacts" element={<Contatti />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/en/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
+        <Route path="/en/cookie-policy" element={<CookiePolicy />} />
         <Route path="/termini-condizioni" element={<TermsConditions />} />
+        <Route path="/en/terms-conditions" element={<TermsConditions />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/manutenzione" element={<Maintenance />} />

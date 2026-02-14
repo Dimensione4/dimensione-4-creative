@@ -65,11 +65,11 @@ export function MethodSection() {
               <span>
                 <span className="text-primary">M</span>appa
               </span>
-              <span className="text-primary">↓</span>
+              <span className="text-primary">&darr;</span>
               <span>
                 <span className="text-primary">C</span>ostruisci
               </span>
-              <span className="text-primary">↓</span>
+              <span className="text-primary">&darr;</span>
               <span>
                 <span className="text-primary">E</span>volvi
               </span>

@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+﻿import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -22,7 +22,7 @@ export function CTASection() {
             Contattami per un confronto diretto, senza impegno.
           </h2>
           <p className="text-body text-muted-foreground mb-8 max-w-xl md:mx-auto">
-            Una call chiara di 15 minuti per capire se posso aiutarti. Niente
+            Una call chiara di 30 minuti per capire se posso aiutarti. Niente
             pressioni, niente attesa inutile.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 md:justify-center">
@@ -39,7 +39,7 @@ export function CTASection() {
                 })
               }
             >
-              <Link to="/contatti">
+              <Link to="/contatti#calendly">
                 Prenota una call
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -66,3 +66,4 @@ export function CTASection() {
     </section>
   );
 }
+

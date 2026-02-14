@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "bookCall": "Prenota una call",
     "learnMore": "Scopri di più",
@@ -139,12 +139,13 @@
   "availability": {
     "status": "Disponibile per nuovi progetti",
     "statusBusy": "Attualmente occupato",
-    "title": "Pronto a collaborare",
+    "title": "Operativo su nuovi progetti",
     "titleBusy": "Al momento sono impegnato",
-    "description": "Sto attivamente cercando nuovi progetti interessanti. Se hai un'idea da realizzare, parliamone!",
+    "description": "Se vuoi muoverti adesso, parliamone: priorità chiare, esecuzione rapida, risultati concreti.",
     "descriptionBusy": "Sto lavorando su altri progetti, ma puoi comunque contattarmi per pianificare una collaborazione futura.",
     "responseTime": "Risposta in 24h",
     "slotsLabel": "slot disponibili",
+    "slotsUrgency": "Ancora {{count}} slot liberi",
     "noSlots": "Lista d'attesa",
     "projects": "Progetti di qualità",
     "cta": "Inizia una conversazione",
