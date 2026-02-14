@@ -13,17 +13,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import logoSymbol from "@/assets/logo-symbol.png";
-
-const navLinks = [
-  { href: "/", labelKey: "nav.home" },
-  { href: "/chi-sono", labelKey: "nav.about" },
-  { href: "/servizi", labelKey: "nav.services" },
-  { href: "/mvp", labelKey: "nav.mvp" },
-  { href: "/progetti", labelKey: "nav.projects" },
-  { href: "/metodo", labelKey: "nav.method" },
-  { href: "/abbonamento", labelKey: "nav.subscription" },
-  { href: "/contatti", labelKey: "nav.contacts" },
-];
+import { localizedRoutes } from "@/lib/routes/routes";
 
 // Magnetic link component
 function MagneticLink({
@@ -98,20 +88,32 @@ function MagneticLink({
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { scrollToTop } = useScrollToTop();
+  const currentLang = i18n.language.startsWith("en") ? "en" : "it";
+  const routes = localizedRoutes[currentLang];
+  const bookingLink = `${routes.contacts}#calendly`;
+  const navLinks = [
+    { href: routes.home, labelKey: "nav.home" },
+    { href: routes.about, labelKey: "nav.about" },
+    { href: routes.services, labelKey: "nav.services" },
+    { href: routes.mvp, labelKey: "nav.mvp" },
+    { href: routes.projects, labelKey: "nav.projects" },
+    { href: routes.method, labelKey: "nav.method" },
+    { href: routes.subscription, labelKey: "nav.subscription" },
+    { href: routes.contacts, labelKey: "nav.contacts" },
+  ];
 
   // Page scroll progress for the indicator
   const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => {
-      // Progress from 0 to 1 over 100px of scroll
-      const progress = Math.min(window.scrollY / 100, 1);
-      setScrollProgress(progress);
+      setScrollY(window.scrollY);
     };
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -147,7 +149,9 @@ export function Header() {
     };
   }, [isMenuOpen]);
 
-  const hasScrolled = scrollProgress > 0.1;
+  // Keep subtitle visible when user is back near the top area.
+  // A slightly higher threshold avoids "sticky hidden" behavior with snap scrolling.
+  const hasScrolled = scrollY > 90;
 
   return (
     <header
@@ -177,7 +181,7 @@ export function Header() {
           {/* Left side - Logo */}
           <div className="flex items-center">
             <Link
-              to="/"
+              to={routes.home}
               className="flex items-center gap-3 group relative z-10"
             >
               <motion.div
@@ -250,7 +254,7 @@ export function Header() {
                   className="group max-[1450px]:px-4"
                   asChild
                 >
-                  <Link to="/contatti">
+                  <Link to={bookingLink}>
                     <span className="hidden min-[1400px]:inline">Prenota una call</span>
                     <span className="inline min-[1400px]:hidden">Prenota</span>
                     <motion.span
@@ -258,7 +262,7 @@ export function Header() {
                       whileHover={{ x: 4 }}
                       transition={{ duration: 0.2 }}
                     >
-                      →
+                      {"->"}
                     </motion.span>
                   </Link>
                 </Button>
@@ -368,9 +372,9 @@ export function Header() {
                   className="w-full text-lg"
                   asChild
                 >
-                  <Link to="/contatti">
+                  <Link to={bookingLink}>
                     Prenota una call
-                    <span className="ml-2">→</span>
+                    <span className="ml-2">{"->"}</span>
                   </Link>
                 </Button>
               </motion.div>

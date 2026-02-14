@@ -7,20 +7,8 @@ import { MethodSection } from "@/components/home/MethodSection";
 import { ProofSection } from "@/components/home/ProofSection";
 import { AvailabilitySection } from "@/components/home/AvailabilitySection";
 import { CTASection } from "@/components/home/CTASection";
-import { useSectionSnapScroll } from "@/hooks/useSectionSnapScroll";
 
 const Index = () => {
-  useSectionSnapScroll([
-    "hero",
-    "concept",
-    "services",
-    "method",
-    "proof",
-    "availability",
-    "cta",
-    "site-footer",
-  ]);
-
   return (
     <Layout>
       <SEO

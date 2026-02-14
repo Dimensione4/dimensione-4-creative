@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+﻿import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, Suspense, lazy } from "react";
 import { ArrowRight, Play } from "lucide-react";
@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAvailability } from "@/hooks/useAvailability";
 import { trackEvent } from "@/components/GoogleAnalytics";
+import { localizedRoutes } from "@/lib/routes/routes";
 import heroImage from "@/assets/hero-4d.jpg";
 
 const Hero3DScene = lazy(() =>
@@ -14,8 +15,11 @@ const Hero3DScene = lazy(() =>
 
 export function HeroSection() {
   const ref = useRef(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { availability } = useAvailability();
+  const lang = i18n.language.startsWith("en") ? "en" : "it";
+  const routes = localizedRoutes[lang];
+  const bookingLink = `${routes.contacts}#calendly`;
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -97,7 +101,7 @@ export function HeroSection() {
                   }`}
                 />
               </button>
-              Creative Technology Studio
+              {lang === "it" ? "Studio Creativo" : "Creative Technology Studio"}
             </span>
           </motion.div>
 
@@ -142,7 +146,7 @@ export function HeroSection() {
                 })
               }
             >
-              <Link to="/contatti" className="cursor-pointer">
+              <Link to={bookingLink} className="cursor-pointer">
                 {t("hero.cta")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -160,7 +164,7 @@ export function HeroSection() {
                 })
               }
             >
-              <Link to="/servizi" className="cursor-pointer">
+              <Link to={routes.services} className="cursor-pointer">
                 <Play className="w-4 h-4" />
                 {t("hero.ctaSecondary")}
               </Link>
@@ -196,3 +200,4 @@ export function HeroSection() {
     </section>
   );
 }
+

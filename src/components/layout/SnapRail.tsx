@@ -62,14 +62,29 @@ function oneWordSummary(text: string) {
 }
 
 function sectionLabel(section: HTMLElement, index: number) {
+  const id = (section.id || "").toLowerCase();
   const customLabel = section.dataset.snapLabel;
-  if (customLabel) return oneWordSummary(customLabel);
+  if (customLabel) {
+    if (customLabel.toLowerCase().includes("cta")) return "CTA";
+    return oneWordSummary(customLabel);
+  }
+
+  if (id.includes("cta")) return "CTA";
 
   const microLabel = section.querySelector(".text-label");
+  const microLabelRaw = trimLabel(microLabel?.textContent ?? "");
+  if (microLabelRaw.toLowerCase().includes("cta")) return "CTA";
   const microLabelText = oneWordSummary(microLabel?.textContent ?? "");
   if (microLabelText) return microLabelText;
 
   const heading = section.querySelector("h1, h2, h3");
+  const headingRaw = trimLabel(heading?.textContent ?? "");
+  if (
+    /\b(prenota|call|contatt|match|progetto|insieme)\b/i.test(headingRaw) &&
+    headingRaw.length > 0
+  ) {
+    return "CTA";
+  }
   const headingText = oneWordSummary(heading?.textContent ?? "");
   if (headingText) return headingText;
 

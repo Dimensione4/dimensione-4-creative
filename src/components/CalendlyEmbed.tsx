@@ -29,7 +29,7 @@ export function CalendlyEmbed({ url = CALENDLY_URL }: CalendlyEmbedProps) {
   }, []);
 
   return (
-    <div id="booking" className="surface-card p-6 md:p-8">
+    <div id="booking" className="surface-card mx-auto w-full max-w-5xl p-4 sm:p-5 md:p-8">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
           <Calendar className="w-5 h-5 text-primary" />
@@ -46,9 +46,9 @@ export function CalendlyEmbed({ url = CALENDLY_URL }: CalendlyEmbedProps) {
       
       {/* Calendly inline widget */}
       <div
-        className="calendly-inline-widget rounded-lg overflow-hidden"
+        className="calendly-inline-widget w-full rounded-lg overflow-hidden"
         data-url={`${url}?hide_gdpr_banner=1&background_color=0a0d12&text_color=e0eaf7&primary_color=00a693`}
-        style={{ minWidth: "320px", height: "700px" }}
+        style={{ minWidth: "0", width: "100%", height: "clamp(620px, 78vh, 820px)" }}
       />
       
       {/* Fallback for when script doesn't load */}

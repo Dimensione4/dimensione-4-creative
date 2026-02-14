@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getLocalizedPath } from "@/lib/routes/routes";
 
 type Language = "it" | "en";
 
@@ -9,11 +11,17 @@ interface LanguageSwitchProps {
 
 export function LanguageSwitch({ className = "" }: LanguageSwitchProps) {
   const { i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const language = i18n.language as Language;
 
   const toggleLanguage = () => {
     const newLang = language === "it" || language.startsWith("it") ? "en" : "it";
     i18n.changeLanguage(newLang);
+    const nextPath = getLocalizedPath(location.pathname, newLang);
+    if (nextPath !== location.pathname) {
+      navigate(nextPath);
+    }
   };
 
   const currentLang = language === "en" || language.startsWith("en") ? "en" : "it";

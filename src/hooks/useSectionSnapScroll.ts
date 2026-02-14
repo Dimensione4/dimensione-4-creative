@@ -32,6 +32,8 @@ export function useSectionSnapScroll(
     if (!enabled || sectionIds.length === 0) return;
 
     const isMobile = () => window.innerWidth < mobileBreakpoint;
+    type SnapPoint = { node: HTMLElement; sectionId: string; targetTop: number };
+
     const getSections = () =>
       sectionIds
         .map((id) => document.getElementById(id))
@@ -57,29 +59,71 @@ export function useSectionSnapScroll(
       return headerHeight + (window.innerHeight - headerHeight) / 2;
     };
 
-    const getSnapAnchor = (section: HTMLElement) => {
-      const explicitAnchor = section.querySelector(
-        "[data-snap-anchor], .snap-anchor"
-      ) as HTMLElement | null;
-      if (explicitAnchor) return explicitAnchor;
-
-      const primaryContainer = section.querySelector(
-        ":scope > .container-wide, :scope > .container-base, :scope > .container-tight, :scope > .container-fluid"
-      ) as HTMLElement | null;
-      if (primaryContainer) return primaryContainer;
-
-      return section;
+    const getTargetTopForNode = (node: HTMLElement) => {
+      const rect = node.getBoundingClientRect();
+      const anchorCenterY = window.scrollY + rect.top + rect.height / 2;
+      return Math.max(
+        0,
+        Math.min(getMaxScrollTop(), anchorCenterY - getViewportCenterLine())
+      );
     };
 
-    const getCurrentSectionIndex = () => {
+    const isUsableAnchor = (node: HTMLElement) => {
+      const rect = node.getBoundingClientRect();
+      return rect.height > 40 && rect.width > 40;
+    };
+
+    const getSnapPoints = (): SnapPoint[] => {
       const sections = getSections();
+      const points: SnapPoint[] = [];
+      const seen = new Set<HTMLElement>();
+      const minTargetDistance = Math.max(48, window.innerHeight * 0.08);
+
+      sections.forEach((section) => {
+        const explicitAnchors = Array.from(
+          section.querySelectorAll(
+            "[data-snap-anchor], .snap-anchor"
+          )
+        ).filter((el): el is HTMLElement => el instanceof HTMLElement);
+
+        const candidates =
+          explicitAnchors.length > 0
+            ? explicitAnchors
+            : [
+                (section.querySelector(
+                  ":scope > .container-wide, :scope > .container-base, :scope > .container-tight, :scope > .container-fluid"
+                ) as HTMLElement | null) ?? section,
+              ];
+
+        candidates.forEach((candidate) => {
+          if (!seen.has(candidate) && isUsableAnchor(candidate)) {
+            seen.add(candidate);
+            const targetTop = getTargetTopForNode(candidate);
+            const duplicateTarget = points.some(
+              (point) =>
+                point.sectionId === section.id &&
+                Math.abs(point.targetTop - targetTop) < minTargetDistance
+            );
+
+            if (!duplicateTarget) {
+              points.push({ node: candidate, sectionId: section.id, targetTop });
+            }
+          }
+        });
+      });
+
+      return points;
+    };
+
+    const getCurrentPointIndex = () => {
+      const points = getSnapPoints();
+      if (points.length === 0) return 0;
       const viewportCenter = getViewportCenterLine();
       let nearestIndex = 0;
       let nearestDistance = Number.POSITIVE_INFINITY;
 
-      for (let i = 0; i < sections.length; i++) {
-        const anchor = getSnapAnchor(sections[i]);
-        const rect = anchor.getBoundingClientRect();
+      for (let i = 0; i < points.length; i++) {
+        const rect = points[i].node.getBoundingClientRect();
         const anchorCenter = rect.top + rect.height / 2;
 
         if (rect.top <= viewportCenter && rect.bottom > viewportCenter) {
@@ -96,20 +140,14 @@ export function useSectionSnapScroll(
       return nearestIndex;
     };
 
-    const scrollToSection = (index: number) => {
-      const sections = getSections();
-      const targetSection = sections[index];
+    const scrollToPoint = (index: number) => {
+      const points = getSnapPoints();
+      const targetPoint = points[index];
 
-      if (!targetSection || isAnimating) return;
+      if (!targetPoint || isAnimating) return;
 
       isAnimating = true;
-      const anchor = getSnapAnchor(targetSection);
-      const rect = anchor.getBoundingClientRect();
-      const anchorCenterY = window.scrollY + rect.top + rect.height / 2;
-      const targetTop = Math.max(
-        0,
-        Math.min(getMaxScrollTop(), anchorCenterY - getViewportCenterLine())
-      );
+      const targetTop = targetPoint.targetTop;
 
       const startTop = window.scrollY;
       const delta = targetTop - startTop;
@@ -143,15 +181,18 @@ export function useSectionSnapScroll(
       accumulatedDelta += e.deltaY;
 
       if (Math.abs(accumulatedDelta) > scrollThreshold) {
+        const points = getSnapPoints();
+        if (points.length === 0) return;
+
         const direction = accumulatedDelta > 0 ? 1 : -1;
-        const currentIndex = getCurrentSectionIndex();
+        const currentIndex = getCurrentPointIndex();
         const nextIndex = Math.max(
           0,
-          Math.min(sectionIds.length - 1, currentIndex + direction)
+          Math.min(points.length - 1, currentIndex + direction)
         );
 
         if (nextIndex !== currentIndex) {
-          scrollToSection(nextIndex);
+          scrollToPoint(nextIndex);
         }
 
         accumulatedDelta = 0;
