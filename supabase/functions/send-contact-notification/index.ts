@@ -25,6 +25,48 @@ function normalizeWebsiteUrl(website: string): string {
   return `https://${trimmed}`;
 }
 
+function buildContactFooterHtml(): string {
+  return `
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #d9e6f2;">
+      <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#0f172a;">
+        Dimensione 4 di Dario Marco Bellini
+      </p>
+      <p style="margin:0 0 12px;font-size:12px;color:#475569;">
+        P.IVA 04678930167
+      </p>
+      <table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="padding:0 12px 8px 0;">
+            <a href="mailto:dariomarcobellini@dimensione4.it" style="font-size:13px;color:#0f8f88;text-decoration:none;">[Email]</a>
+          </td>
+          <td style="padding:0 12px 8px 0;">
+            <a href="https://wa.me/393334404903" style="font-size:13px;color:#0f8f88;text-decoration:none;">[WhatsApp] +39 3334404903</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 12px 8px 0;">
+            <a href="https://linkedin.com/in/dariobellini" style="font-size:13px;color:#0f8f88;text-decoration:none;">in LinkedIn</a>
+          </td>
+          <td style="padding:0 12px 8px 0;">
+            <a href="https://github.com/Dimensione4" style="font-size:13px;color:#0f8f88;text-decoration:none;">{} GitHub</a>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 12px 0 0;">
+            <a href="https://x.com/Dimensione4it" style="font-size:13px;color:#0f8f88;text-decoration:none;">X / Twitter</a>
+          </td>
+          <td style="padding:0 12px 0 0;">
+            <a href="https://instagram.com/dimensione4.it" style="font-size:13px;color:#0f8f88;text-decoration:none;">Instagram</a>
+          </td>
+          <td style="padding:0;">
+            <a href="https://tiktok.com/@dimensione4.it" style="font-size:13px;color:#0f8f88;text-decoration:none;">TikTok</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
 function buildOwnerNotificationHtml(input: {
   safeName: string;
   safeEmail: string;
@@ -32,31 +74,39 @@ function buildOwnerNotificationHtml(input: {
   safeMessage: string;
 }): string {
   return `
-    <div style="font-family:Arial,Helvetica,sans-serif;background:#050914;padding:24px;color:#e6edf3;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#0a1220;border:1px solid #17324a;border-radius:14px;overflow:hidden;">
+    <div style="font-family:Arial,Helvetica,sans-serif;padding:0;margin:0;color:#0f172a;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #d9e6f2;border-radius:14px;overflow:hidden;">
         <tr>
-          <td style="padding:20px 24px;background:linear-gradient(90deg,#0f8f88,#25d9e4);color:#03131a;">
-            <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="28" height="28" style="display:block;margin-bottom:8px;border:0;outline:none;">
-            <h1 style="margin:0;font-size:20px;line-height:1.3;">Nuovo contatto dal sito</h1>
-            <p style="margin:6px 0 0;font-size:13px;opacity:0.9;">Dimensione 4 · modulo contatti</p>
+          <td style="padding:20px 24px;background:linear-gradient(90deg,#0d2a38,#113b4d);color:#ffffff;">
+            <table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr>
+                <td style="vertical-align:middle;padding-right:10px;">
+                  <span style="display:inline-flex;width:32px;height:32px;border-radius:999px;background:#ffffff;align-items:center;justify-content:center;">
+                    <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="20" height="20" style="display:block;border:0;outline:none;">
+                  </span>
+                </td>
+                <td style="vertical-align:middle;">
+                  <p style="margin:0;font-size:12px;letter-spacing:0.9px;text-transform:uppercase;opacity:0.9;">Dimensione 4</p>
+                  <h1 style="margin:2px 0 0;font-size:22px;line-height:1.3;color:#ffffff;">Nuovo contatto dal sito</h1>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:10px 0 0;font-size:13px;opacity:0.9;">Modulo contatti</p>
           </td>
         </tr>
         <tr>
           <td style="padding:24px;">
-            <p style="margin:0 0 16px;font-size:14px;color:#9bb0c6;">Dettagli lead ricevuto:</p>
+            <p style="margin:0 0 16px;font-size:14px;color:#475569;">Dettagli lead ricevuto:</p>
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
-              <tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Nome</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeName}</td></tr>
-              <tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Email</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeEmail}</td></tr>
-              ${
-                input.safeWebsite
-                  ? `<tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Sito</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeWebsite}</td></tr>`
-                  : ""
-              }
+              <tr><td style="padding:8px 0;color:#0f8f88;font-size:13px;">Nome</td><td style="padding:8px 0;font-size:14px;color:#0f172a;">${input.safeName}</td></tr>
+              <tr><td style="padding:8px 0;color:#0f8f88;font-size:13px;">Email</td><td style="padding:8px 0;font-size:14px;color:#0f172a;">${input.safeEmail}</td></tr>
+              ${input.safeWebsite ? `<tr><td style="padding:8px 0;color:#0f8f88;font-size:13px;">Sito</td><td style="padding:8px 0;font-size:14px;color:#0f172a;">${input.safeWebsite}</td></tr>` : ""}
             </table>
-            <div style="margin-top:18px;padding:14px;border:1px solid #17324a;background:#060d17;border-radius:10px;">
-              <p style="margin:0 0 8px;color:#7fcbd2;font-size:13px;">Messaggio</p>
-              <p style="margin:0;font-size:14px;line-height:1.6;color:#e6edf3;">${input.safeMessage}</p>
+            <div style="margin-top:18px;padding:14px;border:1px solid #d9e6f2;background:#f8fbff;border-radius:10px;">
+              <p style="margin:0 0 8px;color:#0f8f88;font-size:13px;">Messaggio</p>
+              <p style="margin:0;font-size:14px;line-height:1.6;color:#0f172a;">${input.safeMessage}</p>
             </div>
+            ${buildContactFooterHtml()}
           </td>
         </tr>
       </table>
@@ -72,61 +122,55 @@ function buildAutoReplyHtml(input: {
   websiteUrl: string | null;
 }): string {
   return `
-    <div style="font-family:Arial,Helvetica,sans-serif;background:#050914;padding:24px;color:#e6edf3;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#0a1220;border:1px solid #17324a;border-radius:14px;overflow:hidden;">
+    <div style="font-family:Arial,Helvetica,sans-serif;padding:0;margin:0;color:#0f172a;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #d9e6f2;border-radius:14px;overflow:hidden;">
         <tr>
-          <td style="padding:22px 24px;background:linear-gradient(90deg,#0f8f88,#25d9e4);color:#03131a;">
-            <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="28" height="28" style="display:block;margin-bottom:8px;border:0;outline:none;">
-            <p style="margin:0;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;">Dimensione 4</p>
-            <h1 style="margin:8px 0 0;font-size:22px;line-height:1.3;">Messaggio ricevuto con successo</h1>
+          <td style="padding:20px 24px;background:linear-gradient(90deg,#0d2a38,#113b4d);color:#ffffff;">
+            <table role="presentation" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr>
+                <td style="vertical-align:middle;padding-right:10px;">
+                  <span style="display:inline-flex;width:32px;height:32px;border-radius:999px;background:#ffffff;align-items:center;justify-content:center;">
+                    <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="20" height="20" style="display:block;border:0;outline:none;">
+                  </span>
+                </td>
+                <td style="vertical-align:middle;">
+                  <p style="margin:0;font-size:12px;letter-spacing:0.9px;text-transform:uppercase;opacity:0.9;">Dimensione 4</p>
+                  <h1 style="margin:2px 0 0;font-size:22px;line-height:1.3;color:#ffffff;">Messaggio ricevuto con successo</h1>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
         <tr>
           <td style="padding:24px;">
             <p style="margin:0 0 10px;font-size:16px;line-height:1.6;">Ciao <strong>${input.safeName}</strong>, grazie per avermi scritto.</p>
-            <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#c3d0dc;">
-              Ho ricevuto la tua richiesta e ti ricontatterò entro <strong>24 ore lavorative</strong>.
+            <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#475569;">
+              Ho ricevuto la tua richiesta e ti ricontattero entro <strong>24 ore lavorative</strong>.
             </p>
-            <div style="padding:14px;border:1px solid #17324a;background:#060d17;border-radius:10px;">
-              <p style="margin:0 0 8px;color:#7fcbd2;font-size:13px;">Riepilogo della tua richiesta</p>
+            <div style="padding:14px;border:1px solid #d9e6f2;background:#f8fbff;border-radius:10px;">
+              <p style="margin:0 0 8px;color:#0f8f88;font-size:13px;">Riepilogo della tua richiesta</p>
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
-                <tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Nome</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeName}</td></tr>
-                <tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Email</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeEmail}</td></tr>
-                ${
-                  input.safeWebsite
-                    ? `<tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Sito/Repository</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeWebsite}</td></tr>`
-                    : ""
-                }
+                <tr><td style="padding:6px 0;color:#0f8f88;font-size:13px;">Nome</td><td style="padding:6px 0;font-size:14px;color:#0f172a;">${input.safeName}</td></tr>
+                <tr><td style="padding:6px 0;color:#0f8f88;font-size:13px;">Email</td><td style="padding:6px 0;font-size:14px;color:#0f172a;">${input.safeEmail}</td></tr>
+                ${input.safeWebsite ? `<tr><td style="padding:6px 0;color:#0f8f88;font-size:13px;">Sito/Repository</td><td style="padding:6px 0;font-size:14px;color:#0f172a;">${input.safeWebsite}</td></tr>` : ""}
               </table>
               <div style="margin-top:12px;">
-                <p style="margin:0 0 6px;color:#7fcbd2;font-size:13px;">Messaggio</p>
-                <p style="margin:0;font-size:14px;line-height:1.6;color:#e6edf3;">${input.safeMessage}</p>
+                <p style="margin:0 0 6px;color:#0f8f88;font-size:13px;">Messaggio</p>
+                <p style="margin:0;font-size:14px;line-height:1.6;color:#0f172a;">${input.safeMessage}</p>
               </div>
             </div>
-            <p style="margin:16px 0 0;font-size:13px;color:#9bb0c6;">
+            <p style="margin:16px 0 0;font-size:13px;color:#475569;">
               Nel frattempo puoi prenotare direttamente una call da qui:
               <a href="https://dimensione4.it/contatti#calendly" style="color:#25d9e4;">dimensione4.it/contatti#calendly</a>
             </p>
-            ${
-              input.websiteUrl
-                ? `<p style="margin:8px 0 0;font-size:12px;color:#8da4bb;">Link inserito: <a href="${input.websiteUrl}" style="color:#25d9e4;">${input.safeWebsite}</a></p>`
-                : ""
-            }
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:16px 24px;border-top:1px solid #17324a;background:#070f1a;">
-            <p style="margin:0;font-size:12px;color:#9bb0c6;">
-              Dario Marco Bellini · Dimensione 4<br>
-              <a href="mailto:dariomarcobellini@dimensione4.it" style="color:#25d9e4;">dariomarcobellini@dimensione4.it</a>
-            </p>
+            ${input.websiteUrl ? `<p style="margin:8px 0 0;font-size:12px;color:#64748b;">Link inserito: <a href="${input.websiteUrl}" style="color:#25d9e4;">${input.safeWebsite}</a></p>` : ""}
+            ${buildContactFooterHtml()}
           </td>
         </tr>
       </table>
     </div>
   `;
 }
-
 // HTML encode user inputs to prevent XSS in email clients
 function htmlEncode(text: string): string {
   return text
@@ -303,3 +347,5 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 serve(handler);
+
+
