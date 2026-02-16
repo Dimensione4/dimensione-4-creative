@@ -82,33 +82,33 @@
 
   .light {
     /* Light Theme - Clean Lab */
-    --background: 210 33% 98%;
-    --background-hex: #F7FAFC;
+    --background: 210 24% 96%;
+    --background-hex: #F1F5F8;
     
-    --surface: 0 0% 100%;
-    --surface-hover: 210 20% 96%;
+    --surface: 210 18% 98%;
+    --surface-hover: 210 16% 94%;
     
-    --foreground: 216 55% 9%;
-    --foreground-secondary: 210 20% 32%;
+    --foreground: 215 46% 12%;
+    --foreground-secondary: 215 18% 34%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 216 55% 9%;
+    --card: 210 18% 98%;
+    --card-foreground: 215 46% 12%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 216 55% 9%;
+    --popover: 210 18% 98%;
+    --popover-foreground: 215 46% 12%;
 
     --primary: 179 82% 33%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 180 80% 50%;
+    --primary-foreground: 210 18% 98%;
+    --primary-glow: 180 78% 42%;
     
-    --accent: 180 76% 50%;
-    --accent-foreground: 216 55% 9%;
+    --accent: 183 72% 40%;
+    --accent-foreground: 215 46% 12%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 216 55% 9%;
+    --secondary: 210 16% 92%;
+    --secondary-foreground: 215 46% 12%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 210 20% 32%;
+    --muted: 210 14% 91%;
+    --muted-foreground: 215 15% 36%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -116,9 +116,9 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
 
-    --border: 210 25% 90%;
-    --border-subtle: 210 25% 94%;
-    --input: 210 25% 90%;
+    --border: 210 16% 84%;
+    --border-subtle: 210 16% 90%;
+    --input: 210 16% 90%;
     --ring: 179 82% 33%;
 
     --shadow-sm: 0 2px 8px hsl(216 55% 9% / 0.06);
@@ -307,11 +307,19 @@
     html.has-site-snap main > section,
     body.has-site-snap main > section {
       min-height: auto;
-      padding-top: 1rem !important;
-      padding-bottom: 1rem !important;
+      padding-top: 1.25rem !important;
+      padding-bottom: 1.25rem !important;
       scroll-snap-align: start;
       scroll-snap-stop: normal;
       scroll-margin-top: var(--snap-header-offset);
+    }
+
+    .surface-card p,
+    .surface-card li,
+    .surface-card a,
+    .surface-card span {
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
   }
 
@@ -650,13 +658,14 @@
 
   /* Tagline slider */
   .animate-tagline-slider {
-    animation: tagline-slider 8s ease-in-out infinite;
+    animation: tagline-slider 12s ease-in-out infinite;
   }
 
   @keyframes tagline-slider {
-    0%, 40% { transform: translateX(0%); }
-    50%, 90% { transform: translateX(-100%); }
-    100% { transform: translateX(0%); }
+    0%, 21% { transform: translateX(0%); }
+    28%, 49% { transform: translateX(-100%); }
+    56%, 77% { transform: translateX(-200%); }
+    84%, 100% { transform: translateX(-300%); }
   }
 
   @keyframes hyperspace-flash {

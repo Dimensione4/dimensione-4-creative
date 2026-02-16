@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
-import { FileText, MessageSquare, GitPullRequest, RotateCcw, CheckCircle2 } from "lucide-react";
+import {
+  FileText,
+  MessageSquare,
+  GitPullRequest,
+  RotateCcw,
+  CheckCircle2,
+} from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -11,22 +17,23 @@ const steps = [
   {
     id: "step-1",
     icon: FileText,
-    emoji: "📝",
-    title: "Task Inviato",
-    subtitle: "Ottimizza la performance su mobile",
-    timestamp: "Lunedì, 09:15",
+    title: "Task inviato",
+    subtitle: "Aggiorna pagina Servizi e CTA call",
+    timestamp: "Lunedi, 09:15",
     content: (
       <div className="space-y-4">
         <div className="surface-card p-4 bg-surface/50">
-          <p className="font-mono text-xs text-muted-foreground mb-2">Brief ricevuto:</p>
+          <p className="font-mono text-xs text-muted-foreground mb-2">
+            Brief ricevuto:
+          </p>
           <p className="text-sm">
-            "Il sito carica lentamente su mobile, soprattutto la homepage. 
-            Core Web Vitals rossi. Priorità: LCP e CLS."
+            "Aggiorniamo offerta Servizi, allineiamo le CTA call e rendiamo il
+            menu mobile più stabile."
           </p>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span>Task aggiunto alla coda</span>
+          <span>Task inserito in coda e preso in carico</span>
         </div>
       </div>
     ),
@@ -34,31 +41,32 @@ const steps = [
   {
     id: "step-2",
     icon: MessageSquare,
-    emoji: "📬",
-    title: "Risposta Iniziale",
-    subtitle: "Analisi + proposta in 12h",
-    timestamp: "Lunedì, 18:30",
+    title: "Risposta iniziale",
+    subtitle: "Analisi e piano operativo",
+    timestamp: "Lunedi, 16:40",
     content: (
       <div className="space-y-4">
         <div className="surface-card p-4 bg-surface/50">
-          <p className="font-mono text-xs text-muted-foreground mb-3">Audit preliminare:</p>
+          <p className="font-mono text-xs text-muted-foreground mb-3">
+            Analisi iniziale:
+          </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
-              <span className="text-destructive">•</span>
-              <span>Hero image: 2.4MB, non ottimizzata</span>
+              <span className="text-destructive">*</span>
+              <span>CTA non coerenti tra pagine principali</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-destructive">•</span>
-              <span>Font loading: render-blocking</span>
+              <span className="text-destructive">*</span>
+              <span>Menu mobile con comportamento non uniforme</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-destructive">•</span>
-              <span>Third-party scripts: 800ms delay</span>
+              <span className="text-destructive">*</span>
+              <span>Copy da semplificare in alcune sezioni</span>
             </li>
           </ul>
         </div>
         <p className="text-sm text-muted-foreground">
-          Stima: 2-3 giorni. Procedo con l'ottimizzazione?
+          Stima condivisa: 2-4 giorni con rilascio progressivo.
         </p>
       </div>
     ),
@@ -66,26 +74,27 @@ const steps = [
   {
     id: "step-3",
     icon: GitPullRequest,
-    emoji: "🔧",
-    title: "Consegna Task",
-    subtitle: "PR + test + guida deploy",
-    timestamp: "Giovedì, 14:00",
+    title: "Consegna",
+    subtitle: "Rilascio incrementale e verifica",
+    timestamp: "Giovedi, 14:00",
     content: (
       <div className="space-y-4">
         <div className="surface-card p-4 bg-surface/50 font-mono text-xs">
-          <p className="text-muted-foreground mb-2">📁 File modificati:</p>
+          <p className="text-muted-foreground mb-2">
+            File principali aggiornati:
+          </p>
           <div className="space-y-1 text-primary">
-            <p>+ src/components/Hero.tsx</p>
-            <p>+ public/images/ (WebP conversion)</p>
-            <p>+ next.config.js (image optimization)</p>
-            <p>+ src/styles/fonts.css</p>
+            <p>+ src/pages/Servizi.tsx</p>
+            <p>+ src/components/layout/Header.tsx</p>
+            <p>+ src/pages/Metodo.tsx</p>
+            <p>+ src/pages/Abbonamento.tsx</p>
           </div>
         </div>
         <div className="surface-card p-4 bg-surface/50 font-mono text-xs">
-          <p className="text-muted-foreground mb-2">✅ Test results:</p>
-          <p className="text-green-500">LCP: 2.4s → 1.1s</p>
-          <p className="text-green-500">CLS: 0.25 → 0.02</p>
-          <p className="text-green-500">Mobile score: 45 → 92</p>
+          <p className="text-muted-foreground mb-2">Verifica:</p>
+          <p className="text-green-500">Menu mobile stabile</p>
+          <p className="text-green-500">CTA call uniformate</p>
+          <p className="text-green-500">Nessuna regressione in build</p>
         </div>
       </div>
     ),
@@ -93,27 +102,28 @@ const steps = [
   {
     id: "step-4",
     icon: RotateCcw,
-    emoji: "🌀",
     title: "Revisione",
-    subtitle: "Piccoli fix su richiesta",
-    timestamp: "Venerdì, 10:00",
+    subtitle: "Fine tuning su feedback",
+    timestamp: "Venerdi, 10:20",
     content: (
       <div className="space-y-4">
         <div className="surface-card p-4 bg-surface/50">
-          <p className="font-mono text-xs text-muted-foreground mb-3">Feedback ricevuto:</p>
+          <p className="font-mono text-xs text-muted-foreground mb-3">
+            Feedback:
+          </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-              <span>"Puoi aggiungere lazy loading anche alle card prodotto?"</span>
+              <span>Rendere più chiaro il blocco prezzi in Abbonamento</span>
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-              <span>"Il font fallback ha un flash, riesci a sistemarlo?"</span>
+              <span>Rifinire la hero Metodo su mobile</span>
             </li>
           </ul>
         </div>
         <p className="text-sm text-muted-foreground">
-          Fix applicati e pushati. Revisioni illimitate finché sei soddisfatto.
+          Correzioni applicate e validate in giornata.
         </p>
       </div>
     ),
@@ -121,23 +131,21 @@ const steps = [
   {
     id: "step-5",
     icon: CheckCircle2,
-    emoji: "✅",
     title: "Conclusione",
-    subtitle: "Task chiuso, documentato",
-    timestamp: "Venerdì, 16:30",
+    subtitle: "Task chiuso e tracciato",
+    timestamp: "Venerdi, 17:10",
     content: (
       <div className="space-y-4">
         <div className="surface-card p-4 bg-surface/50">
-          <p className="font-mono text-xs text-muted-foreground mb-3">Recap finale:</p>
+          <p className="font-mono text-xs text-muted-foreground mb-3">
+            Recap finale:
+          </p>
           <ul className="space-y-2 text-sm">
-            <li>✅ Performance mobile: da 45 a 92</li>
-            <li>✅ Core Web Vitals: tutti verdi</li>
-            <li>✅ Documentazione: guida deploy inclusa</li>
-            <li>✅ PR: merged in production</li>
+            <li>* Obiettivo completato</li>
+            <li>* Feedback recepito</li>
+            <li>* Rilascio eseguito</li>
+            <li>* Prossimo task pronto in coda</li>
           </ul>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-primary font-mono">
-          <span>→ Prossimo slot disponibile: Lunedì mattina</span>
         </div>
       </div>
     ),
@@ -156,13 +164,14 @@ export function ProcessDemo() {
           className="text-center mb-12"
         >
           <span className="font-mono text-label text-primary mb-4 block">
-            Preview the process
+            Processo operativo
           </span>
           <h2 className="font-display text-h2 font-bold mb-4">
             Una settimana tipo
           </h2>
           <p className="text-body-lg text-muted-foreground max-w-xl mx-auto">
-            Ecco come si svolge un task reale, dall'invio alla consegna.
+            Ecco come viene gestito un task reale, dalla richiesta alla
+            chiusura.
           </p>
         </motion.div>
 
@@ -174,7 +183,7 @@ export function ProcessDemo() {
           className="max-w-2xl mx-auto"
         >
           <Accordion type="single" collapsible className="space-y-3">
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <AccordionItem
                 key={step.id}
                 value={step.id}
@@ -187,8 +196,9 @@ export function ProcessDemo() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">{step.emoji}</span>
-                        <span className="font-display font-semibold">{step.title}</span>
+                        <span className="font-display font-semibold">
+                          {step.title}
+                        </span>
                       </div>
                       <p className="text-sm text-muted-foreground truncate">
                         {step.subtitle}

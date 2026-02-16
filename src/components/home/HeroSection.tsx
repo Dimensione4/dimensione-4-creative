@@ -1,11 +1,11 @@
 ﻿import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef, Suspense, lazy } from "react";
-import { ArrowRight, Play } from "lucide-react";
+import { PhoneCall, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAvailability } from "@/hooks/useAvailability";
-import { trackEvent } from "@/components/GoogleAnalytics";
+import { trackEvent } from "@/utils/analytics";
 import { localizedRoutes } from "@/lib/routes/routes";
 import heroImage from "@/assets/hero-4d.jpg";
 
@@ -139,16 +139,15 @@ export function HeroSection() {
               className="cta-glow cursor-pointer hover:brightness-110"
               asChild
               onClick={() =>
-                trackEvent("cta_click", {
-                  cta_name: "hero_primary",
-                  cta_text: t("hero.cta"),
-                  location: "hero_section",
+                trackEvent("book_call_click", {
+                  tool: "calendly",
+                  location: "hero",
                 })
               }
             >
               <Link to={bookingLink} className="cursor-pointer">
                 {t("hero.cta")}
-                <ArrowRight className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
             <Button
@@ -158,9 +157,8 @@ export function HeroSection() {
               asChild
               onClick={() =>
                 trackEvent("cta_click", {
-                  cta_name: "hero_secondary",
                   cta_text: t("hero.ctaSecondary"),
-                  location: "hero_section",
+                  cta_section: "hero",
                 })
               }
             >

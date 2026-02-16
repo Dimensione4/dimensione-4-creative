@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
 import logoSymbol from "@/assets/logo-symbol.png";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
@@ -37,14 +39,14 @@ const socialLinks = [
     label: "GitHub",
     icon: Github,
   },
-  { href: "https://x.com/dariomarcobellini", label: "X", icon: XIcon },
+  { href: "https://x.com/Dimensione4it", label: "X", icon: XIcon },
   {
     href: "https://instagram.com/dimensione4.it",
     label: "Instagram",
     icon: Instagram,
   },
   {
-    href: "https://tiktok.com/@dariomarcobellini",
+    href: "https://tiktok.com/@dimensione4.it",
     label: "TikTok",
     icon: TikTokIcon,
   },
@@ -106,31 +108,60 @@ function MagneticLink({
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { i18n, t } = useTranslation();
+  const { isVisible } = usePageVisibility();
   const currentLang = i18n.language;
   const lang = localizedRoutes[currentLang as keyof typeof localizedRoutes]
     ? (currentLang as keyof typeof localizedRoutes)
     : "it";
   const routes = localizedRoutes[lang];
   const navLinks = [
-    { href: routes.about, labelKey: "nav.about" },
-    { href: routes.services, labelKey: "nav.services" },
-    { href: routes.mvp, labelKey: "nav.mvp" },
-    { href: routes.projects, labelKey: "nav.projects" },
-    { href: routes.method, labelKey: "nav.method" },
-    { href: routes.subscription, labelKey: "nav.subscription" },
-    { href: routes.contacts, labelKey: "nav.contacts" },
-  ];
+    { href: routes.about, labelKey: "nav.about", key: "about" as const },
+    {
+      href: routes.services,
+      labelKey: "nav.services",
+      key: "services" as const,
+    },
+    { href: routes.mvp, labelKey: "nav.mvp", key: "mvp" as const },
+    {
+      href: routes.projects,
+      labelKey: "nav.projects",
+      key: "projects" as const,
+    },
+    { href: routes.method, labelKey: "nav.method", key: "method" as const },
+    {
+      href: routes.subscription,
+      labelKey: "nav.subscription",
+      key: "subscription" as const,
+    },
+    {
+      href: routes.contacts,
+      labelKey: "nav.contacts",
+      key: "contacts" as const,
+    },
+  ].filter((link) => isVisible(link.key));
   const legalLinks = [
     { href: routes.privacy, labelKey: "footer.privacyPolicy" },
     { href: routes.cookies, labelKey: "footer.cookiePolicy" },
     { href: routes.terms, labelKey: "footer.termsConditions" },
   ];
+  const rotatingTaglines =
+    lang === "it"
+      ? [
+          { text: "Precisione tecnica.", tone: "cyan" },
+          { text: "Strategia chiara.", tone: "white" },
+          { text: "Esecuzione che converte.", tone: "cyan" },
+        ]
+      : [
+          { text: "Technical precision.", tone: "cyan" },
+          { text: "Clear strategy.", tone: "white" },
+          { text: "Execution that converts.", tone: "cyan" },
+        ];
 
   const handleHyperBackToTop = () => {
     if (typeof window === "undefined") return;
 
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+      "(prefers-reduced-motion: reduce)"
     ).matches;
 
     if (!prefersReducedMotion) {
@@ -151,7 +182,10 @@ export function Footer() {
       <div className="container-fluid relative">
         <div className="py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-12">
           <div className="md:col-span-5">
-            <Link to={routes.home} className="inline-flex items-center gap-3 mb-6 group">
+            <Link
+              to={routes.home}
+              className="inline-flex items-center gap-3 mb-6 group"
+            >
               <motion.img
                 src={logoSymbol}
                 alt="Dimensione 4"
@@ -179,18 +213,20 @@ export function Footer() {
             <div className="text-primary font-mono tracking-wide">
               <div className="relative overflow-hidden h-6 md:h-7 w-full">
                 <div className="flex animate-tagline-slider">
-                  <span className="min-w-full text-base md:text-lg whitespace-nowrap">
-                    {lang === "it" ? "Precisione tecnica." : "Technical precision."}
-                  </span>
-                  <span className="min-w-full text-base md:text-lg whitespace-nowrap text-foreground">
-                    {lang === "it"
-                      ? "Trasforma il tuo sito web piatto in uno 4D."
-                      : "Turn your flat website into a 4D one."}
-                  </span>
-                  <span className="min-w-full text-base md:text-lg whitespace-nowrap">
-                    {lang === "it"
-                      ? "Dalla prima impressione alla conversione."
-                      : "From first impression to conversion."}
+                  {rotatingTaglines.map((item, index) => (
+                    <span
+                      key={`${item.text}-${index}`}
+                      className={`min-w-full text-base md:text-lg whitespace-nowrap ${
+                        item.tone === "white"
+                          ? "text-foreground"
+                          : "text-primary"
+                      }`}
+                    >
+                      {item.text}
+                    </span>
+                  ))}
+                  <span className="min-w-full text-base md:text-lg whitespace-nowrap text-primary">
+                    {rotatingTaglines[0].text}
                   </span>
                 </div>
               </div>
@@ -244,7 +280,13 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  to={routes.contacts}
+                  to={`${routes.contacts}#calendly`}
+                  onClick={() =>
+                    trackEvent("book_call_click", {
+                      tool: "calendly",
+                      location: "footer",
+                    })
+                  }
                   className="inline-flex items-center gap-2 text-[15px] text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Phone className="w-4 h-4 text-primary/80" />
@@ -265,17 +307,17 @@ export function Footer() {
         </div>
 
         <div className="py-6 border-t border-[hsl(var(--border))]">
-          <div className="md:hidden mb-4">
+          <div className="md:hidden mb-6 flex justify-center">
             <motion.button
               onClick={handleHyperBackToTop}
-              className="inline-flex items-center gap-2 text-primary hover:text-foreground transition-colors group"
+              className="inline-flex items-center gap-3 text-primary hover:text-foreground transition-colors group rounded-xl border border-[hsl(var(--border))] bg-surface/60 px-4 py-3"
               whileHover={{ y: -1 }}
             >
               <span className="leading-tight">
                 <span className="block text-[13px] font-mono uppercase tracking-wider">
                   TORNA SU
                 </span>
-                <span className="block text-[10px] font-mono uppercase tracking-wider text-primary/75">
+                <span className="block text-[10px] font-mono uppercase tracking-wider text-primary/75 whitespace-nowrap">
                   ALLA VELOCITA DELLA LUCE
                 </span>
               </span>
@@ -296,7 +338,7 @@ export function Footer() {
                   TORNA SU
                 </span>
                 <span className="block text-[10px] font-mono uppercase tracking-wider text-primary/75">
-                  ALLA VELOCITA DELLA LUCE
+                  ALLA VELOCITA' DELLA LUCE
                 </span>
               </span>
               <span className="w-7 h-7 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center">
@@ -304,7 +346,7 @@ export function Footer() {
               </span>
             </motion.button>
 
-            <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-start md:justify-center gap-5 sm:gap-8 md:gap-10 text-left md:text-center">
+            <div className="grid grid-cols-2 md:flex md:flex-wrap justify-start md:justify-center gap-x-5 gap-y-3 sm:gap-8 md:gap-10 text-left md:text-center">
               {legalLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -331,8 +373,8 @@ export function Footer() {
         </div>
 
         <div className="py-6 border-t border-[hsl(var(--border))]">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <div className="text-xs text-muted-foreground text-left">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="text-xs text-muted-foreground text-left md:text-left">
               <p>
                 © {currentYear}{" "}
                 <strong className="font-semibold text-cyan-400">
@@ -347,8 +389,8 @@ export function Footer() {
                 <span className="block md:inline"> - P.IVA 04678930167</span>
               </p>
             </div>
-            <p className="text-[11px] md:text-xs text-primary/80 font-mono tracking-wide uppercase text-left md:text-right">
-              Fueled by caffeine, shipping pixels clean.
+            <p className="text-[10px] md:text-xs text-primary/80 font-mono tracking-wide uppercase text-left md:text-right">
+              Fueled by caffeine, engineered for impact.
             </p>
           </div>
         </div>

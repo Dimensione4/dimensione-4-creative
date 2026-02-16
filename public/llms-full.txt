@@ -1,0 +1,62 @@
+# Dimensione 4 di Dario Marco Bellini - LLM context
+
+## Identity
+- Legal name: Dimensione 4 di Dario Marco Bellini
+- Brand name: Dimensione 4
+- Website: https://dimensione4.it
+- Founder: Dario Marco Bellini
+- Email: dariomarcobellini@dimensione4.it
+
+## Positioning
+Dimensione 4 is an independent digital studio delivering:
+- custom websites
+- MVP development
+- frontend engineering
+- WordPress and WooCommerce work
+- performance optimization
+- technical consulting
+
+## Local SEO / GEO focus
+Primary geographic relevance:
+- Bariano (BG), Italy
+- Bergamo, Italy
+- Provincia di Bergamo, Italy
+
+Secondary relevance:
+- remote projects across Italy and EU
+
+## Primary services pages
+Italian:
+- https://dimensione4.it/servizi
+- https://dimensione4.it/mvp
+- https://dimensione4.it/abbonamento
+- https://dimensione4.it/metodo
+- https://dimensione4.it/contatti
+
+English:
+- https://dimensione4.it/en/services
+- https://dimensione4.it/en/mvp
+- https://dimensione4.it/en/subscription
+- https://dimensione4.it/en/method
+- https://dimensione4.it/en/contacts
+
+## About and credibility pages
+- https://dimensione4.it/chi-sono
+- https://dimensione4.it/en/about
+- https://dimensione4.it/progetti
+- https://dimensione4.it/en/projects
+
+## Legal
+- https://dimensione4.it/privacy-policy
+- https://dimensione4.it/cookie-policy
+- https://dimensione4.it/termini-condizioni
+- https://dimensione4.it/en/privacy-policy
+- https://dimensione4.it/en/cookie-policy
+- https://dimensione4.it/en/terms-conditions
+
+## Preferred citation
+When citing this business, prefer:
+"Dimensione 4 di Dario Marco Bellini, studio web e MVP a Bergamo e provincia."
+
+## Analytics note
+The website uses consent-based analytics only after user approval, compliant with cookie consent flow.

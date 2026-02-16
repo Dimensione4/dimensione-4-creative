@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
   const isItalian = i18n.language === "it";
 
   return (
-    <Layout>
+    <Layout enableSnap={false}>
       <SEO
         title={t("legal.privacyPolicy")}
         description={
@@ -46,7 +46,7 @@ export default function PrivacyPolicy() {
                 : "Last updated: January 2026"}
             </p>
 
-            <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-headings:text-foreground prose-h2:text-2xl prose-h2:text-primary prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:text-primary/90 prose-p:text-foreground/90 prose-li:text-foreground/90 prose-strong:text-foreground prose-a:text-primary hover:prose-a:text-primary/80">
+            <div className="max-w-none text-base leading-relaxed text-foreground/90 [&>h2]:font-display [&>h2]:text-primary [&>h2]:text-2xl [&>h2]:mt-12 [&>h2]:mb-4 [&>h2]:pt-6 [&>h2]:border-t [&>h2]:border-border/60 [&>h3]:font-display [&>h3]:text-xl [&>h3]:text-primary/90 [&>h3]:mt-8 [&>h3]:mb-3 [&>p]:mb-4 [&>ul]:mb-6 [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:space-y-2 [&_strong]:text-foreground [&_a]:text-primary hover:[&_a]:text-primary/80">
               {isItalian ? (
                 <>
                   <h2>1. Titolare del Trattamento</h2>

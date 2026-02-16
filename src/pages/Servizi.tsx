@@ -1,18 +1,22 @@
 ﻿import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { ArrowRight, Gauge, Code2, Palette, Sparkles, Check, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Gauge, Code2, Palette, Sparkles, Check, PhoneCall } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { useTranslation } from "react-i18next";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
+import { trackEvent } from "@/utils/analytics";
 
 export default function Servizi() {
   const { i18n } = useTranslation();
+  const { isVisible } = usePageVisibility();
   const isItalian = i18n.language.startsWith("it");
   const routes = localizedRoutes[isItalian ? "it" : "en"];
   const bookingLink = `${routes.contacts}#calendly`;
+  const canShowProjects = isVisible("projects");
 
   const services = isItalian
     ? [
@@ -127,15 +131,47 @@ export default function Servizi() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button variant="hero" size="xl" asChild>
-                  <Link to={bookingLink}>
+                  <Link
+                    to={bookingLink}
+                    onClick={() =>
+                      trackEvent("book_call_click", {
+                        tool: "calendly",
+                        location: "hero",
+                      })
+                    }
+                  >
                     {isItalian ? "Prenota una call strategica" : "Book a strategy call"}
-                    <ArrowRight className="w-4 h-4" />
+                    <PhoneCall className="w-4 h-4" />
                   </Link>
                 </Button>
                 <Button variant="outline" size="xl" asChild>
-                  <Link to={routes.projects}>
-                    {isItalian ? "Vedi i progetti" : "View projects"}
-                    <ArrowUpRight className="w-4 h-4" />
+                  <Link
+                    to={canShowProjects ? routes.projects : routes.method}
+                    onClick={() =>
+                      trackEvent("cta_click", {
+                        cta_text: canShowProjects
+                          ? isItalian
+                            ? "Vedi i progetti"
+                            : "View projects"
+                          : isItalian
+                          ? "Scopri il metodo"
+                          : "Explore the method",
+                        cta_section: "hero",
+                      })
+                    }
+                  >
+                    {canShowProjects
+                      ? isItalian
+                        ? "Vedi i progetti"
+                        : "View projects"
+                      : isItalian
+                        ? "Scopri il metodo"
+                        : "Explore the method"}
+                    {canShowProjects ? (
+                      <ArrowUpRight className="w-4 h-4" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
                   </Link>
                 </Button>
               </div>
@@ -240,9 +276,17 @@ export default function Servizi() {
               {isItalian ? "Parliamone insieme. Una call veloce per capire le tue esigenze." : "Let's discuss it. A quick call to understand your needs."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={bookingLink}>
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "cta_section",
+                  })
+                }
+              >
                 {isItalian ? "Prenota una call" : "Book a call"}
-                <ArrowUpRight className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>

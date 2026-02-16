@@ -1,9 +1,9 @@
 ﻿import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { trackEvent } from "@/components/GoogleAnalytics";
+import { trackEvent } from "@/utils/analytics";
 
 export function CTASection() {
   const ref = useRef(null);
@@ -32,16 +32,15 @@ export function CTASection() {
               className="cta-glow"
               asChild
               onClick={() =>
-                trackEvent("cta_click", {
-                  cta_name: "footer_cta_primary",
-                  cta_text: "Prenota una call",
+                trackEvent("book_call_click", {
+                  tool: "calendly",
                   location: "cta_section",
                 })
               }
             >
               <Link to="/contatti#calendly">
                 Prenota una call
-                <ArrowRight className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
             <Button
@@ -50,9 +49,8 @@ export function CTASection() {
               asChild
               onClick={() =>
                 trackEvent("cta_click", {
-                  cta_name: "footer_cta_secondary",
                   cta_text: "Scrivi via email",
-                  location: "cta_section",
+                  cta_section: "cta_section",
                 })
               }
             >

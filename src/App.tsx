@@ -14,7 +14,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useHomepageVariant } from "@/hooks/useHomepageVariant";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { detectLangFromPath, localizedRoutes, type RouteKey } from "@/lib/routes/routes";
 import Index from "./pages/Index";
 import IndexV2 from "./pages/IndexV2";
 import Servizi from "./pages/Servizi";
@@ -68,6 +70,24 @@ function HomePageRoute() {
   return variant === "v2" ? <IndexV2 /> : <Index />;
 }
 
+function PageVisibilityGuard({
+  routeKey,
+  children,
+}: {
+  routeKey: RouteKey;
+  children: React.ReactNode;
+}) {
+  const location = useLocation();
+  const { isVisible, loading } = usePageVisibility();
+
+  if (loading || isVisible(routeKey)) {
+    return <>{children}</>;
+  }
+
+  const lang = detectLangFromPath(location.pathname);
+  return <Navigate to={localizedRoutes[lang].home} replace />;
+}
+
 const AppRoutes = () => (
   <BrowserRouter>
     <GoogleAnalytics />
@@ -75,20 +95,20 @@ const AppRoutes = () => (
       <Routes>
         <Route path="/" element={<HomePageRoute />} />
         <Route path="/en" element={<HomePageRoute />} />
-        <Route path="/servizi" element={<Servizi />} />
-        <Route path="/en/services" element={<Servizi />} />
-        <Route path="/mvp" element={<MVP />} />
-        <Route path="/en/mvp" element={<MVP />} />
-        <Route path="/progetti" element={<Progetti />} />
-        <Route path="/en/projects" element={<Progetti />} />
-        <Route path="/metodo" element={<Metodo />} />
-        <Route path="/en/method" element={<Metodo />} />
-        <Route path="/abbonamento" element={<Abbonamento />} />
-        <Route path="/en/subscription" element={<Abbonamento />} />
-        <Route path="/chi-sono" element={<ChiSono />} />
-        <Route path="/en/about" element={<ChiSono />} />
-        <Route path="/contatti" element={<Contatti />} />
-        <Route path="/en/contacts" element={<Contatti />} />
+        <Route path="/servizi" element={<PageVisibilityGuard routeKey="services"><Servizi /></PageVisibilityGuard>} />
+        <Route path="/en/services" element={<PageVisibilityGuard routeKey="services"><Servizi /></PageVisibilityGuard>} />
+        <Route path="/mvp" element={<PageVisibilityGuard routeKey="mvp"><MVP /></PageVisibilityGuard>} />
+        <Route path="/en/mvp" element={<PageVisibilityGuard routeKey="mvp"><MVP /></PageVisibilityGuard>} />
+        <Route path="/progetti" element={<PageVisibilityGuard routeKey="projects"><Progetti /></PageVisibilityGuard>} />
+        <Route path="/en/projects" element={<PageVisibilityGuard routeKey="projects"><Progetti /></PageVisibilityGuard>} />
+        <Route path="/metodo" element={<PageVisibilityGuard routeKey="method"><Metodo /></PageVisibilityGuard>} />
+        <Route path="/en/method" element={<PageVisibilityGuard routeKey="method"><Metodo /></PageVisibilityGuard>} />
+        <Route path="/abbonamento" element={<PageVisibilityGuard routeKey="subscription"><Abbonamento /></PageVisibilityGuard>} />
+        <Route path="/en/subscription" element={<PageVisibilityGuard routeKey="subscription"><Abbonamento /></PageVisibilityGuard>} />
+        <Route path="/chi-sono" element={<PageVisibilityGuard routeKey="about"><ChiSono /></PageVisibilityGuard>} />
+        <Route path="/en/about" element={<PageVisibilityGuard routeKey="about"><ChiSono /></PageVisibilityGuard>} />
+        <Route path="/contatti" element={<PageVisibilityGuard routeKey="contacts"><Contatti /></PageVisibilityGuard>} />
+        <Route path="/en/contacts" element={<PageVisibilityGuard routeKey="contacts"><Contatti /></PageVisibilityGuard>} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/en/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />

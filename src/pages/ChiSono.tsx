@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import {
   ArrowRight,
+  PhoneCall,
   Linkedin,
   Code2,
   Palette,
@@ -14,6 +15,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
 
 type CoreTech = {
   name: string;
@@ -241,18 +243,36 @@ export default function ChiSono() {
               </p>
               <p className="text-body text-muted-foreground mb-8">
                 {isItalian
-                  ? "Unisco strategia, design e sviluppo in un unico flusso. Meno complessita, piu decisioni chiare e prodotti che funzionano nel tempo."
+                  ? "Unisco strategia, design e sviluppo in un unico flusso. Meno complessita, più decisioni chiare e prodotti che funzionano nel tempo."
                   : "I combine strategy, design, and development in one flow. Less complexity, clearer decisions, and products that keep working over time."}
               </p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <Button variant="hero" size="lg" className="h-14 px-8" asChild>
-                  <Link to={routes.contacts}>
+                  <Link
+                    to={routes.contacts}
+                    onClick={() =>
+                      trackEvent("cta_click", {
+                        cta_text: isItalian
+                          ? "Lavoriamo insieme"
+                          : "Let's work together",
+                        cta_section: "about_hero",
+                      })
+                    }
+                  >
                     {isItalian ? "Lavoriamo insieme" : "Let's work together"}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
                 <a
                   href="https://linkedin.com/in/dariobellini"
+                  onClick={() =>
+                    trackEvent("cta_click", {
+                      cta_text: isItalian
+                        ? "Segui i miei aggiornamenti"
+                        : "Follow my updates",
+                      cta_section: "about_hero",
+                    })
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group inline-flex h-14 items-center gap-3 rounded-xl border border-[hsl(var(--border))] bg-surface/70 px-4 hover:border-primary/50 hover:bg-surface transition-colors"
@@ -284,6 +304,18 @@ export default function ChiSono() {
                     <picture>
                       <source
                         media="(max-width: 767px)"
+                        srcSet="/about/dario-portrait-9x16.webp"
+                        type="image/webp"
+                        sizes="(max-width: 767px) 88vw, 420px"
+                      />
+                      <source
+                        media="(min-width: 768px)"
+                        srcSet="/about/dario-portrait-16x9.webp"
+                        type="image/webp"
+                        sizes="(max-width: 1279px) 52vw, 760px"
+                      />
+                      <source
+                        media="(max-width: 767px)"
                         srcSet="/about/dario-portrait-9x16-original.png"
                         sizes="(max-width: 767px) 88vw, 420px"
                       />
@@ -293,12 +325,16 @@ export default function ChiSono() {
                         sizes="(max-width: 1279px) 52vw, 760px"
                       />
                       <img
-                        src="/about/dario-portrait-16x9-original.png"
-                        srcSet="/about/dario-portrait-16x9-original.png"
+                        src="/about/dario-portrait-16x9.webp"
+                        srcSet="/about/dario-portrait-16x9.webp"
                         sizes="(max-width: 767px) 88vw, (max-width: 1279px) 52vw, 760px"
                         alt="Ritratto di Dario Marco Bellini"
                         className="w-full h-auto rounded-2xl object-cover aspect-[9/16] md:aspect-[16/10] transition-transform duration-700 ease-out group-hover:scale-[1.025] group-hover:rotate-[0.35deg]"
-                        loading="lazy"
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
+                        width={1536}
+                        height={1024}
                         onError={() => setPhotoError(true)}
                       />
                     </picture>
@@ -597,9 +633,17 @@ export default function ChiSono() {
                 : "Contact me for a direct chat, with no commitment."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={bookingLink}>
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "cta_section",
+                  })
+                }
+              >
                 {isItalian ? "Prenota una call" : "Book a call"}
-                <ArrowRight className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>

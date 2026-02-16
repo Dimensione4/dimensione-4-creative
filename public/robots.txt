@@ -1,16 +1,44 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/login
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/login
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/login
 
 Sitemap: https://dimensione4.it/sitemap.xml
+# LLM context files:
+# https://dimensione4.it/llms.txt
+# https://dimensione4.it/llms-full.txt

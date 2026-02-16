@@ -10,6 +10,7 @@ import {
   Wrench,
   Calendar,
   Monitor,
+  EyeOff,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
@@ -27,6 +28,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAvailability } from "@/hooks/useAvailability";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useHomepageVariant } from "@/hooks/useHomepageVariant";
+import {
+  usePageVisibility,
+  type ManagedPageKey,
+} from "@/hooks/usePageVisibility";
 import { useToast } from "@/hooks/use-toast";
 import { useBuildInfo } from "@/hooks/useBuildInfo";
 import { format } from "date-fns";
@@ -51,6 +56,11 @@ export default function Admin() {
     loading: homepageLoading,
     updateVariant: updateHomepageVariant,
   } = useHomepageVariant();
+  const {
+    visibility,
+    loading: visibilityLoading,
+    setPageVisibility,
+  } = usePageVisibility();
   const { toast } = useToast();
   const buildInfo = useBuildInfo();
   const [maintenanceTitle, setMaintenanceTitle] = useState("");
@@ -58,6 +68,16 @@ export default function Admin() {
   const [countdownDate, setCountdownDate] = useState<Date | undefined>(
     undefined
   );
+
+  const pageLabels: { key: ManagedPageKey; label: string }[] = [
+    { key: "about", label: "Chi sono" },
+    { key: "services", label: "Servizi" },
+    { key: "mvp", label: "MVP" },
+    { key: "projects", label: "Progetti" },
+    { key: "method", label: "Metodo" },
+    { key: "subscription", label: "Abbonamento" },
+    { key: "contacts", label: "Contatti" },
+  ];
 
   useEffect(() => {
     if (!authLoading) {
@@ -186,7 +206,34 @@ export default function Admin() {
     });
   };
 
-  if (authLoading || availLoading || maintenanceLoading || homepageLoading) {
+  const handlePageVisibilityToggle = async (
+    pageKey: ManagedPageKey,
+    enabled: boolean
+  ) => {
+    const { error } = await setPageVisibility(pageKey, enabled);
+
+    if (error) {
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare la visibilità pagina",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: enabled ? "Pagina visibile" : "Pagina nascosta",
+      description: `${pageLabels.find((p) => p.key === pageKey)?.label ?? pageKey}`,
+    });
+  };
+
+  if (
+    authLoading ||
+    availLoading ||
+    maintenanceLoading ||
+    homepageLoading ||
+    visibilityLoading
+  ) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -508,6 +555,44 @@ export default function Admin() {
                     {homepageVariant === "v2" ? "Homepage V2" : "Homepage V1"}
                   </span>
                 </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.23 }}
+              className="surface-card p-6 rounded-2xl border border-[hsl(var(--border))]"
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <EyeOff className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="font-display text-lg font-semibold">
+                    Visibilità Pagine
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Mostra o nascondi pagine nel sito pubblico
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {pageLabels.map((page) => (
+                  <div
+                    key={page.key}
+                    className="flex items-center justify-between p-3 bg-background rounded-lg border border-[hsl(var(--border))]"
+                  >
+                    <span className="font-medium">{page.label}</span>
+                    <Switch
+                      checked={visibility[page.key]}
+                      onCheckedChange={(checked) =>
+                        handlePageVisibilityToggle(page.key, checked)
+                      }
+                    />
+                  </div>
+                ))}
               </div>
             </motion.div>
 

@@ -7,13 +7,16 @@ import {
   useSpring,
   useScroll,
 } from "framer-motion";
+import { PhoneCall } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { usePageVisibility } from "@/hooks/usePageVisibility";
 import logoSymbol from "@/assets/logo-symbol.png";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
 
 // Magnetic link component
 function MagneticLink({
@@ -92,19 +95,20 @@ export function Header() {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const { scrollToTop } = useScrollToTop();
+  const { isVisible } = usePageVisibility();
   const currentLang = i18n.language.startsWith("en") ? "en" : "it";
   const routes = localizedRoutes[currentLang];
   const bookingLink = `${routes.contacts}#calendly`;
   const navLinks = [
     { href: routes.home, labelKey: "nav.home" },
-    { href: routes.about, labelKey: "nav.about" },
-    { href: routes.services, labelKey: "nav.services" },
-    { href: routes.mvp, labelKey: "nav.mvp" },
-    { href: routes.projects, labelKey: "nav.projects" },
-    { href: routes.method, labelKey: "nav.method" },
-    { href: routes.subscription, labelKey: "nav.subscription" },
-    { href: routes.contacts, labelKey: "nav.contacts" },
-  ];
+    { href: routes.about, labelKey: "nav.about", key: "about" as const },
+    { href: routes.services, labelKey: "nav.services", key: "services" as const },
+    { href: routes.mvp, labelKey: "nav.mvp", key: "mvp" as const },
+    { href: routes.projects, labelKey: "nav.projects", key: "projects" as const },
+    { href: routes.method, labelKey: "nav.method", key: "method" as const },
+    { href: routes.subscription, labelKey: "nav.subscription", key: "subscription" as const },
+    { href: routes.contacts, labelKey: "nav.contacts", key: "contacts" as const },
+  ].filter((link) => !("key" in link) || isVisible(link.key));
 
   // Page scroll progress for the indicator
   const { scrollYProgress } = useScroll();
@@ -118,44 +122,81 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToCalendly = () => {
+    const target = document.getElementById("calendly");
+    if (!target) return;
+
+    const headerOffset = window.innerWidth >= 768 ? 96 : 84;
+    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  };
+
+  const handleBookingLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    trackEvent("book_call_click", {
+      tool: "calendly",
+      location: "header",
+    });
+
+    setIsMenuOpen(false);
+
+    if (location.pathname === routes.contacts) {
+      event.preventDefault();
+      if (window.location.hash !== "#calendly") {
+        window.history.replaceState(null, "", `${routes.contacts}#calendly`);
+      }
+      window.setTimeout(scrollToCalendly, 40);
+    }
+  };
+
   // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
+  // Force-close mobile menu when switching to desktop breakpoints.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1280px)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    if (mediaQuery.matches) {
+      setIsMenuOpen(false);
+    }
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
   // Lock body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.width = "100%";
-      document.body.style.top = `-${window.scrollY}px`;
+      document.documentElement.style.overflow = "hidden";
     } else {
-      const scrollY = document.body.style.top;
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.top = "";
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || "0") * -1);
-      }
+      document.documentElement.style.overflow = "";
     }
 
     return () => {
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.top = "";
+      document.documentElement.style.overflow = "";
     };
   }, [isMenuOpen]);
 
   // Keep subtitle visible when user is back near the top area.
   // A slightly higher threshold avoids "sticky hidden" behavior with snap scrolling.
   const hasScrolled = scrollY > 90;
+  const headerHeight = hasScrolled ? 64 : 80;
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-500 ${
         hasScrolled ? "bg-background/60 backdrop-blur-2xl" : "bg-transparent"
       }`}
     >
@@ -175,7 +216,7 @@ export function Header() {
         > */}
         <motion.div
           className="flex items-center w-full"
-          animate={{ height: hasScrolled ? 64 : 80 }}
+          animate={{ height: headerHeight }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           {/* Left side - Logo */}
@@ -254,16 +295,10 @@ export function Header() {
                   className="group max-[1450px]:px-4"
                   asChild
                 >
-                  <Link to={bookingLink}>
+                  <Link to={bookingLink} onClick={handleBookingLinkClick}>
                     <span className="hidden min-[1400px]:inline">Prenota una call</span>
                     <span className="inline min-[1400px]:hidden">Prenota</span>
-                    <motion.span
-                      className="inline-block ml-2"
-                      whileHover={{ x: 4 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {"->"}
-                    </motion.span>
+                    <PhoneCall className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
               </motion.div>
@@ -271,9 +306,11 @@ export function Header() {
 
             {/* Mobile Hamburger Menu */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[80] touch-manipulation"
               aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
             >
               <div className="w-5 h-4 flex flex-col justify-between">
                 <motion.span
@@ -313,28 +350,33 @@ export function Header() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="xl:hidden fixed inset-0 top-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
+            transition={{ duration: 0.18 }}
+            id="mobile-navigation"
+            className="xl:hidden fixed left-0 right-0 bottom-0 bg-background/95 backdrop-blur-3xl z-[65] overflow-y-auto"
+            style={{ top: headerHeight }}
           >
             <motion.nav
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.1, duration: 0.3 }}
-              className="container-fluid pt-24 pb-12 flex flex-col min-h-full"
+              transition={{ duration: 0.2 }}
+              className="container-fluid py-4 pb-6 flex flex-col min-h-full"
             >
-              <div className="flex-1 flex flex-col justify-center gap-2">
+              <div className="flex flex-col gap-0.5">
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 + index * 0.05 }}
+                    transition={{ delay: index * 0.03 }}
                   >
                     <Link
                       to={link.href}
-                      onClick={scrollToTop}
-                      className={`block py-4 text-3xl font-display font-semibold transition-colors duration-300 ${
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        scrollToTop();
+                      }}
+                      className={`block py-2 text-[clamp(1.45rem,6vw,1.9rem)] font-display font-semibold transition-colors duration-300 ${
                         location.pathname === link.href
                           ? "text-primary"
                           : "text-muted-foreground hover:text-foreground"
@@ -356,7 +398,7 @@ export function Header() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="pt-8 border-t border-[hsl(var(--border))] space-y-6"
+                className="mt-4 pt-5 border-t border-[hsl(var(--border))] space-y-4"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Lingua</span>
@@ -372,9 +414,9 @@ export function Header() {
                   className="w-full text-lg"
                   asChild
                 >
-                  <Link to={bookingLink}>
+                  <Link to={bookingLink} onClick={handleBookingLinkClick}>
                     Prenota una call
-                    <span className="ml-2">{"->"}</span>
+                    <PhoneCall className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
               </motion.div>

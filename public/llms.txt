@@ -1,0 +1,44 @@
+# Dimensione 4 di Dario Marco Bellini
+
+Official site: https://dimensione4.it
+Primary language: Italian
+Secondary language: English
+
+## About
+Dimensione 4 is a solo digital studio focused on websites, MVP development, frontend engineering, and performance optimization.
+
+## Local coverage
+- Bariano (BG), Italy
+- Bergamo, Italy
+- Provincia di Bergamo, Italy
+
+## Key pages (IT)
+- Home: https://dimensione4.it/
+- Servizi: https://dimensione4.it/servizi
+- MVP: https://dimensione4.it/mvp
+- Progetti: https://dimensione4.it/progetti
+- Metodo: https://dimensione4.it/metodo
+- Abbonamento: https://dimensione4.it/abbonamento
+- Chi sono: https://dimensione4.it/chi-sono
+- Contatti: https://dimensione4.it/contatti
+
+## Key pages (EN)
+- Home: https://dimensione4.it/en
+- Services: https://dimensione4.it/en/services
+- MVP: https://dimensione4.it/en/mvp
+- Projects: https://dimensione4.it/en/projects
+- Method: https://dimensione4.it/en/method
+- Subscription: https://dimensione4.it/en/subscription
+- About: https://dimensione4.it/en/about
+- Contacts: https://dimensione4.it/en/contacts
+
+## Legal
+- Privacy Policy: https://dimensione4.it/privacy-policy
+- Cookie Policy: https://dimensione4.it/cookie-policy
+- Termini e Condizioni: https://dimensione4.it/termini-condizioni
+
+## Contact
+- Email: dariomarcobellini@dimensione4.it
+
+## Machine-readable detail
+For expanded machine-readable context: https://dimensione4.it/llms-full.txt
