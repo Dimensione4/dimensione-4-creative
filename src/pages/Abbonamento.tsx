@@ -1,13 +1,15 @@
 ﻿import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
-  ArrowRight,
   Check,
   X,
   RefreshCcw,
   Code2,
   FileText,
   TestTube,
+  PhoneCall,
+  MessageSquare,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -15,37 +17,126 @@ import { ProcessDemo } from "@/components/abbonamento/ProcessDemo";
 import { SEO } from "@/components/SEO";
 import { useTranslation } from "react-i18next";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
+
+type PlanKey = "monthly" | "weekly" | "consulting";
 
 export default function Abbonamento() {
   const { i18n } = useTranslation();
   const isItalian = i18n.language.startsWith("it");
   const routes = localizedRoutes[isItalian ? "it" : "en"];
+  const bookingLink = `${routes.contacts}#calendly`;
+  const [selectedPlan, setSelectedPlan] = useState<PlanKey>("monthly");
+
+  const plans = isItalian
+    ? {
+        monthly: {
+          label: "Mensile",
+          price: "€ 2.800",
+          unit: "/ mese",
+          note: "Piano continuativo per evolvere prodotto e performance.",
+          cta: "Prenota una call",
+          includes: [
+            "1 task attivo per volta (coda illimitata)",
+            "Sviluppo full-stack su priorità condivise",
+            "Revisioni sulla richiesta originale",
+          ],
+        },
+        weekly: {
+          label: "Settimanale",
+          price: "€ 800",
+          unit: "/ settimana",
+          note: "Sprint mirato per avanzare rapidamente su un obiettivo.",
+          cta: "Prenota una call",
+          includes: [
+            "Sprint tecnico ad alta priorità",
+            "Consegna rapida su scope definito",
+            "Supporto async durante la settimana",
+          ],
+        },
+        consulting: {
+          label: "Consulenza",
+          price: "€ 100",
+          unit: "/ ora",
+          note: "Assistenza tecnica e consulenza strategica operativa.",
+          cta: "Prenota consulenza",
+          includes: [
+            "Analisi tecnica e piano operativo",
+            "Revisione architettura e codice",
+            "Call 1:1 con prossimi step concreti",
+          ],
+        },
+      }
+    : {
+        monthly: {
+          label: "Monthly",
+          price: "€ 2,800",
+          unit: "/ month",
+          note: "Continuous plan to improve product and performance.",
+          cta: "Book a call",
+          includes: [
+            "1 active task at a time (unlimited queue)",
+            "Full-stack development on shared priorities",
+            "Revisions on the original request",
+          ],
+        },
+        weekly: {
+          label: "Weekly",
+          price: "€ 800",
+          unit: "/ week",
+          note: "Focused sprint to move quickly on one goal.",
+          cta: "Book a call",
+          includes: [
+            "High-priority technical sprint",
+            "Fast delivery on a defined scope",
+            "Async support during the week",
+          ],
+        },
+        consulting: {
+          label: "Consulting",
+          price: "€ 100",
+          unit: "/ hour",
+          note: "Technical assistance and strategic consulting.",
+          cta: "Book consulting",
+          includes: [
+            "Technical analysis and action plan",
+            "Architecture and code review",
+            "1:1 call with concrete next steps",
+          ],
+        },
+      };
+
+  const activePlan = plans[selectedPlan];
 
   const rules = isItalian
     ? [
         {
           icon: RefreshCcw,
           title: "1 task attivo per volta",
-          descriptionTop: "Lavoro su una richiesta alla volta, con focus totale.",
-          descriptionBottom: "La coda è illimitata: aggiungi quante richieste vuoi.",
+          descriptionTop:
+            "Lavoro su una richiesta alla volta, con focus totale.",
+          descriptionBottom:
+            "La coda e illimitata: puoi aggiungere nuove richieste in qualsiasi momento.",
         },
         {
           icon: Code2,
-          title: "Comunicazione async",
-          descriptionTop: "Niente call obbligatorie, niente Slack urgente.",
-          descriptionBottom: "Aggiornamenti scritti, documentati, entro 24h.",
+          title: "Comunicazione asincrona",
+          descriptionTop: "Niente call obbligatorie o passaggi superflui.",
+          descriptionBottom:
+            "Aggiornamenti scritti, tracciabili, con risposte rapide.",
         },
         {
           icon: FileText,
-          title: "Consegna completa",
-          descriptionTop: "Ogni task viene consegnato PR-ready con test e guida deploy.",
-          descriptionBottom: "Niente work-in-progress indefinito.",
+          title: "Consegna pronta",
+          descriptionTop: "Ogni task arriva pronto per rilascio e utilizzo.",
+          descriptionBottom: "Documentazione operativa inclusa quando serve.",
         },
         {
           icon: TestTube,
-          title: "Revisioni illimitate",
-          descriptionTop: "Finché la richiesta originale non è perfetta.",
-          descriptionBottom: "Entro 14-30 giorni dalla consegna.",
+          title: "Revisioni sulla richiesta",
+          descriptionTop:
+            "Rifiniamo finche l'obiettivo definito non e centrato.",
+          descriptionBottom: "Niente consegne lasciate a meta.",
         },
       ]
     : [
@@ -53,90 +144,84 @@ export default function Abbonamento() {
           icon: RefreshCcw,
           title: "1 active task at a time",
           descriptionTop: "I work on one request at a time with full focus.",
-          descriptionBottom: "The queue is unlimited: add as many requests as you want.",
+          descriptionBottom:
+            "Queue is unlimited: you can add requests anytime.",
         },
         {
           icon: Code2,
-          title: "Async communication",
-          descriptionTop: "No mandatory calls, no urgent Slack.",
-          descriptionBottom: "Written and documented updates within 24h.",
+          title: "Asynchronous communication",
+          descriptionTop: "No mandatory calls or unnecessary layers.",
+          descriptionBottom: "Written, traceable updates with fast replies.",
         },
         {
           icon: FileText,
-          title: "Complete delivery",
-          descriptionTop: "Each task is delivered PR-ready with tests and deploy notes.",
-          descriptionBottom: "No endless work-in-progress.",
+          title: "Ready-to-ship delivery",
+          descriptionTop: "Each task is delivered ready to release and use.",
+          descriptionBottom: "Operational documentation included when needed.",
         },
         {
           icon: TestTube,
-          title: "Unlimited revisions",
-          descriptionTop: "Until the original request is exactly right.",
-          descriptionBottom: "Within 14-30 days after delivery.",
+          title: "Request-focused revisions",
+          descriptionTop: "We refine until the defined goal is met.",
+          descriptionBottom: "No half-finished delivery.",
         },
       ];
 
   const included = isItalian
     ? [
         "Richieste illimitate (1 attiva per volta)",
-        "Revisioni illimitate per richiesta",
-        "Comunicazione async prioritaria",
-        "Consegna PR-ready con test",
-        "Documentazione inclusa",
-        "Bug fixing garantito",
+        "Revisioni sulla richiesta originale",
+        "Comunicazione prioritaria",
         "Task frontend e backend applicativo",
-        "Refactoring React/Next.js/TypeScript",
+        "Bug fixing e miglioramenti continui",
+        "Documentazione essenziale",
       ]
     : [
         "Unlimited requests (1 active at a time)",
-        "Unlimited revisions per request",
-        "Priority async communication",
-        "PR-ready delivery with tests",
-        "Documentation included",
-        "Guaranteed bug fixing",
+        "Revisions on the original request",
+        "Priority communication",
         "Frontend and app-backend tasks",
-        "React/Next.js/TypeScript refactoring",
+        "Bug fixing and continuous improvements",
+        "Essential documentation",
       ];
 
   const excluded = isItalian
     ? [
-        "Progetti epici indefiniti",
-        "Redesign completi da zero",
-        "Operatività CMS (WordPress/WooCommerce)",
-        "Supporto editoriale e contenuti",
-        "Backend enterprise fuori scope concordato",
-        "Call giornaliere obbligatorie",
-        "Lavoro senza scope definito",
+        "Gestione contenuti CMS redazionale",
+        "Redesign completi senza priorità",
+        "Progetti enterprise fuori perimetro concordato",
+        "Supporto operativo 24/7",
       ]
     : [
-        "Undefined epic projects",
-        "Full redesigns from scratch",
-        "CMS operations (WordPress/WooCommerce)",
-        "Editorial and content support",
-        "Enterprise backend outside agreed scope",
-        "Mandatory daily calls",
-        "Work without defined scope",
+        "Editorial CMS content operations",
+        "Full redesigns without prioritization",
+        "Enterprise projects outside agreed scope",
+        "24/7 operational support",
       ];
 
   const examples = isItalian
     ? [
-        { title: "Fix performance mobile", type: "Performance" },
-        { title: "Risoluzione bug frontend", type: "Frontend" },
-        { title: "Bug fixing API", type: "Backend" },
-        { title: "Refactor componenti React", type: "Code Quality" },
-        { title: "Integrazione servizi esterni", type: "Integration" },
-        { title: "Implementazione design system", type: "Frontend" },
-        { title: "Ottimizzazione Core Web Vitals", type: "Performance" },
-        { title: "Automazioni e workflow", type: "Automation" },
+        {
+          title: "Riduzione tempi di caricamento homepage",
+          type: "Performance",
+        },
+        { title: "Refactoring flusso checkout e form", type: "Frontend" },
+        { title: "Integrazione Stripe e webhook", type: "Backend" },
+        { title: "Dashboard KPI con Supabase", type: "Data" },
+        { title: "Setup logging errori e alert", type: "Affidabilita" },
+        { title: "Migliorie SEO tecnico su pagine core", type: "SEO tecnico" },
+        { title: "Ottimizzazione query PostgreSQL", type: "Database" },
+        { title: "Hardening base autenticazione API", type: "Sicurezza" },
       ]
     : [
-        { title: "Mobile performance fix", type: "Performance" },
-        { title: "Frontend bug resolution", type: "Frontend" },
-        { title: "API bug fixing", type: "Backend" },
-        { title: "React components refactor", type: "Code Quality" },
-        { title: "External services integration", type: "Integration" },
-        { title: "Design system implementation", type: "Frontend" },
-        { title: "Core Web Vitals optimization", type: "Performance" },
-        { title: "Automation and workflows", type: "Automation" },
+        { title: "Homepage loading time reduction", type: "Performance" },
+        { title: "Checkout and form flow refactor", type: "Frontend" },
+        { title: "Stripe and webhook integration", type: "Backend" },
+        { title: "KPI dashboard with Supabase", type: "Data" },
+        { title: "Error logging and alerts setup", type: "Reliability" },
+        { title: "Core technical SEO improvements", type: "Technical SEO" },
+        { title: "PostgreSQL query optimization", type: "Database" },
+        { title: "API auth baseline hardening", type: "Security" },
       ];
 
   return (
@@ -145,8 +230,8 @@ export default function Abbonamento() {
         title={isItalian ? "Abbonamento" : "Subscription"}
         description={
           isItalian
-            ? "Developer in abbonamento: richieste illimitate, comunicazione async, consegna PR-ready."
-            : "Subscription developer: unlimited requests, async communication, PR-ready delivery."
+            ? "Developer full-stack in abbonamento: pricing chiaro, execution rapida, miglioramento continuo."
+            : "Subscription full-stack developer: clear pricing, fast execution, continuous improvement."
         }
         canonical={routes.subscription}
       />
@@ -163,19 +248,160 @@ export default function Abbonamento() {
             className="max-w-3xl"
           >
             <span className="font-mono text-label text-primary mb-4 block">
-              {isItalian ? "Developer in abbonamento" : "Subscription developer"}
+              {isItalian
+                ? "Full-stack in abbonamento"
+                : "Subscription full-stack developer"}
             </span>
             <h1 className="font-display text-hero-mobile md:text-[3.5rem] font-bold mb-6">
               {isItalian
-                ? "Non è un retainer. È un sistema di miglioramento continuo."
-                : "Not a retainer. A continuous improvement system."}
+                ? "Il tuo full-stack developer che fa crescere il tuo prodotto"
+                : "Your developer of trust, growing your product."}
             </h1>
             <p className="text-body-lg text-muted-foreground">
               {isItalian
-                ? "Accesso diretto a un developer senior solo per codice: frontend, backend applicativo, integrazioni, performance."
-                : "Direct access to a senior developer for code only: frontend, app backend, integrations, performance."}
+                ? "5 anni di esperienza. Accesso diretto su codice, performance, integrazioni e crescita continua del prodotto."
+                : "5 years of experience. Direct access for code, performance, integrations, and continuous product improvement."}
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-surface/30">
+        <div className="container-wide">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <h2 className="font-display text-h2 font-bold mb-3">
+              {isItalian
+                ? "Prezzo fisso senza sorprese"
+                : "Fixed pricing, no surprises"}
+            </h2>
+            <p className="text-body-lg text-muted-foreground">
+              {isItalian
+                ? "Mensile, settimanale o consulenza: scegli la formula giusta per il tuo momento."
+                : "Monthly, weekly, or consulting: pick the format for your current stage."}
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-6">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="surface-card p-6 md:p-8"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
+                <span className="h-2 w-2 rounded-full bg-primary" />
+                {isItalian
+                  ? "Disponibile per nuovi task"
+                  : "Available for new tasks"}
+              </span>
+
+              <div className="mt-6 space-y-3 text-sm text-muted-foreground">
+                <p>
+                  {isItalian
+                    ? "Lavori con me direttamente: full-stack developer con approccio pratico e misurabile."
+                    : "You work directly with me: full-stack developer with a practical, measurable approach."}
+                </p>
+                <p>
+                  {isItalian
+                    ? "Niente passaggi intermedi, solo priorità chiare e consegne concrete."
+                    : "No extra layers, only clear priorities and concrete delivery."}
+                </p>
+              </div>
+
+              <div className="mt-6 rounded-xl border border-[hsl(var(--border))] bg-surface-hover/40 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center shrink-0">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {isItalian
+                      ? "Hai dubbi sul modello in abbonamento? Facciamo una call e valutiamo subito se e il fit giusto."
+                      : "Not sure about the subscription model? Let's do a call and quickly validate the fit."}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="surface-card p-6 md:p-8"
+            >
+              <h3 className="font-display text-2xl font-semibold mb-5">
+                {isItalian ? "Piani" : "Plans"}
+              </h3>
+
+              <div className="mb-6 grid grid-cols-3 gap-2 rounded-2xl border border-[hsl(var(--border))] bg-surface-hover/50 p-1">
+                {(["monthly", "weekly", "consulting"] as const).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSelectedPlan(key)}
+                    className={`rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
+                      selectedPlan === key
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {plans[key].label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-end gap-2 mb-2">
+                <span className="font-display text-5xl md:text-6xl font-bold leading-none">
+                  {activePlan.price}
+                </span>
+                <span className="text-2xl md:text-3xl font-semibold text-primary leading-none mb-1">
+                  {activePlan.unit}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-6">
+                {activePlan.note}
+              </p>
+
+              <Button variant="hero" size="lg" className="mb-6" asChild>
+                <Link
+                  to={bookingLink}
+                  onClick={() =>
+                    trackEvent("book_call_click", {
+                      tool: "calendly",
+                      location: "subscription_pricing",
+                    })
+                  }
+                >
+                  {activePlan.cta}
+                  <PhoneCall className="w-4 h-4" />
+                </Link>
+              </Button>
+
+              <div className="space-y-3">
+                {activePlan.includes.map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-primary" />
+                    </div>
+                    <span className="text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            {isItalian
+              ? "Puoi mettere in pausa o interrompere l'abbonamento al rinnovo successivo."
+              : "You can pause or stop the subscription at the next renewal."}
+          </p>
         </div>
       </section>
 
@@ -192,7 +418,9 @@ export default function Abbonamento() {
               {isItalian ? "Come funziona" : "How it works"}
             </h2>
             <p className="text-body-lg text-muted-foreground max-w-xl">
-              {isItalian ? "Regole semplici, risultati prevedibili." : "Simple rules, predictable results."}
+              {isItalian
+                ? "Regole semplici, risultati prevedibili."
+                : "Simple rules, predictable results."}
             </p>
           </motion.div>
 
@@ -210,7 +438,9 @@ export default function Abbonamento() {
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <rule.icon className="w-5 h-5 text-primary" />
                   </div>
-                  <h3 className="font-display text-gradient text-lg font-semibold">{rule.title}</h3>
+                  <h3 className="font-display text-gradient text-lg font-semibold">
+                    {rule.title}
+                  </h3>
                 </div>
                 <p className="text-body text-muted-foreground">
                   {rule.descriptionTop}
@@ -268,13 +498,20 @@ export default function Abbonamento() {
                     <div className="w-5 h-5 rounded-full bg-destructive/20 flex items-center justify-center">
                       <X className="w-3 h-3 text-destructive" />
                     </div>
-                    <span className="text-sm text-muted-foreground">{item}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {item}
+                    </span>
                   </li>
                 ))}
               </ul>
               <p className="mt-6 text-xs text-muted-foreground">
-                {isItalian ? "Per progetti complessi, considera il servizio" : "For complex projects, consider the"}{" "}
-                <Link to={routes.mvp} className="underline hover:text-primary transition-colors">
+                {isItalian
+                  ? "Per progetti complessi, valuta il servizio"
+                  : "For complex projects, consider"}{" "}
+                <Link
+                  to={routes.mvp}
+                  className="underline hover:text-primary transition-colors"
+                >
                   MVP Custom
                 </Link>
                 .
@@ -294,10 +531,12 @@ export default function Abbonamento() {
             className="text-center mb-12"
           >
             <h2 className="font-display text-h2 font-bold mb-4">
-              {isItalian ? "Esempi di outcome" : "Example outcomes"}
+              {isItalian ? "Esempi di task reali" : "Real task examples"}
             </h2>
             <p className="text-body-lg text-muted-foreground">
-              {isItalian ? "Task tipici che puoi richiedere." : "Typical tasks you can request."}
+              {isItalian
+                ? "Interventi concreti con impatto misurabile."
+                : "Concrete interventions with measurable impact."}
             </p>
           </motion.div>
 
@@ -311,7 +550,9 @@ export default function Abbonamento() {
                 transition={{ duration: 0.3, delay: 0.05 * index }}
                 className="surface-card p-5"
               >
-                <span className="font-mono text-xs text-primary mb-2 block">{example.type}</span>
+                <span className="font-mono text-xs text-primary mb-2 block">
+                  {example.type}
+                </span>
                 <p className="text-sm font-medium">{example.title}</p>
               </motion.div>
             ))}
@@ -329,32 +570,82 @@ export default function Abbonamento() {
             className="surface-card p-8 md:p-10"
           >
             <h2 className="font-display text-2xl md:text-h3 font-bold mb-6">
-              {isItalian ? "Termini servizio abbonamento" : "Subscription terms"}
+              {isItalian
+                ? "Termini servizio abbonamento"
+                : "Subscription terms"}
             </h2>
             <div className="grid md:grid-cols-2 gap-5 text-sm text-muted-foreground">
               {isItalian ? (
                 <>
-                  <p><span className="text-primary">Modalità operativa:</span> async-first. Ogni richiesta ha briefing, stima e aggiornamenti scritti.</p>
-                  <p><span className="text-primary">Capacità:</span> una richiesta attiva per volta. Coda illimitata e priorità definita insieme.</p>
-                  <p><span className="text-primary">Revisioni:</span> illimitate sulla richiesta originale, entro la finestra concordata dopo consegna.</p>
-                  <p><span className="text-primary">Perimetro:</span> solo codice. Non include gestione contenuti CMS o attività redazionali.</p>
-                  <p><span className="text-primary">Pagamenti e rinnovo:</span> canone mensile anticipato. Stop o pausa possibili al rinnovo successivo.</p>
-                  <p><span className="text-primary">Ownership:</span> codice e asset custom restano al cliente al saldo delle competenze.</p>
+                  <p>
+                    <span className="text-primary">Modalità operativa:</span>{" "}
+                    asincrona. Ogni richiesta ha briefing, stima e aggiornamenti
+                    scritti.
+                  </p>
+                  <p>
+                    <span className="text-primary">Capacità:</span> una
+                    richiesta attiva per volta. Coda illimitata e priorità
+                    condivisa.
+                  </p>
+                  <p>
+                    <span className="text-primary">Revisioni:</span> sulla
+                    richiesta originale, entro la finestra concordata dopo
+                    consegna.
+                  </p>
+                  <p>
+                    <span className="text-primary">Perimetro:</span> solo
+                    codice. Non include gestione contenuti CMS o attività
+                    redazionali.
+                  </p>
+                  <p>
+                    <span className="text-primary">Pagamenti e rinnovo:</span>{" "}
+                    canone anticipato. Stop o pausa possibili al rinnovo
+                    successivo.
+                  </p>
+                  <p>
+                    <span className="text-primary">Ownership:</span> codice e
+                    asset custom restano al cliente al saldo delle competenze.
+                  </p>
                 </>
               ) : (
                 <>
-                  <p><span className="text-primary">Operating mode:</span> async-first. Every request includes briefing, estimate, and written updates.</p>
-                  <p><span className="text-primary">Capacity:</span> one active request at a time. Unlimited queue and shared prioritization.</p>
-                  <p><span className="text-primary">Revisions:</span> unlimited on the original request, within the agreed delivery window.</p>
-                  <p><span className="text-primary">Scope:</span> code only. No CMS content management or editorial activities.</p>
-                  <p><span className="text-primary">Payments and renewal:</span> monthly fee paid in advance. Stop or pause at next renewal.</p>
-                  <p><span className="text-primary">Ownership:</span> custom code and assets remain the client property after balance payment.</p>
+                  <p>
+                    <span className="text-primary">Operating mode:</span>{" "}
+                    asynchronous. Every request includes briefing, estimate, and
+                    written updates.
+                  </p>
+                  <p>
+                    <span className="text-primary">Capacity:</span> one active
+                    request at a time. Unlimited queue and shared
+                    prioritization.
+                  </p>
+                  <p>
+                    <span className="text-primary">Revisions:</span> on the
+                    original request, within the agreed delivery window.
+                  </p>
+                  <p>
+                    <span className="text-primary">Scope:</span> code only. No
+                    CMS content management or editorial activities.
+                  </p>
+                  <p>
+                    <span className="text-primary">Payments and renewal:</span>{" "}
+                    fee paid in advance. Stop or pause at next renewal.
+                  </p>
+                  <p>
+                    <span className="text-primary">Ownership:</span> custom code
+                    and assets remain client property after final payment.
+                  </p>
                 </>
               )}
             </div>
             <p className="mt-6 text-xs text-muted-foreground">
-              {isItalian ? "I dettagli legali completi restano nei" : "Full legal details are available in the"}{" "}
-              <Link to={routes.terms} className="underline hover:text-primary transition-colors">
+              {isItalian
+                ? "I dettagli legali completi restano nei"
+                : "Full legal details are available in"}{" "}
+              <Link
+                to={routes.terms}
+                className="underline hover:text-primary transition-colors"
+              >
                 {isItalian ? "Termini e Condizioni" : "Terms & Conditions"}
               </Link>
               .
@@ -373,17 +664,25 @@ export default function Abbonamento() {
             className="surface-card p-10 md:p-14 text-center"
           >
             <h2 className="font-display text-h2 font-bold mb-4">
-              {isItalian ? "Interessato all'abbonamento?" : "Interested in subscription?"}
+              {isItalian ? "Vuoi partire ora?" : "Ready to start now?"}
             </h2>
             <p className="text-body-lg text-muted-foreground mb-8 max-w-lg mx-auto">
               {isItalian
-                ? "Parliamone. Ti spiego come funziona e vediamo se fa per te."
-                : "Let's talk. I'll explain how it works and if it's the right fit for you."}
+                ? "Prenota una call: allineiamo priorità, tempi e prossime consegne."
+                : "Book a call: align priorities, timing, and next deliveries."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={routes.contacts}>
-                {isItalian ? "Richiedi disponibilità" : "Request availability"}
-                <ArrowRight className="w-4 h-4" />
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "cta_section",
+                  })
+                }
+              >
+                {isItalian ? "Prenota una call" : "Book a call"}
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>

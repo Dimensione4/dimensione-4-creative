@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { trackEvent } from "@/utils/analytics";
 
 // WhatsApp icon
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -50,6 +51,12 @@ export function WhatsAppWidget({ phoneNumber, message }: WhatsAppWidgetProps) {
             </p>
             <motion.a
               href={whatsappUrl}
+              onClick={() =>
+                trackEvent("contact_whatsapp", {
+                  method: "whatsapp",
+                  location: "floating_widget",
+                })
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white rounded-full text-sm font-medium hover:bg-[#20BD5A] transition-colors"

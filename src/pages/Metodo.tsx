@@ -8,12 +8,14 @@ import {
   MessageSquare,
   Clock,
   User,
+  PhoneCall,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { useTranslation } from "react-i18next";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
 
 export default function Metodo() {
   const { i18n } = useTranslation();
@@ -27,7 +29,7 @@ export default function Metodo() {
           icon: Map,
           step: "01",
           title: "Mappa",
-          subtitle: "Discovery & Scope",
+          subtitle: "Analisi e perimetro",
           description:
             "Ogni progetto inizia con una comprensione profonda del contesto. Non scrivo codice prima di aver capito dove vuoi arrivare.",
           activities: [
@@ -44,7 +46,7 @@ export default function Metodo() {
           icon: Hammer,
           step: "02",
           title: "Costruisci",
-          subtitle: "Development & Testing",
+          subtitle: "Sviluppo e test",
           description:
             "Sviluppo iterativo con visibilità continua. Ogni consegna è testata, documentata e pronta per il deploy.",
           activities: [
@@ -61,7 +63,7 @@ export default function Metodo() {
           icon: TrendingUp,
           step: "03",
           title: "Evolvi",
-          subtitle: "Iteration & Growth",
+          subtitle: "Iterazione e crescita",
           description:
             "Il lancio è l'inizio, non la fine. I progetti migliori crescono nel tempo con iterazioni basate sui dati.",
           activities: [
@@ -189,14 +191,31 @@ export default function Metodo() {
         <div className="absolute bottom-0 right-0 w-[320px] h-[320px] bg-accent/8 rounded-full blur-3xl" />
 
         <div className="container-wide relative">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-4xl mx-auto text-left md:text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-4xl mx-auto text-center">
             <span className="font-mono text-label text-primary mb-4 block">{isItalian ? "Metodo MCE" : "MCE Method"}</span>
             <h1 className="font-display text-hero-mobile md:text-[3.5rem] font-bold mb-6">
-              <span className="text-primary">{isItalian ? "Mappa" : "Map"}</span> &rarr; {isItalian ? "Costruisci" : "Build"} &rarr; <span className="text-primary">{isItalian ? "Evolvi" : "Evolve"}</span>
+              <span className="flex flex-col gap-1 md:hidden text-center">
+                <span>
+                  <span className="text-primary">{isItalian ? "M" : "M"}</span>{isItalian ? "appa" : "ap"}
+                </span>
+                <span className="text-primary">&darr;</span>
+                <span>
+                  <span className="text-primary">{isItalian ? "C" : "B"}</span>{isItalian ? "ostruisci" : "uild"}
+                </span>
+                <span className="text-primary">&darr;</span>
+                <span>
+                  <span className="text-primary">{isItalian ? "E" : "E"}</span>{isItalian ? "volvi" : "volve"}
+                </span>
+              </span>
+              <span className="hidden md:inline">
+                <span className="text-primary">{isItalian ? "Mappa" : "Map"}</span> &rarr;{" "}
+                {isItalian ? "Costruisci" : "Build"} &rarr;{" "}
+                <span className="text-primary">{isItalian ? "Evolvi" : "Evolve"}</span>
+              </span>
             </h1>
             <p className="text-body-lg text-muted-foreground max-w-2xl md:mx-auto">
               {isItalian
-                ? "Un processo semplice, async-first, con accesso diretto e un unico responsabile."
+                ? "Un processo semplice, asincrono, con accesso diretto e un unico responsabile."
                 : "A simple async-first process, with direct access and one accountable owner."}
             </p>
           </motion.div>
@@ -208,13 +227,17 @@ export default function Metodo() {
           <div className="space-y-8">
             {steps.map((step, index) => (
               <motion.div key={step.title} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.5, delay: 0.1 * index }} className={`surface-card p-8 md:p-10 relative ${index === steps.length - 1 ? "mb-4 md:mb-8" : ""}`} data-snap-anchor>
-                <div className="absolute -left-3 md:left-5 top-9 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow">
-                  <span className="font-mono text-sm text-primary-foreground font-bold">{step.step}</span>
-                </div>
-
-                <div className="grid lg:grid-cols-3 gap-8 ml-6 md:ml-8">
+                <div className="grid lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2">
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shrink-0">
+                        <step.icon className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                      <span className="font-mono text-3xl leading-none text-primary/30 font-bold shrink-0">
+                        {step.step}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3 mb-4 flex-wrap">
                       <h2 className="font-display text-2xl font-bold">{step.title}</h2>
                       <span className="text-sm text-muted-foreground">- {step.subtitle}</span>
                     </div>
@@ -239,7 +262,9 @@ export default function Metodo() {
                       <p className="text-lg font-display font-semibold text-primary">{step.duration}</p>
                     </div>
                     <div>
-                      <h3 className="font-display font-semibold text-sm mb-2 text-muted-foreground uppercase tracking-wider">Output</h3>
+                      <h3 className="font-display font-semibold text-sm mb-2 text-muted-foreground uppercase tracking-wider">
+                        {isItalian ? "Risultato" : "Output"}
+                      </h3>
                       <p className="text-sm text-muted-foreground">{step.output}</p>
                     </div>
                   </div>
@@ -281,9 +306,17 @@ export default function Metodo() {
               {isItalian ? "Parliamone. 30 minuti per capire se possiamo lavorare insieme." : "Let's talk. 30 minutes to understand if we can work together."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={bookingLink}>
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "cta_section",
+                  })
+                }
+              >
                 {isItalian ? "Prenota una call" : "Book a call"}
-                <ArrowRight className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>

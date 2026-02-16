@@ -64,6 +64,16 @@ export function GoogleAnalytics() {
     };
   }, [hasConsent, isLoaded]);
 
+  useEffect(() => {
+    if (import.meta.env.DEV && hasConsent && !GA_MEASUREMENT_ID) {
+      // Keep this visible only in dev to avoid silent misconfiguration.
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[analytics] Missing VITE_GA_MEASUREMENT_ID. Pageviews are not being tracked.",
+      );
+    }
+  }, [hasConsent]);
+
   // Track page views
   useEffect(() => {
     if (!isLoaded || !hasConsent || !GA_MEASUREMENT_ID) return;

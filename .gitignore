@@ -29,6 +29,7 @@ dist-ssr
 
 # Docs
 .qoder
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

@@ -5,6 +5,7 @@ import { FluidBackground } from "@/components/maintenance/FluidBackground";
 import { CountdownTimer } from "@/components/maintenance/CountdownTimer";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import logoSymbol from "@/assets/logo-symbol.png";
+import { trackEvent } from "@/utils/analytics";
 
 const WHATSAPP_NUMBER = "+393334404903";
 const WHATSAPP_MESSAGE =
@@ -14,6 +15,11 @@ export default function Maintenance() {
   const { settings, loading } = useMaintenance();
 
   const handleWhatsAppClick = () => {
+    trackEvent("contact_whatsapp", {
+      method: "whatsapp",
+      location: "maintenance",
+    });
+
     const url = `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };

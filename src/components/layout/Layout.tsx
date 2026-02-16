@@ -10,14 +10,23 @@ import { useSectionSnapScroll } from "@/hooks/useSectionSnapScroll";
 interface LayoutProps {
   children: ReactNode;
   showFooter?: boolean;
+  enableSnap?: boolean;
 }
 
-export function Layout({ children, showFooter = true }: LayoutProps) {
+export function Layout({
+  children,
+  showFooter = true,
+  enableSnap = true,
+}: LayoutProps) {
   const location = useLocation();
   const [snapSectionIds, setSnapSectionIds] = useState<string[]>([]);
+  const [isDesktopSnap, setIsDesktopSnap] = useState(
+    () => window.innerWidth >= 1024
+  );
 
   useSectionSnapScroll(snapSectionIds, {
-    enabled: snapSectionIds.length > 1,
+    enabled: enableSnap && isDesktopSnap && snapSectionIds.length > 1,
+    mobileBreakpoint: 1024,
   });
 
   useEffect(() => {
@@ -26,17 +35,39 @@ export function Layout({ children, showFooter = true }: LayoutProps) {
     }
     window.scrollTo(0, 0);
 
-    document.documentElement.classList.add("has-site-snap");
-    document.body.classList.add("has-site-snap");
-
     return () => {
       if ("scrollRestoration" in window.history) {
         window.history.scrollRestoration = "auto";
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setIsDesktopSnap(mediaQuery.matches);
+    onChange();
+    mediaQuery.addEventListener("change", onChange);
+
+    return () => mediaQuery.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (enableSnap && isDesktopSnap) {
+      document.documentElement.classList.add("has-site-snap");
+      document.body.classList.add("has-site-snap");
+      return () => {
+        document.documentElement.classList.remove("has-site-snap");
+        document.body.classList.remove("has-site-snap");
+      };
+    }
+
+    document.documentElement.classList.remove("has-site-snap");
+    document.body.classList.remove("has-site-snap");
+    return () => {
       document.documentElement.classList.remove("has-site-snap");
       document.body.classList.remove("has-site-snap");
     };
-  }, []);
+  }, [isDesktopSnap, enableSnap]);
 
   useEffect(() => {
     const rafId = window.requestAnimationFrame(() => {
@@ -76,7 +107,7 @@ export function Layout({ children, showFooter = true }: LayoutProps) {
         {children}
       </main>
       {showFooter ? <Footer /> : null}
-      <SnapRail />
+      {enableSnap ? <SnapRail /> : null}
       <WhatsAppWidget phoneNumber="393334404903" message="Ciao! Vorrei maggiori informazioni sui tuoi servizi." />
       <CookieConsent />
     </div>

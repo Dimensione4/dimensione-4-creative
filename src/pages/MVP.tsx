@@ -9,6 +9,7 @@ import {
   RefreshCw,
   Check,
   HelpCircle,
+  PhoneCall,
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/accordion";
 import { useTranslation } from "react-i18next";
 import { localizedRoutes } from "@/lib/routes/routes";
+import { trackEvent } from "@/utils/analytics";
 
 export default function MVP() {
   const { i18n } = useTranslation();
@@ -32,34 +34,34 @@ export default function MVP() {
     ? [
         {
           icon: Lightbulb,
-          title: "Discovery",
+          title: "Analisi",
           description:
             "Analizziamo insieme la tua idea, il mercato target e definiamo obiettivi chiari e misurabili.",
           duration: "1 settimana",
         },
         {
           icon: Target,
-          title: "Scope & Planning",
+          title: "Perimetro e piano",
           description:
             "Definiamo le feature core del MVP, eliminiamo il superfluo e creiamo una roadmap realistica.",
           duration: "1 settimana",
         },
         {
           icon: Code2,
-          title: "Build",
+          title: "Sviluppo",
           description: "Sviluppo iterativo con aggiornamenti regolari. Vedi il tuo prodotto prendere forma.",
           duration: "2-8 settimane",
         },
         {
           icon: Rocket,
-          title: "Launch",
+          title: "Lancio",
           description:
             "Deploy su infrastruttura cloud scalabile. Il tuo MVP è live e pronto per i primi utenti.",
           duration: "1 settimana",
         },
         {
           icon: RefreshCw,
-          title: "Iterate",
+          title: "Iterazione",
           description:
             "Raccogli feedback, analizza i dati e pianifichiamo insieme le prossime iterazioni.",
           duration: "Continuo",
@@ -218,9 +220,17 @@ export default function MVP() {
                 : "Starting from 3,500 EUR for month one. Then monthly evolution sprints."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={bookingLink}>
-                {isItalian ? "Prenota una discovery call" : "Book a discovery call"}
-                <ArrowUpRight className="w-4 h-4" />
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "hero",
+                  })
+                }
+              >
+                {isItalian ? "Prenota una call iniziale" : "Book a discovery call"}
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>
@@ -318,7 +328,9 @@ export default function MVP() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }} className="surface-card p-8">
-              <h3 className="font-display text-xl font-bold mb-4">Tech Stack</h3>
+              <h3 className="font-display text-xl font-bold mb-4">
+                {isItalian ? "Stack tecnologico" : "Tech Stack"}
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase", "PostgreSQL", "Vercel", "AWS", "Flutter"].map((tech) => (
                   <span key={tech} className="px-4 py-2 rounded-lg bg-surface text-sm font-mono text-muted-foreground">{tech}</span>
@@ -365,9 +377,17 @@ export default function MVP() {
                 : "Book a free 30-minute discovery call. Let's review your idea together."}
             </p>
             <Button variant="hero" size="xl" asChild>
-              <Link to={bookingLink}>
-                {isItalian ? "Prenota una discovery call" : "Book a discovery call"}
-                <ArrowUpRight className="w-4 h-4" />
+              <Link
+                to={bookingLink}
+                onClick={() =>
+                  trackEvent("book_call_click", {
+                    tool: "calendly",
+                    location: "cta_section",
+                  })
+                }
+              >
+                {isItalian ? "Prenota una call iniziale" : "Book a discovery call"}
+                <PhoneCall className="w-4 h-4" />
               </Link>
             </Button>
           </motion.div>

@@ -1,6 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const RESEND_FROM_EMAIL =
+  Deno.env.get("RESEND_FROM_EMAIL") || "no-reply@dimensione4.it";
+const CONTACT_OWNER_EMAIL =
+  Deno.env.get("CONTACT_OWNER_EMAIL") || "dariomarcobellini@dimensione4.it";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,6 +16,115 @@ interface ContactNotificationRequest {
   email: string;
   message: string;
   website?: string;
+}
+
+function normalizeWebsiteUrl(website: string): string {
+  const trimmed = website.trim();
+  if (!trimmed) return trimmed;
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+function buildOwnerNotificationHtml(input: {
+  safeName: string;
+  safeEmail: string;
+  safeWebsite: string | null;
+  safeMessage: string;
+}): string {
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#050914;padding:24px;color:#e6edf3;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#0a1220;border:1px solid #17324a;border-radius:14px;overflow:hidden;">
+        <tr>
+          <td style="padding:20px 24px;background:linear-gradient(90deg,#0f8f88,#25d9e4);color:#03131a;">
+            <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="28" height="28" style="display:block;margin-bottom:8px;border:0;outline:none;">
+            <h1 style="margin:0;font-size:20px;line-height:1.3;">Nuovo contatto dal sito</h1>
+            <p style="margin:6px 0 0;font-size:13px;opacity:0.9;">Dimensione 4 · modulo contatti</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px;">
+            <p style="margin:0 0 16px;font-size:14px;color:#9bb0c6;">Dettagli lead ricevuto:</p>
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Nome</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeName}</td></tr>
+              <tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Email</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeEmail}</td></tr>
+              ${
+                input.safeWebsite
+                  ? `<tr><td style="padding:8px 0;color:#7fcbd2;font-size:13px;">Sito</td><td style="padding:8px 0;font-size:14px;color:#e6edf3;">${input.safeWebsite}</td></tr>`
+                  : ""
+              }
+            </table>
+            <div style="margin-top:18px;padding:14px;border:1px solid #17324a;background:#060d17;border-radius:10px;">
+              <p style="margin:0 0 8px;color:#7fcbd2;font-size:13px;">Messaggio</p>
+              <p style="margin:0;font-size:14px;line-height:1.6;color:#e6edf3;">${input.safeMessage}</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
+}
+
+function buildAutoReplyHtml(input: {
+  safeName: string;
+  safeEmail: string;
+  safeWebsite: string | null;
+  safeMessage: string;
+  websiteUrl: string | null;
+}): string {
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#050914;padding:24px;color:#e6edf3;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#0a1220;border:1px solid #17324a;border-radius:14px;overflow:hidden;">
+        <tr>
+          <td style="padding:22px 24px;background:linear-gradient(90deg,#0f8f88,#25d9e4);color:#03131a;">
+            <img src="https://dimensione4.it/favicon.png" alt="Dimensione 4" width="28" height="28" style="display:block;margin-bottom:8px;border:0;outline:none;">
+            <p style="margin:0;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;">Dimensione 4</p>
+            <h1 style="margin:8px 0 0;font-size:22px;line-height:1.3;">Messaggio ricevuto con successo</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px;">
+            <p style="margin:0 0 10px;font-size:16px;line-height:1.6;">Ciao <strong>${input.safeName}</strong>, grazie per avermi scritto.</p>
+            <p style="margin:0 0 16px;font-size:14px;line-height:1.7;color:#c3d0dc;">
+              Ho ricevuto la tua richiesta e ti ricontatterò entro <strong>24 ore lavorative</strong>.
+            </p>
+            <div style="padding:14px;border:1px solid #17324a;background:#060d17;border-radius:10px;">
+              <p style="margin:0 0 8px;color:#7fcbd2;font-size:13px;">Riepilogo della tua richiesta</p>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                <tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Nome</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeName}</td></tr>
+                <tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Email</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeEmail}</td></tr>
+                ${
+                  input.safeWebsite
+                    ? `<tr><td style="padding:6px 0;color:#7fcbd2;font-size:13px;">Sito/Repository</td><td style="padding:6px 0;font-size:14px;color:#e6edf3;">${input.safeWebsite}</td></tr>`
+                    : ""
+                }
+              </table>
+              <div style="margin-top:12px;">
+                <p style="margin:0 0 6px;color:#7fcbd2;font-size:13px;">Messaggio</p>
+                <p style="margin:0;font-size:14px;line-height:1.6;color:#e6edf3;">${input.safeMessage}</p>
+              </div>
+            </div>
+            <p style="margin:16px 0 0;font-size:13px;color:#9bb0c6;">
+              Nel frattempo puoi prenotare direttamente una call da qui:
+              <a href="https://dimensione4.it/contatti#calendly" style="color:#25d9e4;">dimensione4.it/contatti#calendly</a>
+            </p>
+            ${
+              input.websiteUrl
+                ? `<p style="margin:8px 0 0;font-size:12px;color:#8da4bb;">Link inserito: <a href="${input.websiteUrl}" style="color:#25d9e4;">${input.safeWebsite}</a></p>`
+                : ""
+            }
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 24px;border-top:1px solid #17324a;background:#070f1a;">
+            <p style="margin:0;font-size:12px;color:#9bb0c6;">
+              Dario Marco Bellini · Dimensione 4<br>
+              <a href="mailto:dariomarcobellini@dimensione4.it" style="color:#25d9e4;">dariomarcobellini@dimensione4.it</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </div>
+  `;
 }
 
 // HTML encode user inputs to prevent XSS in email clients
@@ -115,6 +228,7 @@ const handler = async (req: Request): Promise<Response> => {
     const safeEmail = htmlEncode(email);
     const safeMessage = htmlEncode(message).replace(/\n/g, "<br>");
     const safeWebsite = website ? htmlEncode(website) : null;
+    const websiteUrl = website ? normalizeWebsiteUrl(website) : null;
 
     // Send notification email to site owner
     const notificationRes = await fetch("https://api.resend.com/emails", {
@@ -124,17 +238,16 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Dimensione 4 <noreply@dimensione4.it>",
-        to: ["dariomarcobellini@dimensione4.it"],
+        from: `Dimensione 4 <${RESEND_FROM_EMAIL}>`,
+        to: [CONTACT_OWNER_EMAIL],
+        reply_to: email,
         subject: `Nuovo messaggio da ${safeName}`,
-        html: `
-          <h2>Nuovo messaggio dal form di contatto</h2>
-          <p><strong>Nome:</strong> ${safeName}</p>
-          <p><strong>Email:</strong> ${safeEmail}</p>
-          ${safeWebsite ? `<p><strong>Sito web:</strong> ${safeWebsite}</p>` : ""}
-          <p><strong>Messaggio:</strong></p>
-          <p>${safeMessage}</p>
-        `,
+        html: buildOwnerNotificationHtml({
+          safeName,
+          safeEmail,
+          safeWebsite,
+          safeMessage,
+        }),
       }),
     });
 
@@ -154,14 +267,16 @@ const handler = async (req: Request): Promise<Response> => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Dimensione 4 <noreply@dimensione4.it>",
+        from: `Dimensione 4 <${RESEND_FROM_EMAIL}>`,
         to: [email], // Use validated email, not HTML encoded
-        subject: "Abbiamo ricevuto il tuo messaggio!",
-        html: `
-          <h1>Grazie per averci contattato, ${safeName}!</h1>
-          <p>Abbiamo ricevuto il tuo messaggio e ti risponderemo il prima possibile.</p>
-          <p>Cordiali saluti,<br>Il Team Dimensione 4</p>
-        `,
+        subject: "Dimensione 4 · richiesta ricevuta (risposta entro 24h)",
+        html: buildAutoReplyHtml({
+          safeName,
+          safeEmail,
+          safeWebsite,
+          safeMessage,
+          websiteUrl,
+        }),
       }),
     });
 
@@ -173,7 +288,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Confirmation email sent successfully");
     }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, confirmationSent: confirmationRes.ok }), {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });

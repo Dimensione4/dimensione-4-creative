@@ -17,7 +17,7 @@ import { SEO } from "@/components/SEO";
 import { useRecaptcha } from "@/hooks/useRecaptcha";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
-import { trackEvent } from "@/components/GoogleAnalytics";
+import { trackEvent } from "@/utils/analytics";
 
 export default function Contatti() {
   const location = useLocation();
@@ -111,9 +111,9 @@ export default function Contatti() {
         throw error;
       }
 
-      // Send email notifications (non-blocking)
-      supabase.functions
-        .invoke("send-contact-notification", {
+      // Send email notifications and surface delivery issues
+      const { data: notifyData, error: notifyError } =
+        await supabase.functions.invoke("send-contact-notification", {
           body: {
             name: result.data.name,
             email: result.data.email,
@@ -121,10 +121,11 @@ export default function Contatti() {
             website: result.data.website,
             recaptchaToken,
           },
-        })
-        .catch((err) => {
-          console.error("Email notification error:", err);
         });
+
+      if (notifyError) {
+        console.error("Email notification error:", notifyError);
+      }
 
       // Track form conversion
       trackEvent("form_submission", {
@@ -139,12 +140,36 @@ export default function Contatti() {
         value: 0,
       });
 
-      toast({
-        title: isItalian ? "Messaggio inviato!" : "Message sent!",
-        description: isItalian
-          ? "Ti risponderò entro 24 ore lavorative."
-          : "I'll respond within 24 business hours.",
-      });
+      if (notifyError) {
+        toast({
+          title: isItalian
+            ? "Messaggio salvato, email non inviata"
+            : "Message saved, email not sent",
+          description: isItalian
+            ? "Ho ricevuto i dati ma c'è stato un problema nell'invio automatico email."
+            : "I received your data, but there was an issue sending automatic emails.",
+          variant: "destructive",
+        });
+      } else if (
+        notifyData &&
+        typeof notifyData === "object" &&
+        "confirmationSent" in notifyData &&
+        notifyData.confirmationSent === false
+      ) {
+        toast({
+          title: isItalian ? "Messaggio inviato" : "Message sent",
+          description: isItalian
+            ? "Richiesta ricevuta. La conferma email potrebbe non essere arrivata."
+            : "Request received. The confirmation email may not have been delivered.",
+        });
+      } else {
+        toast({
+          title: isItalian ? "Messaggio inviato!" : "Message sent!",
+          description: isItalian
+            ? "Ti risponderò entro 24 ore lavorative."
+            : "I'll respond within 24 business hours.",
+        });
+      }
 
       (e.target as HTMLFormElement).reset();
       setPrivacyConsent(false);
@@ -246,6 +271,10 @@ export default function Contatti() {
                   <button
                     type="button"
                     onClick={() => {
+                      trackEvent("book_call_click", {
+                        tool: "calendly",
+                        location: "hero",
+                      });
                       document.getElementById("calendly")?.scrollIntoView({
                         behavior: "smooth",
                         block: "start",
