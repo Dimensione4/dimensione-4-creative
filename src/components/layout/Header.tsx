@@ -148,10 +148,30 @@ export function Header() {
     }
   };
 
-  // Close menu on route/hash change
+  // Close menu on route change
   useEffect(() => {
     setIsMenuOpen(false);
-  }, [location.pathname, location.hash]);
+  }, [location.pathname]);
+
+  // Force-close mobile menu when switching to desktop breakpoints.
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1280px)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    if (mediaQuery.matches) {
+      setIsMenuOpen(false);
+    }
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
 
   // Lock body scroll when menu is open
   useEffect(() => {
@@ -176,7 +196,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-500 ${
         hasScrolled ? "bg-background/60 backdrop-blur-2xl" : "bg-transparent"
       }`}
     >
@@ -287,8 +307,10 @@ export function Header() {
             {/* Mobile Hamburger Menu */}
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[60]"
+              className="xl:hidden relative w-10 h-10 flex items-center justify-center rounded-full bg-surface/50 backdrop-blur-xl border border-[hsl(var(--border))] z-[80] touch-manipulation"
               aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
             >
               <div className="w-5 h-4 flex flex-col justify-between">
                 <motion.span
@@ -329,7 +351,8 @@ export function Header() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="xl:hidden fixed left-0 right-0 bottom-0 bg-background/95 backdrop-blur-3xl z-40 overflow-y-auto"
+            id="mobile-navigation"
+            className="xl:hidden fixed left-0 right-0 bottom-0 bg-background/95 backdrop-blur-3xl z-[65] overflow-y-auto"
             style={{ top: headerHeight }}
           >
             <motion.nav
