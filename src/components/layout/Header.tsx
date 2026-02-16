@@ -312,17 +312,17 @@ export function Header() {
               aria-expanded={isMenuOpen}
               aria-controls="mobile-navigation"
             >
-              <div className="w-5 h-4 flex flex-col justify-between">
+              <div className="relative w-5 h-4">
                 <motion.span
-                  className="block h-0.5 bg-foreground origin-center"
+                  className="absolute left-0 top-1/2 block h-0.5 w-5 bg-foreground origin-center"
                   animate={{
                     rotate: isMenuOpen ? 45 : 0,
-                    y: isMenuOpen ? 7 : 0,
+                    y: isMenuOpen ? 0 : -6,
                   }}
                   transition={{ duration: 0.3 }}
                 />
                 <motion.span
-                  className="block h-0.5 bg-foreground"
+                  className="absolute left-0 top-1/2 block h-0.5 w-5 bg-foreground"
                   animate={{
                     opacity: isMenuOpen ? 0 : 1,
                     scaleX: isMenuOpen ? 0 : 1,
@@ -330,10 +330,10 @@ export function Header() {
                   transition={{ duration: 0.2 }}
                 />
                 <motion.span
-                  className="block h-0.5 bg-foreground origin-center"
+                  className="absolute left-0 top-1/2 block h-0.5 w-5 bg-foreground origin-center"
                   animate={{
                     rotate: isMenuOpen ? -45 : 0,
-                    y: isMenuOpen ? -7 : 0,
+                    y: isMenuOpen ? 0 : 6,
                   }}
                   transition={{ duration: 0.3 }}
                 />
